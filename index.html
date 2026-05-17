@@ -12,13 +12,12 @@
   <style>
     /* Standard CR80 PVC Layout Ratio Fixed */
     .pvc-card { 
-      width: 323.5px; /* Fixed standard width for print */
-      height: 204px;   /* Fixed standard height for print */
+      width: 323.5px; 
+      height: 204px;   
       position: relative;
       box-sizing: border-box;
     }
     
-    /* Advanced Print CSS Fix: प्रिंटर में केवल कार्ड ही परफेक्ट साइज में दिखेंगे */
     @media print {
       body { background: white; padding: 0; margin: 0; min-height: auto; }
       header, footer, button, #step1-form-view, #step2-activation-view, #step3-drive-view, #step4-scanner-view, h2 {
@@ -145,32 +144,35 @@
       <h2 class="text-lg font-bold text-slate-700">🔐 डिजिटल कार्ड एक्टिवेशन (Step 2)</h2>
       <p class="text-sm text-slate-500">सेवाओं को सक्रिय करने के लिए आपको एक बार <strong class="text-slate-800">₹50</strong> का शुल्क देना होगा।</p>
       
-      <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 text-center space-y-4">
+      <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 text-center space-y-3">
+        <span class="text-[11px] font-bold text-amber-900 uppercase tracking-wider block">सीधे अपने मोबाइल ऐप से भुगतान करें:</span>
         
-        <div class="space-y-1">
-          <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">विकल्प 1: सीधे मोबाइल ऐप से पे करें</span>
-          <button onclick="executeUpiPayment()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 px-4 rounded-xl shadow-md transition-all flex items-center justify-center gap-2 text-xs cursor-pointer tracking-wide uppercase">
-            💸 Pay Registration Fee (₹50)
+        <div class="flex flex-col gap-2">
+          <button onclick="payViaGooglePay()" class="w-full bg-slate-900 hover:bg-black text-white font-bold py-3 px-4 rounded-xl shadow-md transition-all flex items-center justify-center gap-2 text-xs cursor-pointer tracking-wide uppercase">
+            <span class="text-lg">📱</span> Pay via Google Pay (₹50)
+          </button>
+
+          <button onclick="payViaOtherUPI()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-xl shadow-md transition-all flex items-center justify-center gap-2 text-xs cursor-pointer tracking-wide uppercase">
+            💸 Pay via PhonePe / Paytm / Others
           </button>
         </div>
 
         <div class="relative flex py-1 items-center justify-center">
           <div class="flex-grow border-t border-amber-300"></div>
-          <span class="flex-shrink mx-3 text-[10px] text-amber-800 font-bold uppercase">या (OR)</span>
+          <span class="flex-shrink mx-3 text-[10px] text-amber-800 font-bold uppercase">या फिर स्कैन करें</span>
           <div class="flex-grow border-t border-amber-300"></div>
         </div>
 
         <div class="space-y-2 flex flex-col items-center">
-          <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">विकल्प 2: इस QR कोड को स्कैन करें या स्क्रीनशॉट लें</span>
-          <div class="bg-white p-2 rounded-xl border border-amber-200 shadow-xs max-w-[210px]">
+          <div class="bg-white p-2 rounded-xl border border-amber-200 shadow-xs max-w-[190px]">
             <div id="live-payment-qr" class="p-1 bg-white flex justify-center"></div>
             <p class="text-[10px] text-slate-700 font-bold mt-2 text-center font-mono">CSC Sahayak Documentation</p>
-            <p class="text-[8px] text-slate-400 font-medium浏览 text-center font-mono">8700407760@okbizaxix</p>
+            <p class="text-[8px] text-slate-400 font-medium text-center font-mono">8700407760@okbizaxix</p>
           </div>
         </div>
         
-        <div class="pt-3 border-t border-amber-200/60">
-          <a id="whatsapp-link" href="#" target="_blank" class="inline-block bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-2.5 px-4 rounded-lg shadow-xs transition-all">
+        <div class="pt-2 border-t border-amber-200/60">
+          <a id="whatsapp-link" href="#" target="_blank" class="inline-block bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-2 px-4 rounded-lg shadow-xs transition-all">
             💬 पेमेंट स्क्रीनशॉट भेजें और SD Code मांगें
           </a>
         </div>
@@ -407,17 +409,25 @@
       document.getElementById('step1-display-view').classList.remove('hidden');
     }
 
-    // 🛠️ 100% वर्किंग सुरक्षित जावास्क्रिप्ट बेस्ड पेमेंट ट्रिगर सिस्टम
-    function executeUpiPayment() {
-      let upiString = `upi://pay?pa=8700407760@okbizaxix&pn=CSC%20Sahayak%20Documentation&am=50&cu=INR&tn=Sahayak_Ref_${globalRefId || 'Vault'}&purpose=00`;
+    // 🛠️ 1. GOOGLE PAY फ़ोर्स-ओपनर फंक्शन (बुलेटप्रूफ बाईपास)
+    function payViaGooglePay() {
+      let rawUpiUrl = `upi://pay?pa=8700407760@okbizaxix&pn=CSC%20Sahayak%20Documentation&am=50&cu=INR&tn=Sahayak_Ref_${globalRefId || 'Vault'}`;
       
-      // सिस्टम ब्राउज़र सुरक्षा फ़िल्टर को बायपास करने के लिए टाइमआउट आधारित फ़ोर्स-ओपनर तकनीक
-      window.location.href = upiString;
+      // एंड्रॉइड मर्चेंट इंटेंट लॉजिक जो क्रोम को दरकिनार कर सीधे गूगल पे ऐप के अंदर खुलेगा
+      let gpayIntent = `intent://pay${rawUpiUrl.substring(9)}#Intent;scheme=upi;package=com.google.android.apps.nbu.paisa.user;end`;
       
+      window.location.href = gpayIntent;
+      
+      // फॉलबैक अरेंजमेंट आईओएस/अन्य डिवाइसेज के लिए
       setTimeout(function() {
-        // अगर डिफ़ॉल्ट ऐप क्रैश या ब्लॉक होता है, तो बैकअप के तौर पर डायरेक्ट इंटेंट फ़ायर करें (एंड्रॉइड क्रोम के लिए)
-        window.location = "intent://pay" + upiString.substring(4) + "#Intent;scheme=upi;package=com.google.android.apps.nbu.paisa.user;end";
-      }, 250);
+        window.location.href = rawUpiUrl;
+      }, 300);
+    }
+
+    // 🛠️ 2. अन्य यूपीआई ऐप्स के लिए नॉर्मल ट्रिगर फंक्शन
+    function payViaOtherUPI() {
+      let rawUpiUrl = `upi://pay?pa=8700407760@okbizaxix&pn=CSC%20Sahayak%20Documentation&am=50&cu=INR&tn=Sahayak_Ref_${globalRefId || 'Vault'}`;
+      window.location.href = rawUpiUrl;
     }
 
     function openActivationScreen(refId, email) {
@@ -425,7 +435,6 @@
       let waMessage = encodeURIComponent(`नमस्ते सर, मैंने ₹50 का भुगतान कर दिया है। (Screenshot भी शेयर किया है) कृपया मेरे डिजिटल कार्ड के लिए 6-Digit SD Code प्रदान करें।\nReference ID: ${refId}\nEmail: ${email}`);
       document.getElementById('whatsapp-link').href = `https://wa.me/918700407760?text=${waMessage}`;
       
-      // विकल्प 2 के लिए लाइव मर्चेंट QR जनरेट करना (No Static Image Error)
       let qrString = `upi://pay?pa=8700407760@okbizaxix&pn=CSC%20Sahayak%20Documentation&am=50&cu=INR&tn=Sahayak_Ref_${refId}`;
       document.getElementById('live-payment-qr').innerHTML = '';
       new QRCode(document.getElementById('live-payment-qr'), { text: qrString, width: 140, height: 140 });
