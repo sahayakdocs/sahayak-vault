@@ -186,6 +186,7 @@
   </main>
 
   <script>
+    const API_URL = 'https://script.google.com/macros/s/AKfycbxObecWPOgd6GNongNwumvGcTgQNdLUYfavh-vddmLNx6kcy3nTUk7VqWQY0TQYeWt1/exec';
     let globalRefId = '', globalCardEmail = '', tokenClient, accessToken = null, cropperInstance = null, base64Photo = '', streamInstance = null, targetMode = 'scan';
     const SCOPES = 'https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/userinfo.email';
 
@@ -194,14 +195,6 @@
       const refId = urlParams.get('ref_id');
       const email = urlParams.get('email');
       targetMode = urlParams.get('mode') || 'scan';
-      
-      if(typeof google !== 'undefined' && google.accounts && google.accounts.oauth2) {
-        tokenClient = google.accounts.oauth2.initTokenClient({
-          client_id: '352936235128-fake.apps.googleusercontent.com', scope: SCOPES,
-          callback: (resp) => { if (resp.access_token) { accessToken = resp.access_token; localStorage.setItem('drive_token_' + globalRefId, accessToken); initializeDriveFolderAndVault(); } }
-        });
-      }
-
       if(refId && email) { globalRefId = refId; globalCardEmail = email; checkRoutingStatus(refId, email); } 
       else { showLoading(false); document.getElementById('step1-form-view').classList.remove('hidden'); }
     };
@@ -219,69 +212,73 @@
         let img = new Image();
         img.onload = function() {
           let canvas = document.createElement('canvas');
-          let MAX_WIDTH = 150;
+          let MAX_WIDTH = 120; // फोटो को अत्यधिक कंप्रेस किया ताकि सर्वर लेंथ एरर न आए
           let scale = MAX_WIDTH / img.width;
           canvas.width = MAX_WIDTH; canvas.height = img.height * scale;
           let ctx = canvas.getContext('2d');
           ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-          base64Photo = canvas.toDataURL('image/jpeg', 0.5);
+          base64Photo = canvas.toDataURL('image/jpeg', 0.4);
         }
         img.src = event.target.result;
       }
       reader.readAsDataURL(file);
     });
 
-    // 🌟 1. ऑफिशियल GOOGLE RUN - स्टेटस चेकर फिक्स
+    // 🌟 परमानेंट JSONP सिंक - स्टेटस चेकर
     function checkRoutingStatus(refId, cardEmail) {
       document.getElementById('step1-form-view').classList.add('hidden');
       showLoading(true);
-      
-      if (typeof google === 'undefined' || !google.script || !google.script.run) {
-        // लोकल टेस्टिंग फॉलबैक अरेंजमेंट
-        showLoading(false); openActivationScreen(refId, cardEmail); return;
-      }
 
-      google.script.run
-        .withSuccessHandler(function(response) {
-          showLoading(false);
-          if(response.exists) {
-            let isLocallyActive = localStorage.getItem('card_status_' + refId) === 'Active';
-            if(response.status === 'Active' || isLocallyActive) {
-              document.getElementById('step3-drive-view').classList.remove('hidden');
-            } else { openActivationScreen(refId, cardEmail); }
-          } else { alert('अवैध कार्ड रिफरेन्स आईडी!'); }
-        })
-        .withFailureHandler(function() { showLoading(false); openActivationScreen(refId, cardEmail); })
-        .checkStatusBackend(refId);
+      window.handleStatusCallback = function(response) {
+        showLoading(false);
+        if(response.exists) {
+          let isLocallyActive = localStorage.getItem('card_status_' + refId) === 'Active';
+          if(response.status === 'Active' || isLocallyActive) {
+            document.getElementById('step3-drive-view').classList.remove('hidden');
+          } else { openActivationScreen(refId, cardEmail); }
+        } else { alert('अवैध कार्ड आईडी!'); }
+      };
+
+      let script = document.createElement('script');
+      script.src = `${API_URL}?action=checkStatus&refId=${refId}&callback=handleStatusCallback`;
+      document.body.appendChild(script);
     }
 
-    // 🌟 2. ऑफिशियल GOOGLE RUN - फॉर्म सबमिशन फिक्स (लेंथ लिमिट बाईपास)
+    // 🌟 परमानेंट JSONP सिंक - फॉर्म सबमिशन (डुप्लीकेट रोकने के लिए)
     function submitCardForm() {
       let email = document.getElementById('input-email').value.trim();
       let name = document.getElementById('input-name').value.trim();
       let mobile = document.getElementById('input-mobile').value.trim();
-      if(!email) { alert('कृपया ईमेल आईडी दर्ज करें!'); return; }
+      if(!email) { alert('कृपया ईमेल दर्ज करें!'); return; }
       
       document.getElementById('step1-form-view').classList.add('hidden');
       showLoading(true);
-      
-      if (typeof google === 'undefined' || !google.script || !google.script.run) {
-        showLoading(false); renderPVCCardLayout("12345678", name || "Test", mobile || "0000", email, base64Photo); return;
-      }
 
-      google.script.run
-        .withSuccessHandler(function(response) {
+      window.handleDuplicateCallback = function(dupRes) {
+        if(dupRes.exists) {
           showLoading(false);
-          if(response.success) {
-            if(response.isDuplicate) {
-              renderPVCCardLayout(response.refId, response.name, response.mobile, response.email, response.photoUrl);
-            } else {
-              renderPVCCardLayout(response.refId, name, mobile, email, base64Photo);
-            }
-          } else { alert('सर्वर एरर!'); document.getElementById('step1-form-view').classList.remove('hidden'); }
-        })
-        .withFailureHandler(function() { showLoading(false); alert('कनेक्शन त्रुटि!'); document.getElementById('step1-form-view').classList.remove('hidden'); })
-        .processCardFormBackend(name, mobile, email, base64Photo);
+          renderPVCCardLayout(dupRes.refId, dupRes.name, dupRes.mobile, dupRes.email, dupRes.photoUrl);
+        } else {
+          if(!name || !mobile) {
+            showLoading(false); alert('नया कार्ड बनाने के लिए नाम और मोबाइल भरें!');
+            document.getElementById('step1-form-view').classList.remove('hidden'); return;
+          }
+          
+          window.handleGenerationCallback = function(genRes) {
+            showLoading(false);
+            if(genRes.success) { renderPVCCardLayout(genRes.refId, name, mobile, email, base64Photo); }
+            else { alert('सर्वर एरर!'); }
+          };
+
+          let scriptGen = document.createElement('script');
+          scriptGen.src = `${API_URL}?action=generateCard&name=${encodeURIComponent(name)}&mobile=${encodeURIComponent(mobile)}&email=${encodeURIComponent(email)}&photoUrl=${encodeURIComponent(base64Photo)}&callback=handleGenerationCallback`;
+          document.body.appendChild(scriptGen);
+        }
+      };
+
+      let scriptDup = document.createElement('script');
+      scriptDup.src = `${API_URL}?action=checkEmailDuplicate&email=${encodeURIComponent(email)}&callback=handleDuplicateCallback`;
+      document.body.appendChild(scriptDup);
     }
 
     function renderPVCCardLayout(refId, name, mobile, email, photo) {
@@ -307,7 +304,7 @@
       document.getElementById('step2-activation-view').classList.remove('hidden');
     }
 
-    // 🌟 3. ऑफिशियल GOOGLE RUN - बुलेटप्रूफ एक्टिवेशन रिस्पॉन्स
+    // 🌟 परमानेंट JSONP सिंक - एक्टिवेशन ट्रिगर
     function activateSystem() {
       let code = document.getElementById('input-sdcode').value.trim();
       if(!code) { alert('कृपया कोड दर्ज करें!'); return; }
@@ -315,24 +312,21 @@
       document.getElementById('step2-activation-view').classList.add('hidden');
       showLoading(true);
 
-      if (typeof google === 'undefined' || !google.script || !google.script.run) {
-        showLoading(false); document.getElementById('step3-drive-view').classList.remove('hidden'); return;
-      }
+      window.handleActivationCallback = function(response) {
+        showLoading(false);
+        if(response.success) {
+          localStorage.setItem('card_status_' + globalRefId, 'Active');
+          alert('कार्ड एक्टिवेशन कम्प्लीट! अब ड्राइव कनेक्ट करें।');
+          document.getElementById('step3-drive-view').classList.remove('hidden');
+        } else {
+          alert(response.message || 'गलत SD Code!');
+          document.getElementById('step2-activation-view').classList.remove('hidden');
+        }
+      };
 
-      google.script.run
-        .withSuccessHandler(function(response) {
-          showLoading(false);
-          if(response.success) {
-            localStorage.setItem('card_status_' + globalRefId, 'Active');
-            alert('कार्ड एक्टिवेशन कम्प्लीट! अब ड्राइव कनेक्ट करें।');
-            document.getElementById('step3-drive-view').classList.remove('hidden');
-          } else {
-            alert(response.message || 'गलत SD Code!');
-            document.getElementById('step2-activation-view').classList.remove('hidden');
-          }
-        })
-        .withFailureHandler(function() { showLoading(false); alert('सर्वर से संपर्क नहीं हो पाया!'); document.getElementById('step2-activation-view').classList.remove('hidden'); })
-        .activateCardBackend(globalRefId, code);
+      let scriptAct = document.createElement('script');
+      scriptAct.src = `${API_URL}?action=activateCard&refId=${globalRefId}&sdCode=${encodeURIComponent(code)}&callback=handleActivationCallback`;
+      document.body.appendChild(scriptAct);
     }
   </script>
 </body>
