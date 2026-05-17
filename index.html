@@ -18,30 +18,51 @@
       box-sizing: border-box;
     }
     
+    /* एक्स्ट्रा बड़े पेमेंट क्यूआर का प्रिंट बॉक्स */
+    #print-only-mega-pay-zone {
+      display: none;
+    }
+    
+    /* 🖨️ एडवांस्ड A4 प्रिंट आर्किटेक्चर फिक्स */
     @media print {
       body { background: white; padding: 0; margin: 0; min-height: auto; }
+      
+      /* फॉर्म, हेडर, बटन, स्कैनर आदि सब कुछ प्रिंटर से छिपाएं */
       header, footer, button, #step1-form-view, #step2-activation-view, #step3-drive-view, #step4-scanner-view, h2 {
         display: none !important;
       }
       main { box-shadow: none !important; border: none !important; width: 100% !important; max-w: 100% !important; padding: 0 !important; margin: 0 !important; }
+      
       #step1-display-view { display: block !important; }
       
+      /* दोनों कार्ड को A4 के टॉप पर अगल-बगल (Side-by-Side) सेट करें */
       .pvc-print-container { 
-        display: block !important;
-        padding: 0 !important;
-        margin: 0 !important;
+        display: flex !important;
+        flex-direction: row !important;
+        justify-content: flex-start !important;
+        gap: 20px !important;
+        padding-top: 10px !important;
+        margin-bottom: 40px !important;
+        width: 100% !important;
       }
       
       #pvc-front, #pvc-back { 
         display: flex !important;
-        float: left !important;
-        margin-right: 15px !important;
-        margin-bottom: 15px !important;
         box-shadow: none !important; 
         border: 1px solid #94a3b8 !important;
         page-break-inside: avoid;
         -webkit-print-color-adjust: exact; 
         print-color-adjust: exact;
+        margin: 0 !important;
+      }
+      
+      /* उसी पेज के नीचे बड़ा पेमेंट क्यूआर और मैनुअल एक्टिवेट करें */
+      #print-only-mega-pay-zone {
+        display: block !important;
+        margin-top: 50px !important;
+        border-t: 2px dashed #cbd5e1;
+        padding-top: 30px;
+        page-break-inside: avoid;
       }
     }
   </style>
@@ -82,9 +103,9 @@
 
     <div id="step1-display-view" class="hidden space-y-6 text-center">
       
-      <div class="pvc-print-container space-y-6 md:space-y-0 md:flex md:flex-col md:gap-6">
+      <div class="pvc-print-container space-y-6 md:space-y-0 md:flex md:flex-row md:justify-center md:gap-6">
         
-        <div id="pvc-front" class="pvc-card bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100 text-black rounded-xl shadow-xl mx-auto p-3 flex flex-col justify-between overflow-hidden border border-slate-300 text-left">
+        <div id="pvc-front" class="pvc-card bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100 text-black rounded-xl shadow-xl p-3 flex flex-col justify-between overflow-hidden border border-slate-300 text-left shrink-0">
           <div class="absolute inset-0 flex items-center justify-center opacity-5 pointer-events-none text-9xl">🛡️</div>
           
           <div class="flex justify-between items-center border-b border-slate-300 pb-1 relative z-10">
@@ -115,65 +136,77 @@
           <div class="text-[6px] text-center opacity-60 border-t border-slate-200 pt-1 tracking-wider relative z-10 text-slate-500">SCAN TO LAUNCH SCANNER CAMERA</div>
         </div>
 
-        <div id="pvc-back" class="pvc-card bg-slate-900 text-slate-200 rounded-xl shadow-xl mx-auto p-3 flex flex-col justify-between border border-slate-950 text-left">
-          <div class="border-b border-slate-800 pb-1 flex justify-between items-center">
-            <p class="text-[9px] font-bold tracking-wider text-blue-400">डिजिटल निर्देश एवं क्लाउड एक्सेस</p>
+        <div id="pvc-back" class="pvc-card bg-slate-900 text-slate-200 rounded-xl shadow-xl p-2.5 flex flex-col justify-between border border-slate-950 text-left shrink-0">
+          <div class="border-b border-slate-800 pb-1 text-center">
+            <p class="text-[8px] font-bold tracking-wider text-blue-400 uppercase">डिजिटल निर्देश एवं क्लाउड एक्सेस पैनल</p>
           </div>
           
-          <div class="flex gap-2 items-center my-auto">
-            <ul class="text-[7px] space-y-1 list-disc pl-3 text-slate-300 flex-1 leading-tight">
-              <li><strong class="text-white">फ्रंट QR स्कैन:</strong> सीधे mobile डॉक्यूमेंट स्कैनर और कस्टमाइज्ड फिल्टर कैमरा खोलेगा।</li>
-              <li><strong class="text-white">बैक QR स्कैन:</strong> आपके द्वारा अपलोड किए गए सभी दस्तावेजों को लाइव सीधे आपके फोन स्क्रीन पर दिखाएगा।</li>
-              <li>सुरक्षा कारणों से, बैक QR केवल तभी काम करेगा जब फोन में एक्टिव जीमेल आईडी और कार्ड की ईमेल आईडी समान होगी।</li>
-            </ul>
-            <div class="bg-white p-1 rounded-md shadow-xs flex items-center justify-center border border-slate-200">
-              <div id="qrcode-back"></div>
+          <div class="flex items-center justify-between gap-1.5 my-auto w-full">
+            <div class="flex flex-col items-center gap-0.5 bg-slate-800/80 p-1 rounded-md border border-slate-700/60 shrink-0">
+              <div class="bg-white p-0.5 rounded-sm shadow-inner"><div id="qrcode-back"></div></div>
+              <span class="text-[4.5px] font-extrabold text-blue-400 tracking-tight">1. VAULT VIEW</span>
+            </div>
+            
+            <div class="text-[5.5px] space-y-1 text-slate-300 flex-1 leading-tight px-0.5 border-x border-slate-800/80">
+              <p><strong class="text-white">फ्रंट QR:</strong> स्कैनर लॉन्च हेतु</p>
+              <p><strong class="text-white">लेफ्ट QR:</strong> अपलोडेड फाइल्स लाइव देखें (Drive)</p>
+              <p><strong class="text-amber-400">राइट QR (Pay ₹50):</strong> न्यू कार्ड एक्टिवेशन हेतु किसी भी ऐप से स्कैन करें। राशि व Ref ID फिक्स हैं।</p>
+            </div>
+
+            <div class="flex flex-col items-center gap-0.5 bg-slate-800/80 p-1 rounded-md border border-slate-700/60 shrink-0">
+              <div class="bg-white p-0.5 rounded-sm shadow-inner"><div id="qrcode-payment-merchant"></div></div>
+              <span class="text-[4.5px] font-extrabold text-amber-400 tracking-tight">2. ACTIVATE</span>
             </div>
           </div>
           
-          <div class="border-t border-slate-800 pt-1 flex justify-between items-center text-[5px] text-slate-400">
-            <div>Helpline: sahayak.docs@gmail.com | 8700407760</div>
+          <div class="border-t border-slate-800 pt-0.5 flex justify-between items-center text-[5px] text-slate-400">
+            <div>CSC Sahayak Documentation</div>
+            <div>Helpline: 8700407760</div>
           </div>
         </div>
       </div>
 
-      <button onclick="window.print()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-8 rounded-lg text-sm transition-all shadow-md cursor-pointer block mx-auto">Print PVC Card Layout</button>
+      <div id="print-only-mega-pay-zone" class="w-full max-w-2xl mx-auto text-left bg-slate-50 p-6 rounded-2xl border-2 border-dashed border-slate-300 space-y-6">
+        <div class="text-center space-y-1">
+          <h3 class="text-lg font-bold text-slate-900 tracking-wide">🔐 OFFICIAL DIGITAL ACTIVATION GATEWAY</h3>
+          <p class="text-xs text-slate-500 font-medium">CSC Sahayak Documentation - Verification Desk</p>
+        </div>
+
+        <div class="flex flex-col md:flex-row items-center justify-around gap-6 bg-white p-4 rounded-xl border border-slate-200">
+          <div class="flex flex-col items-center gap-2 bg-slate-50 p-3 rounded-xl border border-slate-200">
+            <div id="qrcode-mega-payment" class="bg-white p-2 rounded-lg shadow-md"></div>
+            <span class="text-xs font-bold text-amber-600 font-mono tracking-wider">👉 SCAN TO PAY ₹50 👈</span>
+          </div>
+
+          <div class="flex-1 space-y-3 text-slate-700">
+            <h4 class="text-sm font-bold text-blue-800 border-b pb-1 uppercase tracking-wide">📋 कार्ड सक्रिय करने की विधि (Instructions Manual)</h4>
+            <ol class="text-xs space-y-2 list-decimal pl-4 font-medium leading-relaxed text-slate-600">
+              <li>अपने मोबाइल का कैमरा या कोई भी पेमेंट ऐप जैसे <strong class="text-slate-900">Google Pay, PhonePe, Paytm, BHIM</strong> खोलें।</li>
+              <li>ऊपर दिए गए बड़े QR कोड को स्कैन करें। स्कैन करते ही राशि <strong class="text-emerald-700">₹50</strong> और आपका <strong id="manual-ref-display" class="text-indigo-900">Ref ID: ...</strong> स्वतः लॉक होकर आ जाएंगे।</li>
+              <li>सफलतापूर्वक भुगतान करने के बाद उसका स्क्रीनशॉट व्हाट्सएप नंबर <strong class="text-slate-900">+91 8700407760</strong> पर शेयर करें।</li>
+              <li>व्हाट्सएप काउंटर से आपको <strong class="text-slate-900">6-Digit SD Code</strong> प्राप्त होगा, उसे पोर्टल पर दर्ज करते ही आपकी लाइफटाइम क्लाउड वॉल्ट स्कैनर सेवा तुरंत सक्रिय हो जाएगी।</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="text-center text-[10px] text-slate-400 font-medium border-t border-slate-200 pt-3">
+          S-D-M-S Cloud Secured Gateway | Support: sahayak.docs@gmail.com
+        </div>
+      </div>
+
+      <button onclick="window.print()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-8 rounded-lg text-sm transition-all shadow-md cursor-pointer block mx-auto">Print Full A4 Layout Page</button>
     </div>
 
     <div id="step2-activation-view" class="hidden space-y-5 text-center">
       <h2 class="text-lg font-bold text-slate-700">🔐 डिजिटल कार्ड एक्टिवेशन (Step 2)</h2>
-      <p class="text-sm text-slate-500">सेवाओं को सक्रिय करने के लिए आपको एक बार <strong class="text-slate-800">₹50</strong> का शुल्क देना होगा।</p>
       
-      <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 text-center space-y-3">
-        <span class="text-[11px] font-bold text-amber-900 uppercase tracking-wider block">सीधे अपने मोबाइल ऐप से भुगतान करें:</span>
+      <div class="bg-amber-50 border border-amber-200 rounded-xl p-5 text-center space-y-3 text-sm text-amber-900">
+        <p class="font-bold text-base text-amber-950">⚠️ कार्ड एक्टिवेशन अनिवार्य है</p>
+        <p class="text-xs leading-relaxed">कृपया आपके प्रिंटेड A4 पेज के नीचे दिए गए बड़े **मर्चेंट QR कोड** को किसी भी ऐप से स्कैन करके **₹50** का भुगतान पूरा करें।</p>
         
-        <div class="flex flex-col gap-2">
-          <button onclick="payViaGooglePay()" class="w-full bg-slate-900 hover:bg-black text-white font-bold py-3 px-4 rounded-xl shadow-md transition-all flex items-center justify-center gap-2 text-xs cursor-pointer tracking-wide uppercase">
-            <span class="text-lg">📱</span> Pay via Google Pay (₹50)
-          </button>
-
-          <button onclick="payViaOtherUPI()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-xl shadow-md transition-all flex items-center justify-center gap-2 text-xs cursor-pointer tracking-wide uppercase">
-            💸 Pay via PhonePe / Paytm / Others
-          </button>
-        </div>
-
-        <div class="relative flex py-1 items-center justify-center">
-          <div class="flex-grow border-t border-amber-300"></div>
-          <span class="flex-shrink mx-3 text-[10px] text-amber-800 font-bold uppercase">या फिर स्कैन करें</span>
-          <div class="flex-grow border-t border-amber-300"></div>
-        </div>
-
-        <div class="space-y-2 flex flex-col items-center">
-          <div class="bg-white p-2 rounded-xl border border-amber-200 shadow-xs max-w-[190px]">
-            <div id="live-payment-qr" class="p-1 bg-white flex justify-center"></div>
-            <p class="text-[10px] text-slate-700 font-bold mt-2 text-center font-mono">CSC Sahayak Documentation</p>
-            <p class="text-[8px] text-slate-400 font-medium text-center font-mono">8700407760@okbizaxix</p>
-          </div>
-        </div>
-        
-        <div class="pt-2 border-t border-amber-200/60">
-          <a id="whatsapp-link" href="#" target="_blank" class="inline-block bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-2 px-4 rounded-lg shadow-xs transition-all">
-            💬 पेमेंट स्क्रीनशॉट भेजें और SD Code मांगें
+        <div class="pt-2">
+          <a id="whatsapp-link" href="#" target="_blank" class="inline-block bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-2.5 px-5 rounded-lg shadow-xs transition-all">
+            💬 यहाँ क्लिक करके पेमेंट स्क्रीनशॉट भेजें और SD Code लें
           </a>
         </div>
       </div>
@@ -376,6 +409,7 @@
       globalCardEmail = email;
       
       document.getElementById('card-ref-display').innerText = 'Ref: ' + refId;
+      document.getElementById('manual-ref-display').innerText = 'Ref ID: ' + refId;
       document.getElementById('card-name').innerText = name;
       document.getElementById('card-mobile').innerText = mobile;
       
@@ -400,44 +434,42 @@
 
       let currentUrl = window.location.href.split('?')[0];
       
+      // 1. फ्रंट क्यूआर कोड (80x80)
       document.getElementById('qrcode-front').innerHTML = '';
-      new QRCode(document.getElementById('qrcode-front'), { text: `${currentUrl}?ref_id=${refId}&email=${encodeURIComponent(email)}&mode=scan`, width: 80, height: 80 });
+      new QRCode(document.getElementById('qrcode-front'), { 
+        text: `${currentUrl}?ref_id=${refId}&email=${encodeURIComponent(email)}&mode=scan`, 
+        width: 80, height: 80, correctLevel: QRCode.CorrectLevel.H 
+      });
 
+      // 2. बैक लेफ्ट क्यूआर कोड (75x75)
       document.getElementById('qrcode-back').innerHTML = '';
-      new QRCode(document.getElementById('qrcode-back'), { text: `${currentUrl}?ref_id=${refId}&email=${encodeURIComponent(email)}&mode=view`, width: 80, height: 80 });
+      new QRCode(document.getElementById('qrcode-back'), { 
+        text: `${currentUrl}?ref_id=${refId}&email=${encodeURIComponent(email)}&mode=view`, 
+        width: 75, height: 75, correctLevel: QRCode.CorrectLevel.H 
+      });
+
+      let merchantNameEncoded = encodeURIComponent('CSC Sahayak Documentation');
+      let upiPaymentString = `upi://pay?pa=8700407760@okbizaxix&pn=${merchantNameEncoded}&am=50&cu=INR&tn=Sahayak_Ref_${refId}`;
+      
+      // 3. बैक राइट छोटा मर्चेंट भुगतान क्यूआर कोड (75x75)
+      document.getElementById('qrcode-payment-merchant').innerHTML = '';
+      new QRCode(document.getElementById('qrcode-payment-merchant'), { 
+        text: upiPaymentString, width: 75, height: 75, correctLevel: QRCode.CorrectLevel.H 
+      });
+
+      // 4. 🛠️ प्रिंट होने वाला एक्स्ट्रा बड़ा मेगा मर्चेंट भुगतान क्यूआर कोड (160x160)
+      document.getElementById('qrcode-mega-payment').innerHTML = '';
+      new QRCode(document.getElementById('qrcode-mega-payment'), {
+        text: upiPaymentString, width: 160, height: 160, correctLevel: QRCode.CorrectLevel.H
+      });
 
       document.getElementById('step1-display-view').classList.remove('hidden');
     }
 
-    // 🛠️ 1. GOOGLE PAY फ़ोर्स-ओपनर फंक्शन (बुलेटप्रूफ बाईपास)
-    function payViaGooglePay() {
-      let rawUpiUrl = `upi://pay?pa=8700407760@okbizaxix&pn=CSC%20Sahayak%20Documentation&am=50&cu=INR&tn=Sahayak_Ref_${globalRefId || 'Vault'}`;
-      
-      // एंड्रॉइड मर्चेंट इंटेंट लॉजिक जो क्रोम को दरकिनार कर सीधे गूगल पे ऐप के अंदर खुलेगा
-      let gpayIntent = `intent://pay${rawUpiUrl.substring(9)}#Intent;scheme=upi;package=com.google.android.apps.nbu.paisa.user;end`;
-      
-      window.location.href = gpayIntent;
-      
-      // फॉलबैक अरेंजमेंट आईओएस/अन्य डिवाइसेज के लिए
-      setTimeout(function() {
-        window.location.href = rawUpiUrl;
-      }, 300);
-    }
-
-    // 🛠️ 2. अन्य यूपीआई ऐप्स के लिए नॉर्मल ट्रिगर फंक्शन
-    function payViaOtherUPI() {
-      let rawUpiUrl = `upi://pay?pa=8700407760@okbizaxix&pn=CSC%20Sahayak%20Documentation&am=50&cu=INR&tn=Sahayak_Ref_${globalRefId || 'Vault'}`;
-      window.location.href = rawUpiUrl;
-    }
-
     function openActivationScreen(refId, email) {
       document.getElementById('step2-activation-view').classList.remove('hidden');
-      let waMessage = encodeURIComponent(`नमस्ते सर, मैंने ₹50 का भुगतान कर दिया है। (Screenshot भी शेयर किया है) कृपया मेरे डिजिटल कार्ड के लिए 6-Digit SD Code प्रदान करें।\nReference ID: ${refId}\nEmail: ${email}`);
+      let waMessage = encodeURIComponent(`नमस्ते सर, मैंने अपने PVC कार्ड के पीछे बने QR कोड से ₹50 का भुगतान कर दिया है। कृपया मेरे डिजिटल कार्ड के लिए 6-Digit SD Code प्रदान करें।\nReference ID: ${refId}\nEmail: ${email}`);
       document.getElementById('whatsapp-link').href = `https://wa.me/918700407760?text=${waMessage}`;
-      
-      let qrString = `upi://pay?pa=8700407760@okbizaxix&pn=CSC%20Sahayak%20Documentation&am=50&cu=INR&tn=Sahayak_Ref_${refId}`;
-      document.getElementById('live-payment-qr').innerHTML = '';
-      new QRCode(document.getElementById('live-payment-qr'), { text: qrString, width: 140, height: 140 });
     }
 
     function activateSystem() {
