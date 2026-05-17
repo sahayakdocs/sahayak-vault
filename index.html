@@ -107,8 +107,8 @@
             <div class="text-left text-[8px] space-y-1 flex-1 font-medium text-slate-900">
               <p><strong class="opacity-70 text-black">NAME:</strong> <span id="card-name" class="font-bold tracking-wide">...</span></p>
               <p><strong class="opacity-70 text-black">MOB:</strong> <span id="card-mobile">...</span></p>
-              <p class="truncate max-w-[100px]"><strong class="opacity-70 text-black">EMAIL:</strong> <span id="card-email" class="text-blue-800 font-mono">...</span></p>
-              
+              <p class="flex items-center gap-1 w-full"><strong class="opacity-70 text-black shrink-0">EMAIL:</strong> <span id="card-email" class="text-blue-800 font-mono transition-all duration-200" style="font-size: 9px; display: inline-block; white-space: nowrap;">...</span></p>
+                          
             </div>
             <div class="bg-white p-1 rounded-md shadow-xs flex items-center justify-center border border-slate-200">
               <div id="qrcode-front"></div>
@@ -336,16 +336,31 @@
       document.body.appendChild(scriptDup);
     }
 
-    function renderPVCCardLayout(refId, name, mobile, email, photo) {
-      globalRefId = refId;
-      globalCardEmail = email;
-      
-      document.getElementById('card-ref-display').innerText = 'Ref: ' + refId;
-      document.getElementById('card-name').innerText = name;
-      document.getElementById('card-mobile').innerText = mobile;
-      document.getElementById('card-email').innerText = email;
-      
-      if(photo) {
+  function renderPVCCardLayout(refId, name, mobile, email, photo) {
+  globalRefId = refId;
+  globalCardEmail = email;
+  
+  document.getElementById('card-ref-display').innerText = 'Ref: ' + refId;
+  document.getElementById('card-name').innerText = name;
+  document.getElementById('card-mobile').innerText = mobile;
+  
+  // ईमेल एलिमेंट को सेलेक्ट करना
+  let emailElement = document.getElementById('card-email');
+  emailElement.innerText = email;
+
+  // 🛠️ PERFECT AUTO-RESIZE LOGIC FOR LONG EMAILS:
+  // अक्षर गिनकर फॉन्ट साइज को बहुत ही सटीक तरीके से छोटा करेगा ताकि कुछ भी न कटे
+  if (email.length > 25) {
+    emailElement.style.fontSize = '5.5px';
+  } else if (email.length > 20) {
+    emailElement.style.fontSize = '6.5px';
+  } else if (email.length > 15) {
+    emailElement.style.fontSize = '7.5px';
+  } else {
+    emailElement.style.fontSize = '9px'; // नॉर्मल साइज
+  }
+  
+  if(photo) {
         document.getElementById('card-img').src = photo;
         document.getElementById('card-img').classList.remove('hidden');
         document.getElementById('card-img-placeholder').classList.add('hidden');
