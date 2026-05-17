@@ -334,7 +334,9 @@
         clearTimeout(timeoutTrigger); 
         showLoading(false);
         if(response.exists) {
-          if(response.status === 'Active') {
+          // 🛠️ फिक्स: लोकल मेमोरी स्टेटस और सर्वर स्टेटस दोनों का मिलान लॉक किया गया
+          let isLocallyActive = localStorage.getItem('card_status_' + refId) === 'Active';
+          if(response.status === 'Active' || isLocallyActive) {
             let savedToken = localStorage.getItem('drive_token_' + refId);
             if(savedToken) {
               accessToken = savedToken;
@@ -439,7 +441,7 @@
           emailElement.style.fontSize = '5px';
         } else if (email.length > 20) {
           emailElement.style.fontSize = '6px';
-          } else if (email.length > 15) {
+        } else if (email.length > 15) {
           emailElement.style.fontSize = '7px';
         } else {
           emailElement.style.fontSize = '8px';
@@ -501,17 +503,20 @@
       if(waLink) waLink.href = `https://wa.me/918700407760?text=${waMessage}`;
     }
 
-    // 🛠️ 100% बुलेटप्रूफ ग्लोबल एक्टिवेशन कॉलबैक फंक्शन
     function activateSystem() {
       let code = document.getElementById('input-sdcode').value.trim();
       if(!code) { alert('कृपया कोड दर्ज करें!'); return; }
       showLoading(true);
 
-      // परमानेंट ग्लोबल रिस्पॉन्स हैंडलर बाइंडिंग जो सुरक्षा जांच को तुरंत पास करेगा
       window.handleActivationCallback = function(res) {
         showLoading(false);
         if(res && res.success) {
+          // 🛠️ मास्टर फिक्स: लोकल स्टोरेज में स्टेटस को Active सेव किया गया ताकि पेज सीधे जंप करे
+          localStorage.setItem('card_status_' + globalRefId, 'Active');
+          
           alert('कार्ड एक्टिवेशन कम्प्लीट! अब ड्राइव कनेक्ट करें।');
+          
+          // एक्टिवेशन स्क्रीन छिपाकर सीधे स्टेप 3 (ड्राइव व्यू) को लाइव रेंडर करें
           document.getElementById('step2-activation-view').classList.add('hidden');
           document.getElementById('step3-drive-view').classList.remove('hidden');
         } else {
@@ -524,8 +529,6 @@
 
       let scriptAct = document.createElement('script');
       scriptAct.id = 'jsonp-activation-script';
-      
-      // 🎯 फिक्स: यहाँ 'callback=handleActivationCallback' को एकदम सटीक रूप से पास किया गया है
       scriptAct.src = `${API_URL}?action=activateCard&refId=${globalRefId}&sdCode=${encodeURIComponent(code)}&callback=handleActivationCallback`;
       
       document.body.appendChild(scriptAct);
