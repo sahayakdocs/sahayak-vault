@@ -140,7 +140,7 @@
 
         <div id="pvc-back" class="pvc-card bg-slate-900 text-slate-200 rounded-xl shadow-xl p-3 flex flex-col justify-between border border-slate-950 text-left shrink-0">
           <div class="border-b border-slate-800 pb-1 text-center">
-            <p class="text-[9px] font-bold tracking-wider text-blue-400 uppercase">डिजिटल निर्देश एवं क्लाउड एक्सेसैश पैनल</p>
+            <p class="text-[9px] font-bold tracking-wider text-blue-400 uppercase">डिजिटल निर्देश एवं क्लाउड एक्सेस पैनल</p>
           </div>
           
           <div class="flex items-center justify-between gap-3 my-auto w-full">
@@ -152,7 +152,7 @@
             <div class="text-[6.5px] space-y-1.5 text-slate-300 flex-1 leading-normal pl-1">
               <p><strong class="text-white">1. फ्रंट QR स्कैन:</strong> सीधे पर्सनल स्कैनर कैमरा एक्टिवेट करेगा।</p>
               <p><strong class="text-white">2. BACK QR स्कैन:</strong> अपलोडेड डाक्यूमेंट्स का लाइव सुरक्षित ड्राइव फोल्डर खोलेगा।</p>
-              <p><strong class="text-amber-400">नोट:</strong> सुरक्षा कारणों से, यह क्लाउड लॉकर केवल उसी फोन में खुलेगा जिसमें आपकी पंजीकृत जीमेल आईडी एक्टिव होगी।</p>
+              <p><strong class="text-amber-400">नोट:</strong> सुरक्षा कारणों से, यह क्लाउड लॉकर केवल उसी phone में खुलेगा जिसमें आपकी पंजीकृत जीमेल आईडी एक्टिव होगी।</p>
             </div>
           </div>
           
@@ -418,60 +418,84 @@
       document.body.appendChild(scriptDup);
     }
 
+    // 🛠️ फिक्स्ड रेंडर फंक्शन: यह नए एचटीएमएल के आईडी एलिमेंट्स को बिना क्रैश किए एकदम सही डेटा पास करेगा
     function renderPVCCardLayout(refId, name, mobile, email, photo) {
       globalRefId = refId;
       globalCardEmail = email;
       
-      document.getElementById('card-ref-display').innerText = 'Ref: ' + refId;
-      document.getElementById('manual-ref-display').innerText = 'Ref ID: ' + refId;
-      document.getElementById('card-name').innerText = name;
-      document.getElementById('card-mobile').innerText = mobile;
+      // स्क्रीन पर रिफरेन्स आईडी सेट करना
+      let refDisplay = document.getElementById('card-ref-display');
+      let manualRefDisplay = document.getElementById('manual-ref-display');
+      if(refDisplay) refDisplay.innerText = 'Ref: ' + refId;
+      if(manualRefDisplay) manualRefDisplay.innerText = 'Ref ID: ' + refId;
       
+      // नाम, मोबाइल और ईमेल रेंडर करना
+      let nameDisplay = document.getElementById('card-name');
+      let mobileDisplay = document.getElementById('card-mobile');
       let emailElement = document.getElementById('card-email');
-      emailElement.innerText = email;
-
-      if (email.length > 25) {
-        emailElement.style.fontSize = '5px';
-      } else if (email.length > 20) {
-        emailElement.style.fontSize = '6px';
-      } else if (email.length > 15) {
-        emailElement.style.fontSize = '7px';
-      } else {
-        emailElement.style.fontSize = '8px';
+      
+      if(nameDisplay) nameDisplay.innerText = name;
+      if(mobileDisplay) mobileDisplay.innerText = mobile;
+      if(emailElement) {
+        emailElement.innerText = email;
+        // ईमेल ऑटो-रिसाइज लॉजिक
+        if (email.length > 25) {
+          emailElement.style.fontSize = '5px';
+        } else if (email.length > 20) {
+          emailElement.style.fontSize = '6px';
+        } else if (email.length > 15) {
+          emailElement.style.fontSize = '7px';
+        } else {
+          emailElement.style.fontSize = '8px';
+        }
       }
       
-      if(photo) {
-        document.getElementById('card-img').src = photo;
-        document.getElementById('card-img').classList.remove('hidden');
-        document.getElementById('card-img-placeholder').classList.add('hidden');
+      // फोटो रेंडरिंग लॉजिक
+      let cardImg = document.getElementById('card-img');
+      let imgPlaceholder = document.getElementById('card-img-placeholder');
+      if(photo && cardImg && imgPlaceholder) {
+        cardImg.src = photo;
+        cardImg.classList.remove('hidden');
+        imgPlaceholder.classList.add('hidden');
       }
 
       let currentUrl = window.location.href.split('?')[0];
       
       // 1. फ्रंट मुख्य एक्स्ट्रा लार्ज क्यूआर कोड (115x115)
-      document.getElementById('qrcode-front').innerHTML = '';
-      new QRCode(document.getElementById('qrcode-front'), { 
-        text: `${currentUrl}?ref_id=${refId}&email=${encodeURIComponent(email)}&mode=scan`, 
-        width: 115, height: 115, correctLevel: QRCode.CorrectLevel.H 
-      });
+      let qrFrontDiv = document.getElementById('qrcode-front');
+      if(qrFrontDiv) {
+        qrFrontDiv.innerHTML = '';
+        new QRCode(qrFrontDiv, { 
+          text: `${currentUrl}?ref_id=${refId}&email=${encodeURIComponent(email)}&mode=scan`, 
+          width: 115, height: 115, correctLevel: QRCode.CorrectLevel.H 
+        });
+      }
 
       // 2. बैक साइड इकलौता बड़ा क्यूआर कोड (100x100)
-      document.getElementById('qrcode-back').innerHTML = '';
-      new QRCode(document.getElementById('qrcode-back'), { 
-        text: `${currentUrl}?ref_id=${refId}&email=${encodeURIComponent(email)}&mode=view`, 
-        width: 100, height: 100, correctLevel: QRCode.CorrectLevel.H 
-      });
+      let qrBackDiv = document.getElementById('qrcode-back');
+      if(qrBackDiv) {
+        qrBackDiv.innerHTML = '';
+        new QRCode(qrBackDiv, { 
+          text: `${currentUrl}?ref_id=${refId}&email=${encodeURIComponent(email)}&mode=view`, 
+          width: 100, height: 100, correctLevel: QRCode.CorrectLevel.H 
+        });
+      }
 
-      let merchantNameEncoded = encodeURIComponent('CSC Sahayak Documentation');
-      let upiPaymentString = `upi://pay?pa=8700407760@okbizaxis&pn=${merchantNameEncoded}&am=50&cu=INR&tn=Sahayak_Ref_${refId}`;
-      
       // 3. प्रिंट होने वाला बॉटम मेगा मर्चेंट भुगतान क्यूआर कोड (145x145)
-      document.getElementById('qrcode-mega-payment').innerHTML = '';
-      new QRCode(document.getElementById('qrcode-mega-payment'), {
-        text: upiPaymentString, width: 145, height: 145, correctLevel: QRCode.CorrectLevel.H
-      });
+      let qrMegaDiv = document.getElementById('qrcode-mega-payment');
+      if(qrMegaDiv) {
+        let merchantNameEncoded = encodeURIComponent('CSC Sahayak Documentation');
+        let upiPaymentString = `upi://pay?pa=8700407760@okbizaxis&pn=${merchantNameEncoded}&am=50&cu=INR&tn=Sahayak_Ref_${refId}`;
+        
+        qrMegaDiv.innerHTML = '';
+        new QRCode(qrMegaDiv, {
+          text: upiPaymentString, width: 145, height: 145, correctLevel: QRCode.CorrectLevel.H
+        });
+      }
 
-      document.getElementById('step1-display-view').classList.remove('hidden');
+      // कार्ड डिस्प्ले व्यू को लाइव करना
+      let displayView = document.getElementById('step1-display-view');
+      if(displayView) displayView.classList.remove('hidden');
     }
 
     function openActivationScreen(refId, email) {
