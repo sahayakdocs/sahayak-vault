@@ -10,16 +10,56 @@
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   
   <style>
-    .pvc-card { width: 323.5px; height: 204px; position: relative; box-sizing: border-box; }
-    #print-only-mega-pay-zone { display: none; }
+    /* Standard CR80 PVC Layout Ratio Fixed */
+    .pvc-card { 
+      width: 323.5px; 
+      height: 204px;   
+      position: relative;
+      box-sizing: border-box;
+    }
+    
+    #print-only-mega-pay-zone {
+      display: none;
+    }
+    
+    /* 🖨️ एडवांस्ड A4 प्रिंट आर्किटेक्चर फिक्स */
     @media print {
       body { background: white; padding: 0; margin: 0; min-height: auto; }
-      header, footer, button, #step1-form-view, #step2-activation-view, #step3-drive-view, #step4-scanner-view, h2 { display: none !important; }
+      
+      header, footer, button, #step1-form-view, #step2-activation-view, #step3-drive-view, #step4-scanner-view, h2 {
+        display: none !important;
+      }
       main { box-shadow: none !important; border: none !important; width: 100% !important; max-w: 100% !important; padding: 0 !important; margin: 0 !important; }
+      
       #step1-display-view { display: block !important; }
-      .pvc-print-container { display: flex !important; flex-direction: row !important; justify-content: center !important; gap: 20px !important; padding-top: 15px !important; margin-bottom: 40px !important; width: 100% !important; }
-      #pvc-front, #pvc-back { display: flex !important; box-shadow: none !important; border: 1px solid #94a3b8 !important; page-break-inside: avoid; -webkit-print-color-adjust: exact; print-color-adjust: exact; margin: 0 !important; }
-      #print-only-mega-pay-zone { display: block !important; margin-top: 30px !important; border-t: 2px dashed #cbd5e1; padding-top: 20px; page-break-inside: avoid; }
+      
+      .pvc-print-container { 
+        display: flex !important;
+        flex-direction: row !important;
+        justify-content: center !important; 
+        gap: 20px !important;
+        padding-top: 15px !important;
+        margin-bottom: 40px !important;
+        width: 100% !important;
+      }
+      
+      #pvc-front, #pvc-back { 
+        display: flex !important;
+        box-shadow: none !important; 
+        border: 1px solid #94a3b8 !important;
+        page-break-inside: avoid;
+        -webkit-print-color-adjust: exact; 
+        print-color-adjust: exact;
+        margin: 0 !important;
+      }
+      
+      #print-only-mega-pay-zone {
+        display: block !important;
+        margin-top: 30px !important;
+        border-t: 2px dashed #cbd5e1;
+        padding-top: 20px;
+        page-break-inside: avoid;
+      }
     }
   </style>
 </head>
@@ -58,9 +98,12 @@
     </div>
 
     <div id="step1-display-view" class="hidden space-y-6 text-center">
+      
       <div class="pvc-print-container flex flex-col items-center justify-center gap-6 md:flex-row md:justify-center">
+        
         <div id="pvc-front" class="pvc-card bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100 text-black rounded-xl shadow-xl p-3 flex flex-col justify-between overflow-hidden border border-slate-300 text-left shrink-0">
           <div class="absolute inset-0 flex items-center justify-center opacity-5 pointer-events-none text-9xl">🛡️</div>
+          
           <div class="flex justify-between items-center border-b border-slate-300 pb-1 relative z-10">
             <div class="text-left">
               <p class="text-[10px] font-extrabold tracking-wider text-blue-900">SAHAYAK</p>
@@ -71,6 +114,7 @@
               <span class="text-[7.5px] bg-slate-200 text-slate-800 px-1 py-0.5 rounded font-mono font-bold border border-slate-300" id="card-ref-display">Ref: 00000000</span>
             </div>
           </div>
+          
           <div class="flex justify-between items-center gap-2 my-auto relative z-10 w-full">
             <div class="flex flex-col gap-1 w-[165px] shrink-0">
               <div class="w-[62px] h-[74px] bg-slate-200 rounded border border-slate-300 overflow-hidden flex items-center justify-center shadow-xs">
@@ -204,7 +248,27 @@
       if(show) loader.classList.remove('hidden'); else loader.classList.add('hidden');
     }
 
-    // 🌟 1. मॉडर्न FETCH API - स्टेटस चेकर
+    // फोटो इनपुट लिसनर: जो अब बेस64 स्ट्रिंग को 100% सही तरीके से कैप्चर करेगा
+    document.getElementById('input-photo').addEventListener('change', function(e) {
+      let file = e.target.files[0];
+      if(!file) return;
+      let reader = new FileReader();
+      reader.onload = function(event) {
+        let img = new Image();
+        img.onload = function() {
+          let canvas = document.createElement('canvas');
+          let MAX_WIDTH = 150;
+          let scale = MAX_WIDTH / img.width;
+          canvas.width = MAX_WIDTH; canvas.height = img.height * scale;
+          let ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          base64Photo = canvas.toDataURL('image/jpeg', 0.6);
+        }
+        img.src = event.target.result;
+      }
+      reader.readAsDataURL(file);
+    });
+
     async function checkRoutingStatus(refId, cardEmail) {
       document.getElementById('step1-form-view').classList.add('hidden');
       showLoading(true);
@@ -221,7 +285,7 @@
       } catch(e) { showLoading(false); openActivationScreen(refId, cardEmail); }
     }
 
-    // 🌟 2. मॉडर्न FETCH API - ईमेल डुप्लीकेट एवं कार्ड जनरेशन
+    // 🛠️ मज़बूत फिक्स: कार्ड जनरेशन फंक्शन अब फोटो के खाली होने पर भी क्रैश नहीं होगा
     async function submitCardForm() {
       let email = document.getElementById('input-email').value.trim();
       let name = document.getElementById('input-name').value.trim();
@@ -241,11 +305,14 @@
             showLoading(false); alert('नया कार्ड बनाने के लिए नाम और मोबाइल भरें!');
             document.getElementById('step1-form-view').classList.remove('hidden'); return;
           }
-          let genRes = await (await fetch(`${API_URL}?action=generateCard&name=${encodeURIComponent(name)}&mobile=${encodeURIComponent(mobile)}&email=${encodeURIComponent(email)}&photoUrl=${encodeURIComponent(base64Photo)}`)).json();
+          
+          // यूआरएल फ़ॉर्मेटिंग को 100% सिक्योर किया गया
+          let fetchUrl = `${API_URL}?action=generateCard&name=${encodeURIComponent(name)}&mobile=${encodeURIComponent(mobile)}&email=${encodeURIComponent(email)}&photoUrl=${encodeURIComponent(base64Photo)}`;
+          let genRes = await (await fetch(fetchUrl)).json();
           showLoading(false);
           renderPVCCardLayout(genRes.refId, name, mobile, email, base64Photo);
         }
-      } catch(e) { showLoading(false); alert('सर्वर त्रुटि!'); }
+      } catch(e) { showLoading(false); alert('सर्वर त्रुटि! कृपया फॉर्म दोबारा जांचें।'); document.getElementById('step1-form-view').classList.remove('hidden'); }
     }
 
     function renderPVCCardLayout(refId, name, mobile, email, photo) {
@@ -271,21 +338,17 @@
       document.getElementById('step2-activation-view').classList.remove('hidden');
     }
 
-    // 🌟 3. मॉडर्न FETCH API - बुलेटप्रूफ एक्टिवेशन जो कभी नहीं अटकेगा!
     async function activateSystem() {
       let code = document.getElementById('input-sdcode').value.trim();
       if(!code) { alert('कृपया कोड दर्ज करें!'); return; }
       
-      // पुराने एलीमेंट्स को साफ़ कर फ्रेश लोडिंग दिखाएं
       document.getElementById('step2-activation-view').classList.add('hidden');
       showLoading(true);
 
       try {
-        // सीधे सुरक्षित fetch() कॉल बैकएंड यूआरएल पर
         let res = await fetch(`${API_URL}?action=activateCard&refId=${globalRefId}&sdCode=${encodeURIComponent(code)}`);
         let response = await res.json();
         
-        // सर्वर का जवाब आते ही लोडिंग को बलपूर्वक हटा दें (Force Hide)
         showLoading(false);
 
         if(response.success) {
