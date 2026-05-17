@@ -119,12 +119,11 @@
         <div id="pvc-back" class="pvc-card bg-slate-900 text-slate-200 rounded-xl shadow-xl mx-auto p-3 flex flex-col justify-between border border-slate-950 text-left">
           <div class="border-b border-slate-800 pb-1 flex justify-between items-center">
             <p class="text-[9px] font-bold tracking-wider text-blue-400">डिजिटल निर्देश एवं क्लाउड एक्सेस</p>
-            <span class="text-[6px] font-mono text-slate-500"></span>
           </div>
           
           <div class="flex gap-2 items-center my-auto">
             <ul class="text-[7px] space-y-1 list-disc pl-3 text-slate-300 flex-1 leading-tight">
-              <li><strong class="text-white">फ्रंट QR स्कैन:</strong> सीधे mobile डॉक्यूमेंट स्कैनर और कस्टमाइज्ड फिल्टर कैमरा खोलेगा।</li>
+              <li><strong class="text-white">फ्रंट QR स्कैन:</strong> सीधे mobile डॉक्यूमेंट स्कैनर और कस्टमाइजज्ड फिल्टर कैमरा खोलेगा।</li>
               <li><strong class="text-white">बैक QR स्कैन:</strong> आपके द्वारा अपलोड किए गए सभी दस्तावेजों को लाइव सीधे आपके फोन स्क्रीन पर दिखाएगा।</li>
               <li>सुरक्षा कारणों से, बैक QR केवल तभी काम करेगा जब फोन में एक्टिव जीमेल आईडी और कार्ड की ईमेल आईडी समान होगी।</li>
             </ul>
@@ -146,10 +145,21 @@
     <div id="step2-activation-view" class="hidden space-y-5 text-center">
       <h2 class="text-lg font-bold text-slate-700">🔐 डिजिटल कार्ड एक्टिवेशन (Step 2)</h2>
       <p class="text-sm text-slate-500">सेवाओं को सक्रिय करने के लिए आपको एक बार <strong class="text-slate-800">₹50</strong> का शुल्क देना होगा।</p>
-      <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-amber-800 font-medium">
-        <p>UPI ID: <span class="font-mono bg-white px-2 py-0.5 rounded border border-amber-300">8700407760@okbizaxix</span></p>
-        <a id="whatsapp-link" href="#" target="_blank" class="inline-block mt-3 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-2 px-4 rounded-lg shadow-xs">💬 पेमेंट के बाद यहाँ से SD Code मांगें</a>
+      
+      <div class="bg-amber-50 border border-amber-200 rounded-xl p-5 text-center space-y-3">
+        <p class="text-xs text-amber-800 font-medium">नीचे दिए गए बटन पर क्लिक करके किसी भी UPI ऐप (GPay, PhonePe, Paytm) से सीधे भुगतान करें:</p>
+        
+        <a id="upi-pay-button" href="upi://pay?pa=8700407760@okbizaxix&pn=Sahayak%20Documents&am=50&cu=INR" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-xl shadow-md transition-all inline-flex items-center justify-center gap-2 text-sm cursor-pointer">
+          💸 Pay Registration Fee (₹50)
+        </a>
+        
+        <div class="pt-2 border-t border-amber-200/60">
+          <a id="whatsapp-link" href="#" target="_blank" class="inline-block bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-2.5 px-4 rounded-lg shadow-xs transition-all">
+            💬 पेमेंट स्क्रीनशॉट भेजें और SD Code मांगें
+          </a>
+        </div>
       </div>
+
       <div class="space-y-3 text-left">
         <div>
           <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">6-Digit SD Code दर्ज करें</label>
@@ -197,7 +207,6 @@
   </footer>
 
   <script>
-    // ⚠️ यहाँ आपका नया APPS SCRIPT URL पहले से सेट है
     const API_URL = 'https://script.google.com/macros/s/AKfycbxObecWPOgd6GNongNwumvGcTgQNdLUYfavh-vddmLNx6kcy3nTUk7VqWQY0TQYeWt1/exec';
     
     let globalRefId = '';
@@ -247,12 +256,10 @@
       else loader.classList.add('hidden');
     }
 
-    // 100% परमानेंट स्क्रिप्ट-टैग (JSONP) बेस्ड राउटिंग फेच सिस्टम विद ऑटो-टाइमआउट फिक्स
     function checkRoutingStatus(refId, cardEmail) {
       document.getElementById('step1-form-view').classList.add('hidden');
       showLoading(true);
       
-      // टाइमआउट सुरक्षा चक्र: अगर 6 सेकंड में गूगल जवाब नहीं देता, तो लोडिंग बंद करके सीधे एक्टिवेशन स्क्रीन खोल देगा
       let timeoutTrigger = setTimeout(function() {
         console.log("Google Script Response Timeout. Forcing Activation View.");
         showLoading(false);
@@ -260,7 +267,7 @@
       }, 6000);
 
       window.handleStatusCallback = function(response) {
-        clearTimeout(timeoutTrigger); // जवाब आते ही टाइमआउट को रोकें
+        clearTimeout(timeoutTrigger); 
         showLoading(false);
         if(response.exists) {
           if(response.status === 'Active') {
@@ -279,7 +286,6 @@
         }
       };
 
-      // पुराना स्क्रिप्ट टैग यदि कोई अटका हो तो उसे हटाएं
       let oldScript = document.getElementById('jsonp-status-script');
       if(oldScript) oldScript.remove();
 
@@ -309,7 +315,6 @@
       reader.readAsDataURL(file);
     });
 
-    // 100% परमानेंट स्क्रिप्ट-टैग (JSONP) बेस्ड डुप्लीकेट और सबमिशन सिस्टम
     function submitCardForm() {
       let email = document.getElementById('input-email').value.trim();
       let name = document.getElementById('input-name').value.trim();
@@ -357,11 +362,9 @@
       document.getElementById('card-name').innerText = name;
       document.getElementById('card-mobile').innerText = mobile;
       
-      // ईमेल एलिमेंट को सेलेक्ट करना
       let emailElement = document.getElementById('card-email');
       emailElement.innerText = email;
 
-      // 🛠 *ऑटो-रिसाइज लॉजिक ईमेल के लिए एकदम परफेक्ट सेट*
       if (email.length > 25) {
         emailElement.style.fontSize = '5.5px';
       } else if (email.length > 20) {
@@ -369,7 +372,7 @@
       } else if (email.length > 15) {
         emailElement.style.fontSize = '7.5px';
       } else {
-        emailElement.style.fontSize = '9px'; // नॉर्मल साइज
+        emailElement.style.fontSize = '9px';
       }
       
       if(photo) {
@@ -391,24 +394,38 @@
 
     function openActivationScreen(refId, email) {
       document.getElementById('step2-activation-view').classList.remove('hidden');
-      let waMessage = encodeURIComponent(`नमस्ते सर, मैंने ₹50 का भुगतान कर दिया है। (Screensot bhi share kiya hai) कृपया मेरे डिजिटल कार्ड के लिए 6-Digit SD Code प्रदान करें।\nReference ID: ${refId}\nEmail: ${email}`);
+      let waMessage = encodeURIComponent(`नमस्ते सर, मैंने ₹50 का भुगतान कर दिया है। (Screenshot भी शेयर किया है) कृपया मेरे डिजिटल कार्ड के लिए 6-Digit SD Code प्रदान करें।\nReference ID: ${refId}\nEmail: ${email}`);
       document.getElementById('whatsapp-link').href = `https://wa.me/918700407760?text=${waMessage}`;
+      
+      // मोबाइल भुगतान बटन के लिए गतिशील रूप से UPI यूआरएल डीपलिंक अपडेट करें
+      document.getElementById('upi-pay-button').href = `upi://pay?pa=8700407760@okbizaxix&pn=Sahayak%20Documents&am=50&cu=INR&tn=Registration%20Ref%20${refId}`;
     }
 
+    // 100% फिक्स्ड एक्टिवेशन फंक्शन (अब स्क्रिप्ट टैग बॉडी में लोड होगा)
     function activateSystem() {
       let code = document.getElementById('input-sdcode').value.trim();
       if(!code) { alert('कृपया कोड दर्ज करें!'); return; }
       showLoading(true);
 
-      window.handleActivationCallback = function() {
+      window.handleActivationCallback = function(res) {
         showLoading(false);
-        alert('कार्ड एक्टिवेशन कम्प्लीट! अब ड्राइव कनेक्ट करें।');
-        document.getElementById('step2-activation-view').classList.add('hidden');
-        document.getElementById('step3-drive-view').classList.remove('hidden');
+        if(res && res.success) {
+          alert('कार्ड एक्टिवेशन कम्प्लीट! अब ड्राइव कनेक्ट करें।');
+          document.getElementById('step2-activation-view').classList.add('hidden');
+          document.getElementById('step3-drive-view').classList.remove('hidden');
+        } else {
+          alert(res.message || 'गलत SD Code! कृपया सही कोड दर्ज करें।');
+        }
       };
 
+      let oldScript = document.getElementById('jsonp-activation-script');
+      if(oldScript) oldScript.remove();
+
       let scriptAct = document.createElement('script');
+      scriptAct.id = 'jsonp-activation-script';
       scriptAct.src = `${API_URL}?action=activateCard&refId=${globalRefId}&sdCode=${encodeURIComponent(code)}&callback=handleActivationCallback`;
+      
+      // 🛠️ फिक्स: स्क्रिप्ट को HTML बॉडी में अपेंड किया गया ताकि यह बैकएंड पर तुरंत फायर हो सके
       document.body.appendChild(scriptAct);
     }
 
