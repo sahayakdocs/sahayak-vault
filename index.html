@@ -35,13 +35,13 @@
       
       #step1-display-view { display: block !important; }
       
-      /* दोनों कार्ड को A4 के टॉप पर अगल-बगल (Side-by-Side) सेट करें */
+      /* दोनों कार्ड को A4 पेज के टॉप सेंटर (Top Center) में सेट करें */
       .pvc-print-container { 
         display: flex !important;
         flex-direction: row !important;
-        justify-content: flex-start !important;
+        justify-content: center !important; /* सेंटर एलाइनमेंट लॉक */
         gap: 20px !important;
-        padding-top: 10px !important;
+        padding-top: 15px !important;
         margin-bottom: 40px !important;
         width: 100% !important;
       }
@@ -56,7 +56,7 @@
         margin: 0 !important;
       }
       
-      /* उसी पेज के नीचे बड़ा पेमेंट क्यूआर और मैनुअल एक्टिवेट करें */
+      /* पेज के नीचे बड़ा पेमेंट क्यूआर और मैनुअल एक्टिवेट करें */
       #print-only-mega-pay-zone {
         display: block !important;
         margin-top: 50px !important;
@@ -103,7 +103,7 @@
 
     <div id="step1-display-view" class="hidden space-y-6 text-center">
       
-      <div class="pvc-print-container space-y-6 md:space-y-0 md:flex md:flex-row md:justify-center md:gap-6">
+      <div class="pvc-print-container flex flex-col items-center justify-center gap-6 md:flex-row md:justify-center">
         
         <div id="pvc-front" class="pvc-card bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100 text-black rounded-xl shadow-xl p-3 flex flex-col justify-between overflow-hidden border border-slate-300 text-left shrink-0">
           <div class="absolute inset-0 flex items-center justify-center opacity-5 pointer-events-none text-9xl">🛡️</div>
@@ -136,32 +136,27 @@
           <div class="text-[6px] text-center opacity-60 border-t border-slate-200 pt-1 tracking-wider relative z-10 text-slate-500">SCAN TO LAUNCH SCANNER CAMERA</div>
         </div>
 
-        <div id="pvc-back" class="pvc-card bg-slate-900 text-slate-200 rounded-xl shadow-xl p-2.5 flex flex-col justify-between border border-slate-950 text-left shrink-0">
+        <div id="pvc-back" class="pvc-card bg-slate-900 text-slate-200 rounded-xl shadow-xl p-3 flex flex-col justify-between border border-slate-950 text-left shrink-0">
           <div class="border-b border-slate-800 pb-1 text-center">
-            <p class="text-[8px] font-bold tracking-wider text-blue-400 uppercase">डिजिटल निर्देश एवं क्लाउड एक्सेस पैनल</p>
+            <p class="text-[9px] font-bold tracking-wider text-blue-400 uppercase">डिजिटल निर्देश एवं क्लाउड एक्सेस पैनल</p>
           </div>
           
-          <div class="flex items-center justify-between gap-1.5 my-auto w-full">
-            <div class="flex flex-col items-center gap-0.5 bg-slate-800/80 p-1 rounded-md border border-slate-700/60 shrink-0">
+          <div class="flex items-center justify-between gap-3 my-auto w-full">
+            <div class="flex flex-col items-center gap-1 bg-slate-800/80 p-1.5 rounded-lg border border-slate-700/60 shrink-0">
               <div class="bg-white p-0.5 rounded-sm shadow-inner"><div id="qrcode-back"></div></div>
-              <span class="text-[4.5px] font-extrabold text-blue-400 tracking-tight">1. VAULT VIEW</span>
+              <span class="text-[5px] font-extrabold text-blue-400 tracking-tight">VAULT ACCESS</span>
             </div>
             
-            <div class="text-[5.5px] space-y-1 text-slate-300 flex-1 leading-tight px-0.5 border-x border-slate-800/80">
-              <p><strong class="text-white">फ्रंट QR:</strong> स्कैनर लॉन्च हेतु</p>
-              <p><strong class="text-white">लेफ्ट QR:</strong> अपलोडेड फाइल्स लाइव देखें (Drive)</p>
-              <p><strong class="text-amber-400">राइट QR (Pay ₹50):</strong> न्यू कार्ड एक्टिवेशन हेतु किसी भी ऐप से स्कैन करें। राशि व Ref ID फिक्स हैं।</p>
-            </div>
-
-            <div class="flex flex-col items-center gap-0.5 bg-slate-800/80 p-1 rounded-md border border-slate-700/60 shrink-0">
-              <div class="bg-white p-0.5 rounded-sm shadow-inner"><div id="qrcode-payment-merchant"></div></div>
-              <span class="text-[4.5px] font-extrabold text-amber-400 tracking-tight">2. ACTIVATE</span>
+            <div class="text-[6.5px] space-y-1.5 text-slate-300 flex-1 leading-normal pl-1">
+              <p><strong class="text-white">1. फ्रंट QR स्कैन:</strong> सीधे पर्सनल स्कैनर कैमरा एक्टिवेट करेगा।</p>
+              <p><strong class="text-white">2. बैक QR स्कैन:</strong> अपलोडेड डाक्यूमेंट्स का लाइव सुरक्षित ड्राइव फोल्डर स्क्रीन पर खोलेगा।</p>
+              <p><strong class="text-amber-400">नोट:</strong> सुरक्षा कारणों से, यह क्लाउड लॉकर केवल उसी फोन में खुलेगा जिसमें आपकी पंजीकृत जीमेल आईडी एक्टिव होगी।</p>
             </div>
           </div>
           
-          <div class="border-t border-slate-800 pt-0.5 flex justify-between items-center text-[5px] text-slate-400">
+          <div class="border-t border-slate-800 pt-1 flex justify-between items-center text-[5.5px] text-slate-400">
             <div>CSC Sahayak Documentation</div>
-            <div>Helpline: 8700407760</div>
+            <div>Helpline: +91 8700407760</div>
           </div>
         </div>
       </div>
@@ -441,23 +436,17 @@
         width: 80, height: 80, correctLevel: QRCode.CorrectLevel.H 
       });
 
-      // 2. बैक लेफ्ट क्यूआर कोड (75x75)
+      // 2. बैक साइड इकलौता बड़ा क्यूआर कोड (Vault View)
       document.getElementById('qrcode-back').innerHTML = '';
       new QRCode(document.getElementById('qrcode-back'), { 
         text: `${currentUrl}?ref_id=${refId}&email=${encodeURIComponent(email)}&mode=view`, 
         width: 75, height: 75, correctLevel: QRCode.CorrectLevel.H 
       });
 
+      // 3. प्रिंट होने वाला बॉटम मेगा मर्चेंट भुगतान क्यूआर कोड (160x160)
       let merchantNameEncoded = encodeURIComponent('CSC Sahayak Documentation');
       let upiPaymentString = `upi://pay?pa=8700407760@okbizaxix&pn=${merchantNameEncoded}&am=50&cu=INR&tn=Sahayak_Ref_${refId}`;
       
-      // 3. बैक राइट छोटा मर्चेंट भुगतान क्यूआर कोड (75x75)
-      document.getElementById('qrcode-payment-merchant').innerHTML = '';
-      new QRCode(document.getElementById('qrcode-payment-merchant'), { 
-        text: upiPaymentString, width: 75, height: 75, correctLevel: QRCode.CorrectLevel.H 
-      });
-
-      // 4. 🛠️ प्रिंट होने वाला एक्स्ट्रा बड़ा मेगा मर्चेंट भुगतान क्यूआर कोड (160x160)
       document.getElementById('qrcode-mega-payment').innerHTML = '';
       new QRCode(document.getElementById('qrcode-mega-payment'), {
         text: upiPaymentString, width: 160, height: 160, correctLevel: QRCode.CorrectLevel.H
@@ -468,7 +457,7 @@
 
     function openActivationScreen(refId, email) {
       document.getElementById('step2-activation-view').classList.remove('hidden');
-      let waMessage = encodeURIComponent(`नमस्ते सर, मैंने अपने PVC कार्ड के पीछे बने QR कोड से ₹50 का भुगतान कर दिया है। कृपया मेरे डिजिटल कार्ड के लिए 6-Digit SD Code प्रदान करें।\nReference ID: ${refId}\nEmail: ${email}`);
+      let waMessage = encodeURIComponent(`नमस्ते सर, मैंने अपने PVC कार्ड पेज के नीचे बने बड़े QR कोड से ₹50 का भुगतान कर दिया है। कृपया मेरे डिजिटल कार्ड के लिए 6-Digit SD Code प्रदान करें।\nReference ID: ${refId}\nEmail: ${email}`);
       document.getElementById('whatsapp-link').href = `https://wa.me/918700407760?text=${waMessage}`;
     }
 
