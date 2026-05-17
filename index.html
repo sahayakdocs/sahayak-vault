@@ -147,6 +147,7 @@
   </footer>
 
   <script>
+    // ⚠️ यहाँ आपका नया APPS SCRIPT WEB APP URL पहले से सेट है
     const API_URL = 'https://script.google.com/macros/s/AKfycbxObecWPOgd6GNongNwumvGcTgQNdLUYfavh-vddmLNx6kcy3nTUk7VqWQY0TQYeWt1/exec';
     
     let globalRefId = '';
@@ -168,12 +169,10 @@
         globalCardEmail = email;
         checkRoutingStatus(refId, email);
       } else {
-        // फिक्स: अगर कोई यूआरएल पैरामीटर नहीं है, तो लोडिंग छुपाएं और स्टेप 1 फ़ॉर्म दिखाएं
         showLoading(false);
         document.getElementById('step1-form-view').classList.remove('hidden');
       }
       
-      // टोकन क्लाइंट को बिना क्रैश किए इनिशियलाइज़ करना
       if(typeof google !== 'undefined' && google.accounts && google.accounts.oauth2) {
         tokenClient = google.accounts.oauth2.initTokenClient({
           client_id: '352936235128-fake.apps.googleusercontent.com', 
@@ -191,22 +190,17 @@
 
     function showLoading(show) {
       const loader = document.getElementById('loading-view');
-      if(show) {
-        loader.classList.remove('hidden');
-      } else {
-        loader.classList.add('hidden');
-      }
+      if(show) loader.classList.remove('hidden');
+      else loader.classList.add('hidden');
     }
 
+    // फिक्स्ड GET-बेस्ड स्टेटस चेक
     function checkRoutingStatus(refId, cardEmail) {
       document.getElementById('step1-form-view').classList.add('hidden');
       showLoading(true);
       
       fetch(`${API_URL}?action=checkStatus&refId=${refId}`)
-        .then(res => {
-          if (!res.ok) throw new Error('Network response error');
-          return res.json();
-        })
+        .then(res => res.json())
         .then(response => {
           showLoading(false);
           if(response.exists) {
@@ -226,8 +220,7 @@
           }
         }).catch((err) => { 
           showLoading(false); 
-          console.error(err);
-          alert('डेटाबेस लोड करने में समस्या आई या सर्वर रिस्पांस नहीं दे रहा है!'); 
+          alert('डेटाबेस लोड एरर! कृपया सुनिश्चित करें कि बैकएंड सही से डिप्लॉयड है।'); 
         });
     }
 
@@ -238,6 +231,7 @@
       if(file) reader.readAsDataURL(file);
     });
 
+    // फिक्स्ड GET-बेस्ड कार्ड जनरेटर (नो मोर CORS एरर!)
     function submitCardForm() {
       let name = document.getElementById('input-name').value.trim();
       let mobile = document.getElementById('input-mobile').value.trim();
@@ -248,10 +242,11 @@
       document.getElementById('step1-form-view').classList.add('hidden');
       showLoading(true);
 
-      fetch(API_URL, {
-        method: 'POST',
-        body: JSON.stringify({ action: 'generateCard', name: name, mobile: mobile, email: email, photoUrl: base64Photo })
-      })
+      // बेस64 फोटो को यूआरएल सेफ बनाना
+      let encodedPhoto = encodeURIComponent(base64Photo);
+      let queryUrl = `${API_URL}?action=generateCard&name=${encodeURIComponent(name)}&mobile=${encodeURIComponent(mobile)}&email=${encodeURIComponent(email)}&photoUrl=${encodedPhoto}`;
+
+      fetch(queryUrl)
       .then(res => res.json())
       .then(res => {
         showLoading(false);
@@ -278,13 +273,13 @@
 
           document.getElementById('step1-display-view').classList.remove('hidden');
         } else {
-          alert('कार्ड जनरेट करने में विफलता मिली!');
+          alert('त्रुटि हुई!');
           document.getElementById('step1-form-view').classList.remove('hidden');
         }
       })
-      .catch(() => {
+      .catch((e) => {
         showLoading(false);
-        alert('सर्वर एरर! कृपया दोबारा प्रयास करें।');
+        alert('कनेक्शन एरर! सर्वर रिस्पॉन्ड नहीं कर रहा।');
         document.getElementById('step1-form-view').classList.remove('hidden');
       });
     }
@@ -295,22 +290,22 @@
       document.getElementById('whatsapp-link').href = `https://wa.me/918700407760?text=${waMessage}`;
     }
 
+    // फिक्स्ड GET-बेस्ड एक्टिवेशन
     function activateSystem() {
       let code = document.getElementById('input-sdcode').value.trim();
       if(!code) { alert('कृपया कोड दर्ज करें!'); return; }
       showLoading(true);
 
-      fetch(API_URL, {
-        method: 'POST',
-        body: JSON.stringify({ action: 'activateCard', refId: globalRefId, sdCode: code })
-      }).then(res => res.json()).then(res => {
+      fetch(`${API_URL}?action=activateCard&refId=${globalRefId}&sdCode=${encodeURIComponent(code)}`)
+      .then(res => res.json())
+      .then(res => {
         showLoading(false);
         if(res.success) {
           alert('कार्ड एक्टिवेट हो गया है!');
           document.getElementById('step2-activation-view').classList.add('hidden');
           document.getElementById('step3-drive-view').classList.remove('hidden');
         } else { alert(res.message); }
-      }).catch(() => { showLoading(false); alert('एक्टिवेशन रिक्वेस्ट फेल हुई!'); });
+      }).catch(() => { showLoading(false); alert('रिक्वेस्ट फेल हुई!'); });
     }
 
     function handleAuthClick() {
@@ -398,6 +393,7 @@
 
     function resetScanner() { if (cropperInstance) cropperInstance.destroy(); initCamera(); }
 
+    // फिक्स्ड GET-बेस्ड लॉगिंग
     async function uploadDocumentToDrive() {
       if (!cropperInstance) return;
       let customFileName = document.getElementById('document-filename').value.trim() || "Scanned_Doc_" + Date.now();
@@ -424,10 +420,8 @@
         });
 
         if(uploadRes.ok) {
-          fetch(API_URL, {
-            method: 'POST',
-            body: JSON.stringify({ action: 'logUpload', refId: globalRefId, email: globalCardEmail, fileName: customFileName })
-          }).then(() => { alert('सफलतापूर्वक अपलोड हो गया!'); location.reload(); });
+          fetch(`${API_URL}?action=logUpload&refId=${globalRefId}&email=${encodeURIComponent(globalCardEmail)}&fileName=${encodeURIComponent(customFileName)}`)
+          .then(() => { alert('सफलतापूर्वक अपलोड हो गया!'); location.reload(); });
         } else { alert('अपलोड फेल!'); location.reload(); }
       } catch (err) { alert('त्रुटि हुई!'); location.reload(); }
     }
