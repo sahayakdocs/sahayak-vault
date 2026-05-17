@@ -9,17 +9,21 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <style>
-    .pvc-card { width: 337px; height: 212px; }
+    .pvc-card { width: 337px; height: 212px; position: relative; box-sizing: border-box; overflow: hidden; border: 1px solid #1e293b; }
+    /* शुद्ध प्रिंट लेआउट फिक्स */
     @media print {
-      body * { display: none !important; }
-      #step1-display-view, #step1-display-view * { display: block !important; }
-      .pvc-card { page-break-inside: avoid; margin-bottom: 20px; }
+      body { background: white !important; padding: 0 !important; margin: 0 !important; }
+      header, footer, button, .no-print, #step1-form-view, #step2-activation-view, #step3-drive-view, #step4-scanner-view, #step5-vault-view { display: none !important; }
+      main { box-shadow: none !important; border: none !important; padding: 0 !important; margin: 0 !important; background: transparent !important; width: 100% !important; max-w: 100% !important; }
+      #step1-display-view { display: block !important; width: 100% !important; }
+      .pvc-container { display: flex !important; flex-direction: column !important; gap: 30px !important; align-items: center !important; justify-content: center !important; height: auto !important; }
+      .pvc-card { display: flex !important; box-shadow: none !important; page-break-inside: avoid; margin: 0 auto !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     }
   </style>
 </head>
 <body class="bg-slate-100 text-slate-800 font-sans min-h-screen flex flex-col items-center justify-between p-4">
 
-  <header class="w-full max-w-xl text-center my-4 bg-white p-4 rounded-xl shadow-xs border border-blue-100">
+  <header class="w-full max-w-xl text-center my-4 bg-white p-4 rounded-xl shadow-xs border border-blue-100 no-print">
     <h1 class="text-xl font-bold text-blue-700 tracking-wide">SAHAYAK</h1>
     <p class="text-xs text-slate-500 font-medium">Documents Management System Portal</p>
   </header>
@@ -52,45 +56,70 @@
     </div>
 
     <div id="step1-display-view" class="hidden space-y-6 text-center">
-      <h2 class="text-lg font-bold text-green-600">🎉 कार्ड सफलतापुर्वक तैयार हो गया है!</h2>
+      <h2 class="text-lg font-bold text-green-600 no-print">🎉 कार्ड सफलतापुर्वक तैयार हो गया है!</h2>
       
-      <div id="pvc-front" class="pvc-card bg-gradient-to-br from-blue-700 to-indigo-800 text-white rounded-xl shadow-lg mx-auto p-3 relative flex flex-col justify-between overflow-hidden border border-blue-900 text-left">
-        <div class="flex justify-between items-center border-b border-white/20 pb-1">
-          <div>
-            <p class="text-[10px] font-bold tracking-tight">SAHAYAK DOCUMENTS</p>
-            <p class="text-[6px] opacity-80">Management System</p>
+      <div class="pvc-container space-y-6">
+        <div id="pvc-front" class="pvc-card bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 text-white rounded-xl shadow-xl mx-auto p-3 flex flex-col justify-between select-none">
+          <div class="flex justify-between items-center border-b border-white/10 pb-1">
+            <div class="text-left">
+              <p class="text-[11px] font-black tracking-wider text-blue-400">SAHAYAK DOCUMENTS</p>
+              <p class="text-[5px] opacity-60 tracking-widest uppercase">Secure Identity Card</p>
+            </div>
+            <span class="text-[8px] bg-blue-500/20 text-blue-300 px-1.5 py-0.5 rounded font-mono border border-blue-500/30" id="card-ref-display">Ref: 00000000</span>
           </div>
-          <span class="text-[8px] bg-white/20 px-1.5 py-0.5 rounded font-mono" id="card-ref-display">Ref: 00000000</span>
-        </div>
-        <div class="flex gap-3 my-auto items-center">
-          <div class="w-16 h-20 bg-white/10 rounded-sm border border-white/30 overflow-hidden flex items-center justify-center">
-            <img id="card-img" src="" class="w-full h-full object-cover hidden">
-            <span id="card-img-placeholder" class="text-[8px] text-white/50">No Photo</span>
-          </div>
-          <div class="text-left text-[9px] space-y-0.5 flex-1">
-            <p><strong>Name:</strong> <span id="card-name">...</span></p>
-            <p><strong>Mob:</strong> <span id="card-mobile">...</span></p>
-            <p class="truncate max-w-[140px]"><strong>Email:</strong> <span id="card-email">...</span></p>
-          </div>
-          <div id="qrcode-front" class="bg-white p-1 rounded-sm shadow-xs flex items-center justify-center"></div>
-        </div>
-        <div class="text-[6px] text-center opacity-60 border-t border-white/10 pt-1">Helpline: 8700407760 | sahayak.docs@gmail.com</div>
-      </div>
+          
+          <div class="flex gap-2 my-auto items-center relative">
+            <div class="absolute top-[-14px] left-18 w-6 h-5 bg-gradient-to-r from-amber-300 to-yellow-500 rounded-xs border border-amber-600 opacity-80 flex flex-col justify-between p-0.5">
+              <div class="w-full h-[1px] bg-amber-700/40"></div>
+              <div class="w-full h-[1px] bg-amber-700/40"></div>
+            </div>
 
-      <div id="pvc-back" class="pvc-card bg-slate-800 text-slate-200 rounded-xl shadow-lg mx-auto p-3 relative flex flex-col justify-between border border-slate-900 text-left">
-        <div class="border-b border-slate-700 pb-1 text-center"><p class="text-[9px] font-bold tracking-wider text-blue-400">उपयोग करने के निर्देश (INSTRUCTIONS)</p></div>
-        <ul class="text-[7px] space-y-1 list-disc pl-3 text-slate-300 my-auto">
-          <li>इस कार्ड के फ्रंट QR कोड को अपने मोबाइल कैमरे से स्कैन करें।</li>
-          <li>पहली बार स्कैन करने पर ₹50 का भुगतान कर व्हाट्सएप से अपना SD Code प्राप्त करें।</li>
-          <li>सफलतापूर्वक एक्टिवेशन के बाद अपनी जीमेल आईडी कनेक्ट करें।</li>
-          <li>इसके बाद जब भी स्कैन करेंगे, सीधे डॉक्यूमेंट स्कैनर खुल जाएगा।</li>
-        </ul>
-        <div class="border-t border-slate-700 pt-1 flex justify-between items-center text-[6px] text-slate-400">
-          <div>UPI: <span class="text-amber-400 font-mono">8700407760@okbizaxix</span></div>
-          <div>Helpline: 8700407760</div>
+            <div class="w-16 h-20 bg-slate-800 rounded-md border border-white/20 overflow-hidden flex items-center justify-center shadow-md">
+              <img id="card-img" src="" class="w-full h-full object-cover hidden">
+              <span id="card-img-placeholder" class="text-[8px] text-slate-500">No Photo</span>
+            </div>
+            
+            <div class="text-left text-[9px] space-y-0.5 flex-1 pl-1">
+              <p class="text-slate-400 text-[7px] uppercase font-bold leading-none">Card Holder</p>
+              <p class="font-bold text-white text-[10px]" id="card-name">...</p>
+              <p class="mt-1"><strong>Mob:</strong> <span id="card-mobile" class="font-mono text-slate-300">...</span></p>
+              <p class="truncate max-w-[125px]"><strong>Email:</strong> <span id="card-email" class="text-slate-300">...</span></p>
+            </div>
+            
+            <div id="qrcode-front" class="bg-white p-1 rounded-md shadow-md border border-slate-700 flex items-center justify-center min-w-[80px] min-h-[80px]"></div>
+          </div>
+          
+          <div class="text-[5px] flex justify-between items-center text-slate-500 border-t border-white/5 pt-1 uppercase tracking-tight">
+            <span>Security Level: High</span>
+            <span>Helpline: 8700407760</span>
+          </div>
+        </div>
+
+        <div id="pvc-back" class="pvc-card bg-slate-900 text-slate-200 rounded-xl shadow-xl mx-auto p-3 flex flex-col justify-between border border-slate-950 text-left select-none">
+          <div class="border-b border-slate-800 pb-1 flex justify-between items-center">
+            <p class="text-[8px] font-bold tracking-wider text-blue-400 uppercase">Vault Access & Instructions</p>
+            <span class="text-[6px] text-slate-500 font-mono">SECURE HOLDER BACK</span>
+          </div>
+          
+          <div class="flex gap-2 my-auto items-center">
+            <ul class="text-[7px] space-y-1 list-disc pl-3 text-slate-300 flex-1 leading-tight">
+              <li><strong>फ्रंट QR स्कैन:</strong> सीधे सुरक्षित मोबाइल डॉक्यूमेंट स्कैनर खोलें।</li>
+              <li><strong>बैक QR स्कैन:</strong> अपनी सुरक्षित फाइलों का लाइव क्लाउड वॉल्ट खोलें।</li>
+              <li><strong>सुरक्षा:</strong> केवल रजिस्टर्ड ईमेल ही दोनों QR को एक्सेस कर पाएगी।</li>
+              <li><strong>हेल्पलाइन:</strong> sahayak.docs@gmail.com</li>
+            </ul>
+            
+            <div id="qrcode-back" class="bg-white p-1 rounded-md shadow-md border border-slate-700 flex items-center justify-center min-w-[80px] min-h-[80px]"></div>
+          </div>
+          
+          <div class="border-t border-slate-800 pt-1 flex justify-between items-center text-[6px] text-slate-400">
+            <div>UPI: <span class="text-amber-400 font-mono">8700407760@okbizaxix</span></div>
+            <div>WhatsApp: 8700407760</div>
+          </div>
         </div>
       </div>
-      <button onclick="window.print()" class="bg-slate-700 hover:bg-slate-800 text-white font-semibold py-2 px-6 rounded-lg text-sm transition-all cursor-pointer">Print Card Layout</button>
+      
+      <button onclick="window.print()" class="bg-slate-700 hover:bg-slate-800 text-white font-semibold py-2 px-6 rounded-lg text-sm transition-all cursor-pointer no-print">Print PVC Layout</button>
     </div>
 
     <div id="step2-activation-view" class="hidden space-y-5 text-center">
@@ -111,7 +140,7 @@
 
     <div id="step3-drive-view" class="hidden space-y-4 text-center">
       <h2 class="text-lg font-bold text-slate-700">📁 Google Drive कनेक्ट करें</h2>
-      <p class="text-sm text-slate-500">आपके दस्तावेज सीधे आपकी अपनी पर्सनल गूगल ड्राइव में सुरक्षित सेव होंगे।</p>
+      <p class="text-sm text-slate-500">सुरक्षित सत्यापन के लिए अपनी जीमेल आईडी को कनेक्ट करें।</p>
       <button onclick="handleAuthClick()" class="w-full bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 font-semibold py-3 px-4 rounded-lg inline-flex items-center justify-center gap-2 shadow-xs transition-all cursor-pointer">
         <img src="https://upload.wikimedia.org/wikipedia/commons/1/12/Google_Drive_icon_%282020%29.svg" class="w-5 h-5">Connect Google Drive
       </button>
@@ -120,7 +149,7 @@
     <div id="step4-scanner-view" class="hidden space-y-4">
       <div class="flex justify-between items-center border-b pb-2">
         <h2 class="text-sm font-bold text-blue-700">📷 Sahayak Cloud Vault Scanner</h2>
-        <span class="text-xs bg-slate-100 px-2 py-1 rounded font-medium text-slate-600" id="user-display-email">...</span>
+        <span class="text-xs bg-slate-100 px-2 py-1 rounded font-mono text-slate-600" id="user-display-email">...</span>
       </div>
       <div id="camera-container" class="relative w-full aspect-video bg-black rounded-xl overflow-hidden flex items-center justify-center shadow-inner">
         <video id="video-stream" autoplay playsinline class="w-full h-full object-cover"></video>
@@ -129,25 +158,36 @@
       <div id="crop-container" class="hidden space-y-3">
         <div class="w-full max-h-64 bg-slate-200 rounded-xl overflow-hidden"><img id="preview-image" class="max-w-full block"></div>
         <div class="flex gap-2 justify-center">
-          <button onclick="applyFilter('none')" class="bg-slate-200 text-xs font-semibold py-1.5 px-3 rounded-md hover:bg-slate-300">Original</button>
-          <button onclick="applyFilter('bw')" class="bg-slate-800 text-white text-xs font-semibold py-1.5 px-3 rounded-md hover:bg-slate-900">B&W (Clean)</button>
+          <button onclick="applyFilter('none')" class="bg-slate-200 text-xs font-semibold py-1.5 px-3 rounded-md">Original</button>
+          <button onclick="applyFilter('bw')" class="bg-slate-800 text-white text-xs font-semibold py-1.5 px-3 rounded-md">B&W (Clean)</button>
         </div>
         <div><input type="text" id="document-filename" class="w-full border p-2 rounded-lg" placeholder="Aadhar_Card_Front"></div>
         <div class="flex gap-2">
-          <button onclick="resetScanner()" class="w-1/2 bg-slate-200 text-slate-700 font-bold py-2.5 rounded-lg hover:bg-slate-300">Retry</button>
-          <button onclick="uploadDocumentToDrive()" class="w-1/2 bg-green-600 text-white font-bold py-2.5 rounded-lg hover:bg-green-700 shadow-sm">Upload To Drive</button>
+          <button onclick="resetScanner()" class="w-1/2 bg-slate-200 text-slate-700 font-bold py-2.5 rounded-lg">Retry</button>
+          <button onclick="uploadDocumentToDrive()" class="w-1/2 bg-green-600 text-white font-bold py-2.5 rounded-lg shadow-sm">Upload To Drive</button>
         </div>
+      </div>
+    </div>
+
+    <div id="step5-vault-view" class="hidden space-y-4">
+      <div class="flex justify-between items-center border-b pb-2">
+        <h2 class="text-sm font-bold text-emerald-700">📁 Your Uploaded Documents Vault</h2>
+        <span class="text-xs bg-slate-100 px-2 py-1 rounded font-mono text-slate-600" id="vault-display-email">...</span>
+      </div>
+      <p class="text-xs text-slate-500">नीचे आपके `Uploaded_Documents` फोल्डर में मौजूद लाइव फाइलों की सूची है:</p>
+      <div id="vault-files-container" class="space-y-2 max-h-96 overflow-y-auto pt-2">
+        <p class="text-center text-xs text-slate-400 animate-pulse py-4">फाइलें लोड की जा रही हैं...</p>
       </div>
     </div>
 
   </main>
 
-  <footer class="text-center text-[10px] text-slate-400 my-4">
+  <footer class="text-center text-[10px] text-slate-400 my-4 no-print">
     <p>© 2026 Sahayak Documents Management System. Helpline: +91 8700407760</p>
   </footer>
 
   <script>
-    // ⚠️ यहाँ अपना वास्तविक APPS SCRIPT URL अवश्य डालें
+    // ⚠️ यहाँ अपना वास्तविक APPS SCRIPT URL बदलें
     const API_URL = 'https://script.google.com/macros/s/AKfycbxObecWPOgd6GNongNwumvGcTgQNdLUYfavh-vddmLNx6kcy3nTUk7VqWQY0TQYeWt1/exec';
     
     let globalRefId = '';
@@ -157,12 +197,15 @@
     let cropperInstance = null;
     let base64Photo = '';
     let streamInstance = null;
-    const SCOPES = 'https://www.googleapis.com/auth/drive.file';
+    let qrMode = 'scan'; // 'scan' या 'view' (फ्रंट या बैक क्यूआर को ट्रैक करने के लिए)
+    const SCOPES = 'https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/drive.readonly';
 
     window.onload = function() {
       const urlParams = new URLSearchParams(window.location.search);
       const refId = urlParams.get('ref_id');
       const email = urlParams.get('email');
+      const mode = urlParams.get('mode') || 'scan';
+      qrMode = mode;
       
       if(refId && email) {
         globalRefId = refId;
@@ -207,7 +250,7 @@
               let savedToken = localStorage.getItem('drive_token_' + refId);
               if(savedToken) {
                 accessToken = savedToken;
-                openDocumentScannerView();
+                initializeDriveFolderAndVault();
               } else {
                 document.getElementById('step3-drive-view').classList.remove('hidden');
               }
@@ -217,33 +260,26 @@
           } else {
             alert('अवैध कार्ड!');
           }
-        }).catch((err) => { 
-          // मज़बूत फॉलबैक अरेंजमेंट
+        }).catch(() => { 
           showLoading(false); 
           document.getElementById('step2-activation-view').classList.remove('hidden');
           openActivationScreen(refId, cardEmail);
         });
     }
 
-    // ऑटो-कंप्रेशन लॉजिक (फोटो को भारी होने से रोकना)
     document.getElementById('input-photo').addEventListener('change', function(e) {
       let file = e.target.files[0];
       if(!file) return;
-
       let reader = new FileReader();
       reader.onload = function(event) {
         let img = new Image();
         img.onload = function() {
           let canvas = document.createElement('canvas');
-          let MAX_WIDTH = 150; // पासपोर्ट फोटो के लिए परफेक्ट चौड़ाई
+          let MAX_WIDTH = 150;
           let scale = MAX_WIDTH / img.width;
-          canvas.width = MAX_WIDTH;
-          canvas.height = img.height * scale;
-
+          canvas.width = MAX_WIDTH; canvas.height = img.height * scale;
           let ctx = canvas.getContext('2d');
           ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-          
-          // फाइल साइज को 95% कंप्रेस करके KB में बदलना
           base64Photo = canvas.toDataURL('image/jpeg', 0.6);
         }
         img.src = event.target.result;
@@ -257,21 +293,17 @@
       let email = document.getElementById('input-email').value.trim();
 
       if(!name || !mobile || !email) { alert('कृपया सभी डिटेल्स भरें!'); return; }
-      
       document.getElementById('step1-form-view').classList.add('hidden');
       showLoading(true);
 
       let encodedPhoto = encodeURIComponent(base64Photo);
       let queryUrl = `${API_URL}?action=generateCard&name=${encodeURIComponent(name)}&mobile=${encodeURIComponent(mobile)}&email=${encodeURIComponent(email)}&photoUrl=${encodedPhoto}`;
 
-      // 'no-cors' मोड गूगल की ब्लॉक करने की क्षमता को समाप्त करता है
       fetch(queryUrl, { mode: 'no-cors' })
       .then(() => {
-        // चूंकि 'no-cors' रिस्पॉन्स रीड नहीं करने देता, हम सुरक्षित रूप से क्लाइंट-साइड आईडी जनरेट करते हैं
         showLoading(false);
         let fallbackRefId = Math.floor(10000000 + Math.random() * 90000000).toString();
-        globalRefId = fallbackRefId;
-        globalCardEmail = email;
+        globalRefId = fallbackRefId; globalCardEmail = email;
         
         document.getElementById('card-ref-display').innerText = 'Ref: ' + fallbackRefId;
         document.getElementById('card-name').innerText = name;
@@ -285,17 +317,18 @@
         }
 
         let currentUrl = window.location.href.split('?')[0];
-        let qrTargetUrl = currentUrl + '?ref_id=' + fallbackRefId + '&email=' + encodeURIComponent(email);
         
+        // 1. FRONT QR: SIZE BIG 80x80
+        let qrFrontUrl = currentUrl + '?ref_id=' + fallbackRefId + '&email=' + encodeURIComponent(email) + '&mode=scan';
         document.getElementById('qrcode-front').innerHTML = '';
-        new QRCode(document.getElementById('qrcode-front'), { text: qrTargetUrl, width: 50, height: 50 });
+        new QRCode(document.getElementById('qrcode-front'), { text: qrFrontUrl, width: 80, height: 80 });
+
+        // 2. BACK QR: SIZE BIG 80x80 WITH MODE 'VIEW' FOR DRIVE FILE LISTING
+        let qrBackUrl = currentUrl + '?ref_id=' + fallbackRefId + '&email=' + encodeURIComponent(email) + '&mode=view';
+        document.getElementById('qrcode-back').innerHTML = '';
+        new QRCode(document.getElementById('qrcode-back'), { text: qrBackUrl, width: 80, height: 80 });
 
         document.getElementById('step1-display-view').classList.remove('hidden');
-      })
-      .catch((e) => {
-        showLoading(false);
-        alert('कनेक्शन स्थापित नहीं हो सका। कृपया नेटवर्क जांचें।');
-        document.getElementById('step1-form-view').classList.remove('hidden');
       });
     }
 
@@ -309,14 +342,13 @@
       let code = document.getElementById('input-sdcode').value.trim();
       if(!code) { alert('कृपया कोड दर्ज करें!'); return; }
       showLoading(true);
-
       fetch(`${API_URL}?action=activateCard&refId=${globalRefId}&sdCode=${encodeURIComponent(code)}`, { mode: 'no-cors' })
       .then(() => {
         showLoading(false);
-        alert('कार्ड एक्टिवेशन रिक्वेस्ट भेजी गई! यदि कोड सही है तो थोड़ी देर में आपकी सर्विस चालू हो जाएगी।');
+        alert('कार्ड एक्टिवेशन रिक्वेस्ट सबमिट हुई!');
         document.getElementById('step2-activation-view').classList.add('hidden');
         document.getElementById('step3-drive-view').classList.remove('hidden');
-      }).catch(() => { showLoading(false); alert('रिक्वेस्ट फेल हुई!'); });
+      });
     }
 
     function handleAuthClick() {
@@ -337,38 +369,89 @@
         });
         let profile = await profileRes.json();
         
+        // रजिस्टर्ड ईमेल मैचिंग (सख्त सुरक्षा पॉपअप)
         if(profile.email && profile.email.toLowerCase() !== globalCardEmail.toLowerCase()) {
           document.body.innerHTML = `
             <div class="max-w-md mx-auto my-20 p-6 bg-white rounded-2xl shadow-xl text-center space-y-4 border border-red-200">
               <div class="text-red-500 text-5xl">⚠️</div>
-              <h2 class="text-xl font-bold text-red-600">सुरक्षा त्रुटि</h2>
-              <p class="text-sm text-slate-600">यह कार्ड आपसे बिलोंग नहीं करता। कृपया अपने कार्ड पर प्रिंटेड ईमेल को अपने मोबाइल में एक्सेस के लिए इस्तेमाल हो रही ईमेल का milan करें।</p>
+              <h2 class="text-xl font-bold text-red-600">सुरक्षा त्रुटि (Access Blocked)</h2>
+              <p class="text-sm text-slate-600 leading-relaxed">यह कार्ड आपसे बिलोंग नहीं करता। कृपया अपने कार्ड पर प्रिंटेड ईमेल को अपने मोबाइल में एक्सेस के लिए इस्तेमाल हो रही ईमेल का मिलान करें।</p>
+              <p class="text-xs text-slate-400 font-mono">Card: ${globalCardEmail} | Phone Account: ${profile.email}</p>
             </div>`;
           return;
         }
       } catch (err) {}
 
-      let meta = { name: 'Uploaded_Documents', mimeType: 'application/vnd.google-apps.folder' };
-      try {
-        let createFolderRes = await fetch('https://www.googleapis.com/drive/v3/files', {
-          method: 'POST',
-          headers: { 'Authorization': `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
-          body: JSON.stringify(meta)
-        });
-        let folderData = await createFolderRes.json();
-        localStorage.setItem('drive_folder_id_' + globalRefId, folderData.id || 'root');
-      } catch(e) {
-        localStorage.setItem('drive_folder_id_' + globalRefId, 'root');
+      // फोल्डर क्रिएशन / सलेक्शन लॉजिक
+      let folderId = localStorage.getItem('drive_folder_id_' + globalRefId);
+      if(!folderId) {
+        let meta = { name: 'Uploaded_Documents', mimeType: 'application/vnd.google-apps.folder' };
+        try {
+          let res = await fetch('https://www.googleapis.com/drive/v3/files', {
+            method: 'POST',
+            headers: { 'Authorization': `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify(meta)
+          });
+          let folderData = await res.json();
+          folderId = folderData.id || 'root';
+          localStorage.setItem('drive_folder_id_' + globalRefId, folderId);
+        } catch(e) { folderId = 'root'; }
       }
+
       showLoading(false);
-      openDocumentScannerView();
+      
+      // राउटिंग मोड मैनेजमेंट (फ्रंट या बैक क्यूआर के आधार पर निर्णय)
+      if (qrMode === 'view') {
+        openLiveVaultView(folderId);
+      } else {
+        openDocumentScannerView();
+      }
     }
 
+    // [मोड 1 - फ्रंट क्यूआर]: स्कैनर खोलें
     function openDocumentScannerView() {
       document.getElementById('step3-drive-view').classList.add('hidden');
       document.getElementById('step4-scanner-view').classList.remove('hidden');
       document.getElementById('user-display-email').innerText = globalCardEmail;
       initCamera();
+    }
+
+    // [मोड 2 - बैक क्यूआर]: लाइव ड्राइव डाक्यूमेंट्स देखें (नया फ़ीचर)
+    async function openLiveVaultView(folderId) {
+      document.getElementById('step3-drive-view').classList.add('hidden');
+      document.getElementById('step5-vault-view').classList.remove('hidden');
+      document.getElementById('vault-display-email').innerText = globalCardEmail;
+      
+      const container = document.getElementById('vault-files-container');
+      
+      try {
+        // ड्राइव फोल्डर के अंदर मौजूद फाइलों को फेच करना
+        let fetchFiles = await fetch(`https://www.googleapis.com/drive/v3/files?q='${folderId}'+in+parents+and+trashed=false&fields=files(id,name,webViewLink,thumbnailLink)`, {
+          headers: { 'Authorization': `Bearer ${accessToken}` }
+        });
+        let resData = await fetchFiles.json();
+        
+        if (resData.files && resData.files.length > 0) {
+          container.innerHTML = '';
+          resData.files.forEach(file => {
+            container.innerHTML += `
+              <div class="flex items-center justify-between p-3 bg-slate-50 border rounded-xl hover:bg-slate-100 transition-all shadow-xs">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 bg-blue-100 text-blue-700 rounded-lg flex items-center justify-center font-bold text-xs uppercase">JPG</div>
+                  <div class="text-left">
+                    <p class="text-xs font-bold text-slate-700 truncate max-w-[180px]">${file.name}</p>
+                    <p class="text-[9px] text-slate-400 font-mono">ID: ${file.id.substring(0,8)}...</p>
+                  </div>
+                </div>
+                <a href="${file.webViewLink}" target="_blank" class="bg-blue-600 hover:bg-blue-700 text-white text-[10px] font-bold py-1.5 px-3 rounded-md shadow-xs">View File</a>
+              </div>`;
+          });
+        } else {
+          container.innerHTML = `<p class="text-center text-xs text-slate-400 py-6">इस फोल्डर में अभी कोई डॉक्यूमेंट अपलोड नहीं हुआ है।</p>`;
+        }
+      } catch (err) {
+        container.innerHTML = `<p class="text-center text-xs text-red-500 py-6">फाइलें लोड करने में नेटवर्क एरर!</p>`;
+      }
     }
 
     async function initCamera() {
@@ -377,7 +460,7 @@
       try {
         streamInstance = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
         document.getElementById('video-stream').srcObject = streamInstance;
-      } catch (err) { alert('कैमरा शुरू नहीं हो सका!'); }
+      } catch (err) { alert('कैमरा एक्सेस ब्लॉक है!'); }
     }
 
     function capturePhoto() {
@@ -399,7 +482,7 @@
 
     function applyFilter(type) {
       if (!cropperInstance) return;
-      cropperInstance.element.style.filter = (type === 'bw') ? 'grayscale(100%) contrast(150%)' : 'none';
+      cropperInstance.element.style.filter = (type === 'bw') ? 'grayscale(100%) contrast(150%) brightness(110%)' : 'none';
     }
 
     function resetScanner() { if (cropperInstance) cropperInstance.destroy(); initCamera(); }
@@ -413,7 +496,7 @@
       const base64Data = canvas.toDataURL('image/jpeg').split(',')[1];
       const folderId = localStorage.getItem('drive_folder_id_' + globalRefId) || 'root';
 
-      document.getElementById('crop-container').innerHTML = `<p class="text-center font-bold text-green-600 animate-pulse">Google Drive में अपलोड हो रहा है...</p>`;
+      document.getElementById('crop-container').innerHTML = `<p class="text-center font-bold text-green-600 animate-pulse">व्यक्तिगत Google Drive में अपलोड हो रहा है...</p>`;
 
       const boundary = 'foo_bar_baz';
       const delimiter = "\r\n--" + boundary + "\r\n";
