@@ -12,34 +12,35 @@
   <style>
     /* Standard CR80 PVC Layout Ratio Fixed */
     .pvc-card { 
-      width: 337px; 
-      height: 212px; 
+      width: 323.5px; /* Fixed standard width for print */
+      height: 204px;   /* Fixed standard height for print */
       position: relative;
-      background-size: 20px 20px;
-      background-image: linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px);
+      box-sizing: border-box;
     }
-    /* Holographic Security Pattern Badge */
-    .security-badge {
-      background: linear-gradient(135deg, rgba(255,215,0,0.3) 0%, rgba(255,255,255,0) 50%, rgba(0,215,255,0.2) 100%);
-    }
-    /* Advanced Print CSS Fix: सिर्फ कार्ड ही प्रिंटर में दिखेंगे */
+    
+    /* Advanced Print CSS Fix: प्रिंटर में केवल कार्ड ही परफेक्ट साइज में दिखेंगे */
     @media print {
-      body { background: white; padding: 0; margin: 0; }
+      body { background: white; padding: 0; margin: 0; min-height: auto; }
       header, footer, button, #step1-form-view, #step2-activation-view, #step3-drive-view, #step4-scanner-view, h2 {
         display: none !important;
       }
-      .dynamic-content { box-shadow: none !important; border: none !important; width: 100% !important; max-w: 100% !important; padding: 0 !important; }
+      main { box-shadow: none !important; border: none !important; width: 100% !important; max-w: 100% !important; padding: 0 !important; margin: 0 !important; }
       #step1-display-view { display: block !important; }
+      
       .pvc-print-container { 
-        display: flex !important; 
-        flex-direction: row !important; 
-        justify-content: center !important; 
-        gap: 40px !important; 
-        padding-top: 50px !important;
+        display: block !important;
+        padding: 0 !important;
+        margin: 0 !important;
       }
-      .pvc-card { 
+      
+      #pvc-front, #pvc-back { 
+        display: flex !important;
+        float: left !important;
+        margin-right: 15px !important;
+        margin-bottom: 15px !important;
         box-shadow: none !important; 
-        border: 1px solid #cbd5e1 !important;
+        border: 1px solid #94a3b8 !important;
+        page-break-inside: avoid;
         -webkit-print-color-adjust: exact; 
         print-color-adjust: exact;
       }
@@ -74,7 +75,7 @@
         <input type="tel" id="input-mobile" class="w-full border p-2.5 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="8700407760">
       </div>
       <div>
-        <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">पासפורट साइज फोटो अपलोड करें</label>
+        <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">पासपोर्ट साइज फोटो अपलोड करें</label>
         <input type="file" id="input-photo" accept="image/*" class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
       </div>
       <button onclick="submitCardForm()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg shadow-sm transition-all cursor-pointer">Generate / Retrieve PVC Card</button>
@@ -82,44 +83,44 @@
 
     <div id="step1-display-view" class="hidden space-y-6 text-center">
       
-      <div class="pvc-print-container class space-y-6 md:space-y-0 md:flex md:flex-col md:gap-6">
+      <div class="pvc-print-container space-y-6 md:space-y-0 md:flex md:flex-col md:gap-6">
         
-        <div id="pvc-front" class="pvc-card bg-gradient-to-br from-blue-800 via-indigo-900 to-slate-900 text-white rounded-xl shadow-xl mx-auto p-3 flex flex-col justify-between overflow-hidden border border-blue-950">
+        <div id="pvc-front" class="pvc-card bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100 text-black rounded-xl shadow-xl mx-auto p-3 flex flex-col justify-between overflow-hidden border border-slate-300 text-left">
           <div class="absolute inset-0 flex items-center justify-center opacity-5 pointer-events-none text-9xl">🛡️</div>
           
-          <div class="flex justify-between items-center border-b border-white/20 pb-1 relative z-10">
+          <div class="flex justify-between items-center border-b border-slate-300 pb-1 relative z-10">
             <div class="text-left">
-              <p class="text-[10px] font-extrabold tracking-wider text-blue-300">SAHAYAK DOCUMENTS</p>
-              <p class="text-[5px] uppercase opacity-70 tracking-widest">Management System Card</p>
+              <p class="text-[10px] font-extrabold tracking-wider text-blue-900">SAHAYAK</p>
+              <p class="text-[5px] uppercase opacity-70 tracking-widest text-slate-600">Documents Management System Card</p>
             </div>
             <div class="flex items-center gap-1.5">
-              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-              <span class="text-[8px] bg-white/20 px-1.5 py-0.5 rounded font-mono font-bold" id="card-ref-display">Ref: 00000000</span>
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span class="text-[8px] bg-slate-200 text-slate-800 px-1.5 py-0.5 rounded font-mono font-bold border border-slate-300" id="card-ref-display">Ref: 00000000</span>
             </div>
           </div>
           
           <div class="flex gap-2.5 my-auto items-center relative z-10">
-            <div class="w-[66px] h-[82px] bg-white/10 rounded-md border border-white/30 overflow-hidden flex items-center justify-center shadow-md">
+            <div class="w-[66px] h-[82px] bg-slate-200 rounded-md border border-slate-300 overflow-hidden flex items-center justify-center shadow-xs">
               <img id="card-img" src="" class="w-full h-full object-cover hidden">
-              <span id="card-img-placeholder" class="text-[8px] text-white/40">No Photo</span>
+              <span id="card-img-placeholder" class="text-[8px] text-slate-400">No Photo</span>
             </div>
-            <div class="text-left text-[9px] space-y-1 flex-1 font-medium">
-              <p class="text-white"><strong class="opacity-60">NAME:</strong> <span id="card-name" class="font-bold tracking-wide">...</span></p>
-              <p><strong class="opacity-60">MOB:</strong> <span id="card-mobile">...</span></p>
-              <p class="truncate max-w-[130px]"><strong class="opacity-60">EMAIL:</strong> <span id="card-email" class="text-blue-200 font-mono">...</span></p>
-              <div class="text-[5px] bg-blue-500/30 text-blue-300 px-1 py-0.5 rounded-sm inline-block font-mono border border-blue-400/20">SECURE VAULT ACTIVE</div>
+            <div class="text-left text-[9px] space-y-1 flex-1 font-medium text-slate-900">
+              <p><strong class="opacity-70 text-black">NAME:</strong> <span id="card-name" class="font-bold tracking-wide">...</span></p>
+              <p><strong class="opacity-70 text-black">MOB:</strong> <span id="card-mobile">...</span></p>
+              <p class="truncate max-w-[120px]"><strong class="opacity-70 text-black">EMAIL:</strong> <span id="card-email" class="text-blue-800 font-mono">...</span></p>
+              <div class="text-[5px] bg-white-100 text-white-800 px-1 py-0.5 rounded-sm inline-block font-mono border border-white-100"></div>
             </div>
-            <div class="bg-white p-1 rounded-md shadow-md flex items-center justify-center border border-slate-200">
+            <div class="bg-white p-1 rounded-md shadow-xs flex items-center justify-center border border-slate-200">
               <div id="qrcode-front"></div>
             </div>
           </div>
-          <div class="text-[6px] text-center opacity-50 border-t border-white/10 pt-1 tracking-wider relative z-10">FRONT QR: SCAN TO LAUNCH SCANNER CAMERA</div>
+          <div class="text-[6px] text-center opacity-60 border-t border-slate-200 pt-1 tracking-wider relative z-10 text-slate-500">SCAN TO LAUNCH SCANNER CAMERA</div>
         </div>
 
         <div id="pvc-back" class="pvc-card bg-slate-900 text-slate-200 rounded-xl shadow-xl mx-auto p-3 flex flex-col justify-between border border-slate-950 text-left">
           <div class="border-b border-slate-800 pb-1 flex justify-between items-center">
             <p class="text-[9px] font-bold tracking-wider text-blue-400">डिजिटल निर्देश एवं क्लाउड एक्सेस</p>
-            <span class="text-[6px] font-mono text-slate-500">BACK PANEL</span>
+            <span class="text-[6px] font-mono text-slate-500"></span>
           </div>
           
           <div class="flex gap-2 items-center my-auto">
@@ -128,7 +129,7 @@
               <li><strong class="text-white">बैक QR स्कैन:</strong> आपके द्वारा अपलोड किए गए सभी दस्तावेजों को लाइव सीधे आपके फोन स्क्रीन पर दिखाएगा।</li>
               <li>सुरक्षा कारणों से, बैक QR केवल तभी काम करेगा जब फोन में एक्टिव जीमेल आईडी और कार्ड की ईमेल आईडी समान होगी।</li>
             </ul>
-            <div class="bg-white p-1 rounded-md shadow-md flex items-center justify-center">
+            <div class="bg-white p-1 rounded-md shadow-xs flex items-center justify-center border border-slate-200">
               <div id="qrcode-back"></div>
             </div>
           </div>
@@ -197,8 +198,7 @@
   </footer>
 
   <script>
-    // ⚠️ यहाँ अपना वास्तविक APPS SCRIPT URL अवश्य डालें
-    const API_URL = 'YOUR_APPS_SCRIPT_URL_HERE';
+    const API_URL = 'https://script.google.com/macros/s/AKfycbxObecWPOgd6GNongNwumvGcTgQNdLUYfavh-vddmLNx6kcy3nTUk7VqWQY0TQYeWt1/exec';
     
     let globalRefId = '';
     let globalCardEmail = '';
@@ -207,7 +207,7 @@
     let cropperInstance = null;
     let base64Photo = '';
     let streamInstance = null;
-    let targetMode = 'scan'; // 'scan' या 'view'
+    let targetMode = 'scan';
     const SCOPES = 'https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/userinfo.email';
 
     window.onload = function() {
@@ -247,34 +247,33 @@
       else loader.classList.add('hidden');
     }
 
+    // 100% परमानेंट स्क्रिप्ट-टैग (JSONP) बेस्ड राउटिंग फेच सिस्टम
     function checkRoutingStatus(refId, cardEmail) {
       document.getElementById('step1-form-view').classList.add('hidden');
       showLoading(true);
       
-      fetch(`${API_URL}?action=checkStatus&refId=${refId}`)
-        .then(res => res.json())
-        .then(response => {
-          showLoading(false);
-          if(response.exists) {
-            if(response.status === 'Active') {
-              // पूर्व एक्टिवेटेड है तो सीधे ड्राइव ऑथेंटिकेशन या स्कैनर/व्यूअर पर भेजें
-              let savedToken = localStorage.getItem('drive_token_' + refId);
-              if(savedToken) {
-                accessToken = savedToken;
-                initializeDriveFolderAndVault();
-              } else {
-                document.getElementById('step3-drive-view').classList.remove('hidden');
-              }
+      window.handleStatusCallback = function(response) {
+        showLoading(false);
+        if(response.exists) {
+          if(response.status === 'Active') {
+            let savedToken = localStorage.getItem('drive_token_' + refId);
+            if(savedToken) {
+              accessToken = savedToken;
+              initializeDriveFolderAndVault();
             } else {
-              openActivationScreen(refId, cardEmail);
+              document.getElementById('step3-drive-view').classList.remove('hidden');
             }
           } else {
-            alert('अवैध कार्ड रिफरेन्स आईडी!');
+            openActivationScreen(refId, cardEmail);
           }
-        }).catch(() => { 
-          showLoading(false); 
-          openActivationScreen(refId, cardEmail);
-        });
+        } else {
+          alert('अवैध कार्ड रिफरेन्स आईडी!');
+        }
+      };
+
+      let script = document.createElement('script');
+      script.src = `${API_URL}?action=checkStatus&refId=${refId}&callback=handleStatusCallback`;
+      document.body.appendChild(script);
     }
 
     document.getElementById('input-photo').addEventListener('change', function(e) {
@@ -297,6 +296,7 @@
       reader.readAsDataURL(file);
     });
 
+    // 100% परमानेंट स्क्रिप्ट-टैग (JSONP) बेस्ड डुप्लीकेट और सबमिशन सिस्टम
     function submitCardForm() {
       let email = document.getElementById('input-email').value.trim();
       let name = document.getElementById('input-name').value.trim();
@@ -307,38 +307,33 @@
       document.getElementById('step1-form-view').classList.add('hidden');
       showLoading(true);
 
-      // पहले चेक करें कि क्या ईमेल डेटाबेस में पहले से मौजूद है
-      fetch(`${API_URL}?action=checkEmailDuplicate&email=${encodeURIComponent(email)}`)
-      .then(res => res.json())
-      .then(dupRes => {
+      window.handleDuplicateCallback = function(dupRes) {
         if(dupRes.exists) {
-          // ईमेल पहले से है -> पुराना कार्ड सीधे लोड करें!
           showLoading(false);
           renderPVCCardLayout(dupRes.refId, dupRes.name, dupRes.mobile, dupRes.email, dupRes.photoUrl);
         } else {
-          // ईमेल नया है -> फ्रेश कार्ड जनरेट करें
           if(!name || !mobile) {
             showLoading(false);
-            alert('इस ईमेल से कोई पुराना कार्ड नहीं मिला। कृपया अपना पूरा नाम और मोबाइल नंबर भरें ताकि नया कार्ड बनाया जा सके!');
+            alert('इस ईमेल से कोई पुराना कार्ड नहीं मिला। कृपया नया कार्ड बनाने के लिए पूरा नाम और मोबाइल भरें!');
             document.getElementById('step1-form-view').classList.remove('hidden');
             return;
           }
           
-          let encodedPhoto = encodeURIComponent(base64Photo);
-          let queryUrl = `${API_URL}?action=generateCard&name=${encodeURIComponent(name)}&mobile=${encodeURIComponent(mobile)}&email=${encodeURIComponent(email)}&photoUrl=${encodedPhoto}`;
-
-          fetch(queryUrl, { mode: 'no-cors' })
-          .then(() => {
+          window.handleGenerationCallback = function(genRes) {
             showLoading(false);
-            let fallbackRefId = Math.floor(10000000 + Math.random() * 90000000).toString();
-            renderPVCCardLayout(fallbackRefId, name, mobile, email, base64Photo);
-          });
+            renderPVCCardLayout(genRes.refId, name, mobile, email, base64Photo);
+          };
+
+          let scriptGen = document.createElement('script');
+          let encodedPhoto = encodeURIComponent(base64Photo);
+          scriptGen.src = `${API_URL}?action=generateCard&name=${encodeURIComponent(name)}&mobile=${encodeURIComponent(mobile)}&email=${encodeURIComponent(email)}&photoUrl=${encodedPhoto}&callback=handleGenerationCallback`;
+          document.body.appendChild(scriptGen);
         }
-      }).catch(() => {
-        showLoading(false);
-        alert('कनेक्शन एरर!');
-        document.getElementById('step1-form-view').classList.remove('hidden');
-      });
+      };
+
+      let scriptDup = document.createElement('script');
+      scriptDup.src = `${API_URL}?action=checkEmailDuplicate&email=${encodeURIComponent(email)}&callback=handleDuplicateCallback`;
+      document.body.appendChild(scriptDup);
     }
 
     function renderPVCCardLayout(refId, name, mobile, email, photo) {
@@ -358,22 +353,18 @@
 
       let currentUrl = window.location.href.split('?')[0];
       
-      // Front QR Link (बड़ा आकार - स्कैनर लॉन्च)
-      let frontUrl = `${currentUrl}?ref_id=${refId}&email=${encodeURIComponent(email)}&mode=scan`;
       document.getElementById('qrcode-front').innerHTML = '';
-      new QRCode(document.getElementById('qrcode-front'), { text: frontUrl, width: 80, height: 80 });
+      new QRCode(document.getElementById('qrcode-front'), { text: `${currentUrl}?ref_id=${refId}&email=${encodeURIComponent(email)}&mode=scan`, width: 80, height: 80 });
 
-      // Back QR Link (बड़ा आकार - फोल्डर लाइव व्यूअर लॉन्च)
-      let backUrl = `${currentUrl}?ref_id=${refId}&email=${encodeURIComponent(email)}&mode=view`;
       document.getElementById('qrcode-back').innerHTML = '';
-      new QRCode(document.getElementById('qrcode-back'), { text: backUrl, width: 80, height: 80 });
+      new QRCode(document.getElementById('qrcode-back'), { text: `${currentUrl}?ref_id=${refId}&email=${encodeURIComponent(email)}&mode=view`, width: 80, height: 80 });
 
       document.getElementById('step1-display-view').classList.remove('hidden');
     }
 
     function openActivationScreen(refId, email) {
       document.getElementById('step2-activation-view').classList.remove('hidden');
-      let waMessage = encodeURIComponent(`नमस्ते सर, मैंने ₹50 का भुगतान कर दिया है। कृपया मेरे डिजिटल कार्ड के लिए 6-Digit SD Code प्रदान करें।\nReference ID: ${refId}\nEmail: ${email}`);
+      let waMessage = encodeURIComponent(`नमस्ते सर, मैंने ₹50 का भुगतान कर दिया है। (Screensot bhi share kiya hai) कृपया मेरे डिजिटल कार्ड के लिए 6-Digit SD Code प्रदान करें।\nReference ID: ${refId}\nEmail: ${email}`);
       document.getElementById('whatsapp-link').href = `https://wa.me/918700407760?text=${waMessage}`;
     }
 
@@ -382,13 +373,16 @@
       if(!code) { alert('कृपया कोड दर्ज करें!'); return; }
       showLoading(true);
 
-      fetch(`${API_URL}?action=activateCard&refId=${globalRefId}&sdCode=${encodeURIComponent(code)}`, { mode: 'no-cors' })
-      .then(() => {
+      window.handleActivationCallback = function() {
         showLoading(false);
         alert('कार्ड एक्टिवेशन कम्प्लीट! अब ड्राइव कनेक्ट करें।');
         document.getElementById('step2-activation-view').classList.add('hidden');
         document.getElementById('step3-drive-view').classList.remove('hidden');
-      });
+      };
+
+      let scriptAct = document.createElement('script');
+      scriptAct.src = `${API_URL}?action=activateCard&refId=${globalRefId}&sdCode=${encodeURIComponent(code)}&callback=handleActivationCallback`;
+      document.body.appendChild(scriptAct);
     }
 
     function handleAuthClick() {
@@ -412,7 +406,6 @@
         let profile = await profileRes.json();
         activeUserEmail = profile.email || globalCardEmail;
         
-        // सुरक्षा मिलान लॉक
         if(activeUserEmail.toLowerCase() !== globalCardEmail.toLowerCase()) {
           document.body.innerHTML = `
             <div class="max-w-md mx-auto my-20 p-6 bg-white rounded-2xl shadow-xl text-center space-y-4 border border-red-200">
@@ -424,7 +417,6 @@
         }
       } catch (err) {}
 
-      // ड्राइव में फोल्डर सर्च या क्रिएशन लॉजिक
       let folderId = localStorage.getItem('drive_folder_id_' + globalRefId);
       
       if(!folderId) {
@@ -445,13 +437,10 @@
 
       showLoading(false);
 
-      // मोड आधारित रीडायरेक्शन (Front QR vs Back QR)
       if (targetMode === 'view') {
-        // BACK QR ACTION: सीधे यूजर का वो स्पेसिफिक ड्राइव फोल्डर न्यू टैब में खोलें!
-        alert('सुरक्षा सत्यापित! आपके अपलोडेड डॉक्यूमेंट फोल्डर को खोला जा रहा है।');
+        alert('सुरक्षा सत्यापित! आपके अपলোडेड डॉक्यूमेंट फोल्डर को खोला जा रहा है।');
         window.location.href = `https://drive.google.com/drive/folders/${folderId}`;
       } else {
-        // FRONT QR ACTION: स्कैनर चालू करें
         openDocumentScannerView();
       }
     }
@@ -521,8 +510,12 @@
         });
 
         if(uploadRes.ok) {
-          fetch(`${API_URL}?action=logUpload&refId=${globalRefId}&email=${encodeURIComponent(globalCardEmail)}&fileName=${encodeURIComponent(customFileName)}`, { mode: 'no-cors' })
-          .then(() => { alert('सफलतापूर्वक आपकी ड्राइव में सेव हो गया!'); location.reload(); });
+          let scriptLog = document.createElement('script');
+          scriptLog.src = `${API_URL}?action=logUpload&refId=${globalRefId}&email=${encodeURIComponent(globalCardEmail)}&fileName=${encodeURIComponent(customFileName)}`;
+          document.body.appendChild(scriptLog);
+          
+          alert('सफलतापूर्वक आपकी ड्राइव में सेव हो गया!'); 
+          location.reload();
         } else { alert('अपलोड विफल!'); location.reload(); }
       } catch (err) { alert('नेटवर्क त्रुटि!'); location.reload(); }
     }
