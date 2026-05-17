@@ -123,9 +123,9 @@
           
           <div class="flex gap-2 items-center my-auto">
             <ul class="text-[7px] space-y-1 list-disc pl-3 text-slate-300 flex-1 leading-tight">
-              <li><strong class="text-white">फ्रंट QR स्कैन:</strong> सीधे mobile डॉक्यूमेंट स्कैनर और कस्टमाइजज्ड फिल्टर कैमरा खोलेगा।</li>
+              <li><strong class="text-white">फ्रंट QR स्कैन:</strong> सीधे mobile डॉक्यूमेंट स्कैनर और कस्टमाइज्ज्ड फिल्टर कैमरा खोलेगा।</li>
               <li><strong class="text-white">बैक QR स्कैन:</strong> आपके द्वारा अपलोड किए गए सभी दस्तावेजों को लाइव सीधे आपके फोन स्क्रीन पर दिखाएगा।</li>
-              <li>सुरक्षा कारणों से, बैक QR केवल तभी काम करेगा जब फोन में एक्टिव जीमेल आईडी और कार्ड की ईमेल आईडी समान होगी।</li>
+              <li>सुरक्षा कारणों से, बैक QR केवल?") काम करेगा जब फोन में एक्टिव जीमेल आईडी और कार्ड की ईमेल आईडी समान होगी।</li>
             </ul>
             <div class="bg-white p-1 rounded-md shadow-xs flex items-center justify-center border border-slate-200">
               <div id="qrcode-back"></div>
@@ -133,7 +133,6 @@
           </div>
           
           <div class="border-t border-slate-800 pt-1 flex justify-between items-center text-[5px] text-slate-400">
-            <div>UPI ID: <span class="text-amber-400 font-mono font-bold">8700407760@okbizaxix</span></div>
             <div>Helpline: sahayak.docs@gmail.com | 8700407760</div>
           </div>
         </div>
@@ -146,14 +145,14 @@
       <h2 class="text-lg font-bold text-slate-700">🔐 डिजिटल कार्ड एक्टिवेशन (Step 2)</h2>
       <p class="text-sm text-slate-500">सेवाओं को सक्रिय करने के लिए आपको एक बार <strong class="text-slate-800">₹50</strong> का शुल्क देना होगा।</p>
       
-      <div class="bg-amber-50 border border-amber-200 rounded-xl p-5 text-center space-y-3">
-        <p class="text-xs text-amber-800 font-medium">नीचे दिए गए बटन पर क्लिक करके किसी भी UPI ऐप (GPay, PhonePe, Paytm) से सीधे भुगतान करें:</p>
+      <div class="bg-amber-50 border border-amber-200 rounded-xl p-5 text-center space-y-4">
+        <p class="text-xs text-amber-800 font-medium">नीचे दिए गए पेमेंट बटन पर क्लिक करके सीधे अपने मोबाइल ऐप से भुगतान पूरा करें:</p>
         
-        <a id="upi-pay-button" href="upi://pay?pa=8700407760@okbizaxix&pn=Sahayak%20Documents&am=50&cu=INR" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-xl shadow-md transition-all inline-flex items-center justify-center gap-2 text-sm cursor-pointer">
-          💸 Pay Registration Fee (₹50)
+        <a id="upi-pay-button" href="upi://pay?pa=8700407760@okbizaxix&pn=CSC%20Sahayak%20Documentation&am=50&cu=INR&purpose=00" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 px-4 rounded-xl shadow-md transition-all inline-flex items-center justify-center gap-2 text-sm cursor-pointer tracking-wide">
+          💸 Pay Registration Fee via UPI (₹50)
         </a>
         
-        <div class="pt-2 border-t border-amber-200/60">
+        <div class="pt-3 border-t border-amber-200/60">
           <a id="whatsapp-link" href="#" target="_blank" class="inline-block bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-2.5 px-4 rounded-lg shadow-xs transition-all">
             💬 पेमेंट स्क्रीनशॉट भेजें और SD Code मांगें
           </a>
@@ -397,11 +396,11 @@
       let waMessage = encodeURIComponent(`नमस्ते सर, मैंने ₹50 का भुगतान कर दिया है। (Screenshot भी शेयर किया है) कृपया मेरे डिजिटल कार्ड के लिए 6-Digit SD Code प्रदान करें।\nReference ID: ${refId}\nEmail: ${email}`);
       document.getElementById('whatsapp-link').href = `https://wa.me/918700407760?text=${waMessage}`;
       
-      // मोबाइल भुगतान बटन के लिए गतिशील रूप से UPI यूआरएल डीपलिंक अपडेट करें
-      document.getElementById('upi-pay-button').href = `upi://pay?pa=8700407760@okbizaxix&pn=Sahayak%20Documents&am=50&cu=INR&tn=Registration%20Ref%20${refId}`;
+      // 🛠️ मर्चेंट डीपलिंक फिक्स: 'CSC Sahayak Documentation' मर्चेंट नाम के साथ यूआरएल री-इंजीनियर किया गया
+      let encodedMerchantName = encodeURIComponent('CSC Sahayak Documentation');
+      document.getElementById('upi-pay-button').href = `upi://pay?pa=8700407760@okbizaxix&pn=${encodedMerchantName}&am=50&cu=INR&tn=Sahayak_Ref_${refId}&purpose=00`;
     }
 
-    // 100% फिक्स्ड एक्टिवेशन फंक्शन (अब स्क्रिप्ट टैग बॉडी में लोड होगा)
     function activateSystem() {
       let code = document.getElementById('input-sdcode').value.trim();
       if(!code) { alert('कृपया कोड दर्ज करें!'); return; }
@@ -425,7 +424,6 @@
       scriptAct.id = 'jsonp-activation-script';
       scriptAct.src = `${API_URL}?action=activateCard&refId=${globalRefId}&sdCode=${encodeURIComponent(code)}&callback=handleActivationCallback`;
       
-      // 🛠️ फिक्स: स्क्रिप्ट को HTML बॉडी में अपेंड किया गया ताकि यह बैकएंड पर तुरंत फायर हो सके
       document.body.appendChild(scriptAct);
     }
 
