@@ -108,7 +108,6 @@
               <p><strong class="opacity-70 text-black">NAME:</strong> <span id="card-name" class="font-bold tracking-wide">...</span></p>
               <p><strong class="opacity-70 text-black">MOB:</strong> <span id="card-mobile">...</span></p>
               <p class="flex items-center gap-1 w-full"><strong class="opacity-70 text-black shrink-0">EMAIL:</strong> <span id="card-email" class="text-blue-800 font-mono transition-all duration-200" style="font-size: 9px; display: inline-block; white-space: nowrap;">...</span></p>
-                          
             </div>
             <div class="bg-white p-1 rounded-md shadow-xs flex items-center justify-center border border-slate-200">
               <div id="qrcode-front"></div>
@@ -125,7 +124,7 @@
           
           <div class="flex gap-2 items-center my-auto">
             <ul class="text-[7px] space-y-1 list-disc pl-3 text-slate-300 flex-1 leading-tight">
-              <li><strong class="text-white">फ्रंट QR स्कैन:</strong> सीधे मोबाइल डॉक्यूमेंट स्कैनर और कस्टमाइज्ड फिल्टर कैमरा खोलेगा।</li>
+              <li><strong class="text-white">फ्रंट QR स्कैन:</strong> सीधे mobile डॉक्यूमेंट स्कैनर और कस्टमाइज्ड फिल्टर कैमरा खोलेगा।</li>
               <li><strong class="text-white">बैक QR स्कैन:</strong> आपके द्वारा अपलोड किए गए सभी दस्तावेजों को लाइव सीधे आपके फोन स्क्रीन पर दिखाएगा।</li>
               <li>सुरक्षा कारणों से, बैक QR केवल तभी काम करेगा जब फोन में एक्टिव जीमेल आईडी और कार्ड की ईमेल आईडी समान होगी।</li>
             </ul>
@@ -198,6 +197,7 @@
   </footer>
 
   <script>
+    // ⚠️ यहाँ आपका नया APPS SCRIPT URL पहले से सेट है
     const API_URL = 'https://script.google.com/macros/s/AKfycbxObecWPOgd6GNongNwumvGcTgQNdLUYfavh-vddmLNx6kcy3nTUk7VqWQY0TQYeWt1/exec';
     
     let globalRefId = '';
@@ -247,12 +247,20 @@
       else loader.classList.add('hidden');
     }
 
-    // 100% परमानेंट स्क्रिप्ट-टैग (JSONP) बेस्ड राउटिंग फेच सिस्टम
+    // 100% परमानेंट स्क्रिप्ट-टैग (JSONP) बेस्ड राउटिंग फेच सिस्टम विद ऑटो-टाइमआउट फिक्स
     function checkRoutingStatus(refId, cardEmail) {
       document.getElementById('step1-form-view').classList.add('hidden');
       showLoading(true);
       
+      // टाइमआउट सुरक्षा चक्र: अगर 6 सेकंड में गूगल जवाब नहीं देता, तो लोडिंग बंद करके सीधे एक्टिवेशन स्क्रीन खोल देगा
+      let timeoutTrigger = setTimeout(function() {
+        console.log("Google Script Response Timeout. Forcing Activation View.");
+        showLoading(false);
+        openActivationScreen(refId, cardEmail);
+      }, 6000);
+
       window.handleStatusCallback = function(response) {
+        clearTimeout(timeoutTrigger); // जवाब आते ही टाइमआउट को रोकें
         showLoading(false);
         if(response.exists) {
           if(response.status === 'Active') {
@@ -271,7 +279,12 @@
         }
       };
 
+      // पुराना स्क्रिप्ट टैग यदि कोई अटका हो तो उसे हटाएं
+      let oldScript = document.getElementById('jsonp-status-script');
+      if(oldScript) oldScript.remove();
+
       let script = document.createElement('script');
+      script.id = 'jsonp-status-script';
       script.src = `${API_URL}?action=checkStatus&refId=${refId}&callback=handleStatusCallback`;
       document.body.appendChild(script);
     }
@@ -336,31 +349,30 @@
       document.body.appendChild(scriptDup);
     }
 
-  function renderPVCCardLayout(refId, name, mobile, email, photo) {
-  globalRefId = refId;
-  globalCardEmail = email;
-  
-  document.getElementById('card-ref-display').innerText = 'Ref: ' + refId;
-  document.getElementById('card-name').innerText = name;
-  document.getElementById('card-mobile').innerText = mobile;
-  
-  // ईमेल एलिमेंट को सेलेक्ट करना
-  let emailElement = document.getElementById('card-email');
-  emailElement.innerText = email;
+    function renderPVCCardLayout(refId, name, mobile, email, photo) {
+      globalRefId = refId;
+      globalCardEmail = email;
+      
+      document.getElementById('card-ref-display').innerText = 'Ref: ' + refId;
+      document.getElementById('card-name').innerText = name;
+      document.getElementById('card-mobile').innerText = mobile;
+      
+      // ईमेल एलिमेंट को सेलेक्ट करना
+      let emailElement = document.getElementById('card-email');
+      emailElement.innerText = email;
 
-  // 🛠️ PERFECT AUTO-RESIZE LOGIC FOR LONG EMAILS:
-  // अक्षर गिनकर फॉन्ट साइज को बहुत ही सटीक तरीके से छोटा करेगा ताकि कुछ भी न कटे
-  if (email.length > 25) {
-    emailElement.style.fontSize = '5.5px';
-  } else if (email.length > 20) {
-    emailElement.style.fontSize = '6.5px';
-  } else if (email.length > 15) {
-    emailElement.style.fontSize = '7.5px';
-  } else {
-    emailElement.style.fontSize = '9px'; // नॉर्मल साइज
-  }
-  
-  if(photo) {
+      // 🛠 *ऑटो-रिसाइज लॉजिक ईमेल के लिए एकदम परफेक्ट सेट*
+      if (email.length > 25) {
+        emailElement.style.fontSize = '5.5px';
+      } else if (email.length > 20) {
+        emailElement.style.fontSize = '6.5px';
+      } else if (email.length > 15) {
+        emailElement.style.fontSize = '7.5px';
+      } else {
+        emailElement.style.fontSize = '9px'; // नॉर्मल साइज
+      }
+      
+      if(photo) {
         document.getElementById('card-img').src = photo;
         document.getElementById('card-img').classList.remove('hidden');
         document.getElementById('card-img-placeholder').classList.add('hidden');
@@ -453,7 +465,7 @@
       showLoading(false);
 
       if (targetMode === 'view') {
-        alert('सुरक्षा सत्यापित! आपके अपলোडेड डॉक्यूमेंट फोल्डर को खोला जा रहा है।');
+        alert('सुरक्षा सत्यापित! आपके अपलोडेड डॉक्यूमेंट फोल्डर को खोला जा रहा है।');
         window.location.href = `https://drive.google.com/drive/folders/${folderId}`;
       } else {
         openDocumentScannerView();
