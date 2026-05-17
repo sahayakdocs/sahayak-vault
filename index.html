@@ -191,9 +191,9 @@
           </div>
 
           <div class="flex-1 space-y-3 text-slate-700">
-            <h4 class="text-xs font-bold text-blue-800 border-b pb-1 uppercase tracking-wide">📋 कार्ड सक्रिय करने की विधि (Instructions Manual)</h4>
+            <h4 class="text-xs font-bold text-blue-800 border-b pb-1 uppercase tracking-wide">📋 CARD सक्रिय करने की विधि (Instructions Manual)</h4>
             <ol class="text-[11px] space-y-2 list-decimal pl-4 font-medium leading-relaxed text-slate-600">
-              <li>अपने मोबाइल का कामना या कोई भी पेमेंट ऐप जैसे <strong class="text-slate-900">Google Pay, PhonePe, Paytm</strong> खोलें।</li>
+              <li>अपने मोबाइल का कैमरा या कोई भी पेमेंट ऐप जैसे <strong class="text-slate-900">Google Pay, PhonePe, Paytm</strong> खोलें।</li>
               <li>बगल में छपे बड़े Google Pay QR कोड को स्कैन करके <strong class="text-emerald-700">₹50</strong> का शुल्क ट्रांसफर करें।</li>
               <li>सफलतापूर्वक भुगतान के बाद उसका स्क्रीनशॉट व्हाट्सएप नंबर <strong class="text-slate-900">+91 8700407760</strong> पर भेजें।</li>
               <li>व्हाट्सएप से आपको एक स्पेशल <strong class="text-slate-900">6-Digit SD Code</strong> मिलेगा।</li>
@@ -439,7 +439,7 @@
           emailElement.style.fontSize = '5px';
         } else if (email.length > 20) {
           emailElement.style.fontSize = '6px';
-        } else if (email.length > 15) {
+          } else if (email.length > 15) {
           emailElement.style.fontSize = '7px';
         } else {
           emailElement.style.fontSize = '8px';
@@ -456,7 +456,6 @@
 
       let currentUrl = window.location.href.split('?')[0];
       
-      // 1. फ्रंट मुख्य एक्स्ट्रा लार्ज क्यूआर कोड (115x115)
       let qrFrontDiv = document.getElementById('qrcode-front');
       if(qrFrontDiv) {
         qrFrontDiv.innerHTML = '';
@@ -466,7 +465,6 @@
         });
       }
 
-      // 2. बैक साइड इकलौता बड़ा क्यूआर कोड (100x100)
       let qrBackDiv = document.getElementById('qrcode-back');
       if(qrBackDiv) {
         qrBackDiv.innerHTML = '';
@@ -476,7 +474,6 @@
         });
       }
 
-      // 3. प्रिंट होने वाला बॉटम मेगा मर्चेंट भुगतान क्यूआर कोड (145x145)
       let qrMegaDiv = document.getElementById('qrcode-mega-payment');
       if(qrMegaDiv) {
         let merchantNameEncoded = encodeURIComponent('CSC Sahayak Documentation');
@@ -492,7 +489,6 @@
       if(displayView) displayView.classList.remove('hidden');
     }
 
-    // 🛠️ फिक्स्ड एक्टिवेशन स्क्रीन: यहाँ भी 'globalRefId' को लॉक कर दिया गया है ताकि QR स्कैन वाले यूजर्स सीधे कोड सबमिट कर सकें
     function openActivationScreen(refId, email) {
       globalRefId = refId;
       globalCardEmail = email;
@@ -505,11 +501,13 @@
       if(waLink) waLink.href = `https://wa.me/918700407760?text=${waMessage}`;
     }
 
+    // 🛠️ 100% बुलेटप्रूफ ग्लोबल एक्टिवेशन कॉलबैक फंक्शन
     function activateSystem() {
       let code = document.getElementById('input-sdcode').value.trim();
       if(!code) { alert('कृपया कोड दर्ज करें!'); return; }
       showLoading(true);
 
+      // परमानेंट ग्लोबल रिस्पॉन्स हैंडलर बाइंडिंग जो सुरक्षा जांच को तुरंत पास करेगा
       window.handleActivationCallback = function(res) {
         showLoading(false);
         if(res && res.success) {
@@ -527,7 +525,7 @@
       let scriptAct = document.createElement('script');
       scriptAct.id = 'jsonp-activation-script';
       
-      // 🛠️ मज़बूत फिक्स: अब 'globalRefId' बिल्कुल सही तरीके से बैकएंड यूआरएल में फायर होगी
+      // 🎯 फिक्स: यहाँ 'callback=handleActivationCallback' को एकदम सटीक रूप से पास किया गया है
       scriptAct.src = `${API_URL}?action=activateCard&refId=${globalRefId}&sdCode=${encodeURIComponent(code)}&callback=handleActivationCallback`;
       
       document.body.appendChild(scriptAct);
