@@ -89,8 +89,8 @@
           
           <div class="flex justify-between items-center border-b border-white/20 pb-1 relative z-10">
             <div class="text-left">
-              <p class="text-[12px] font-extrabold tracking-wider text-blue-300">SAHAYAK</p>
-              <p class="text-[7px] uppercase opacity-70 tracking-widest">Documents Management System Card</p>
+              <p class="text-[10px] font-extrabold tracking-wider text-blue-300">SAHAYAK DOCUMENTS</p>
+              <p class="text-[5px] uppercase opacity-70 tracking-widest">Management System Card</p>
             </div>
             <div class="flex items-center gap-1.5">
               <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
@@ -99,26 +99,27 @@
           </div>
           
           <div class="flex gap-2.5 my-auto items-center relative z-10">
-            <div class="w-[66px] h-[82px] bg-blue/10 rounded-md border border-white/30 overflow-hidden flex items-center justify-center shadow-md">
+            <div class="w-[66px] h-[82px] bg-white/10 rounded-md border border-white/30 overflow-hidden flex items-center justify-center shadow-md">
               <img id="card-img" src="" class="w-full h-full object-cover hidden">
               <span id="card-img-placeholder" class="text-[8px] text-white/40">No Photo</span>
             </div>
             <div class="text-left text-[9px] space-y-1 flex-1 font-medium">
-              <p class="text-black"><strong class="opacity-60">NAME:</strong> <span id="card-name" class="font-bold tracking-wide">...</span></p>
+              <p class="text-white"><strong class="opacity-60">NAME:</strong> <span id="card-name" class="font-bold tracking-wide">...</span></p>
               <p><strong class="opacity-60">MOB:</strong> <span id="card-mobile">...</span></p>
-              <p class="truncate max-w-[110px]"><strong class="opacity-60">EMAIL:</strong> <span id="card-email" class="text-blue-400 font-mono">...</span></p>
-              
+              <p class="truncate max-w-[130px]"><strong class="opacity-60">EMAIL:</strong> <span id="card-email" class="text-blue-200 font-mono">...</span></p>
+              <div class="text-[5px] bg-blue-500/30 text-blue-300 px-1 py-0.5 rounded-sm inline-block font-mono border border-blue-400/20">SECURE VAULT ACTIVE</div>
+            </div>
             <div class="bg-white p-1 rounded-md shadow-md flex items-center justify-center border border-slate-200">
               <div id="qrcode-front"></div>
             </div>
           </div>
-          <div class="text-[6px] text-center opacity-50 border-t border-white/10 pt-1 tracking-wider relative z-10">SCAN TO LAUNCH SCANNER CAMERA</div>
+          <div class="text-[6px] text-center opacity-50 border-t border-white/10 pt-1 tracking-wider relative z-10">FRONT QR: SCAN TO LAUNCH SCANNER CAMERA</div>
         </div>
 
         <div id="pvc-back" class="pvc-card bg-slate-900 text-slate-200 rounded-xl shadow-xl mx-auto p-3 flex flex-col justify-between border border-slate-950 text-left">
           <div class="border-b border-slate-800 pb-1 flex justify-between items-center">
             <p class="text-[9px] font-bold tracking-wider text-blue-400">डिजिटल निर्देश एवं क्लाउड एक्सेस</p>
-            <span class="text-[6px] font-mono text-slate-500"></span>
+            <span class="text-[6px] font-mono text-slate-500">BACK PANEL</span>
           </div>
           
           <div class="flex gap-2 items-center my-auto">
@@ -197,7 +198,7 @@
 
   <script>
     // ⚠️ यहाँ अपना वास्तविक APPS SCRIPT URL अवश्य डालें
-    const API_URL = 'https://script.google.com/macros/s/AKfycbwxZ2V41COk1sNBT1w0IBYIWlK1E8531qNtj_Q70m8/dev';
+    const API_URL = 'YOUR_APPS_SCRIPT_URL_HERE';
     
     let globalRefId = '';
     let globalCardEmail = '';
