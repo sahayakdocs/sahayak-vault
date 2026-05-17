@@ -74,10 +74,10 @@
         <input type="tel" id="input-mobile" class="w-full border p-2.5 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="8700407760">
       </div>
       <div>
-        <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">पासפורट साइज फोटो अपलोड करें</label>
+        <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">पासपोर्ट साइज फोटो अपलोड करें</label>
         <input type="file" id="input-photo" accept="image/*" class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
       </div>
-      <button onclick="submitCardForm()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg shadow-sm transition-all cursor-pointer">Generate / Retrieve PVC Card</button>
+      <button onclick="submitCardForm()" class="w-full bg-blue-600 hover:bg-blue-700 text-black font-bold py-3 rounded-lg shadow-sm transition-all cursor-pointer">Generate / Retrieve PVC Card</button>
     </div>
 
     <div id="step1-display-view" class="hidden space-y-6 text-center">
@@ -89,8 +89,8 @@
           
           <div class="flex justify-between items-center border-b border-white/20 pb-1 relative z-10">
             <div class="text-left">
-              <p class="text-[10px] font-extrabold tracking-wider text-blue-700">SAHAYAK</p>
-              <p class="text-[7px] uppercase opacity-70 tracking-widest">Documents Management System Card</p>
+              <p class="text-[15px] font-extrabold tracking-wider text-blue-700">SAHAYAK</p>
+              <p class="text-[10px] uppercase opacity-70 tracking-widest">Documents Management System Card</p>
             </div>
             <div class="flex items-center gap-1.5">
               <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
@@ -101,7 +101,7 @@
           <div class="flex gap-2.5 my-auto items-center relative z-10">
             <div class="w-[66px] h-[82px] bg-white/10 rounded-md border border-white/30 overflow-hidden flex items-center justify-center shadow-md">
               <img id="card-img" src="" class="w-full h-full object-cover hidden">
-              <span id="card-img-placeholder" class="text-[8px] text-white/40">No Photo</span>
+              <span id="card-img-placeholder" class="text-[8px] text-black/40">No Photo</span>
             </div>
             <div class="text-left text-[9px] space-y-1 flex-1 font-medium">
               <p class="text-black"><strong class="opacity-60">NAME:</strong> <span id="card-name" class="font-bold tracking-wide">...</span></p>
@@ -123,8 +123,8 @@
           
           <div class="flex gap-2 items-center my-auto">
             <ul class="text-[7px] space-y-1 list-disc pl-3 text-slate-300 flex-1 leading-tight">
-              <li><strong class="text-white">फ्रंट QR स्कैन:</strong> सीधे मोबाइल डॉक्यूमेंट स्कैनर और कस्टमाइज्ड फिल्टर कैमरा खोलेगा।</li>
-              <li><strong class="text-white">बैक QR स्कैन:</strong> आपके द्वारा अपलोड किए गए सभी दस्तावेजों को लाइव सीधे आपके फोन स्क्रीन पर दिखाएगा।</li>
+              <li><strong class="text-black">फ्रंट QR स्कैन:</strong> सीधे मोबाइल डॉक्यूमेंट स्कैनर और कस्टमाइज्ड फिल्टर कैमरा खोलेगा।</li>
+              <li><strong class="text-black">बैक QR स्कैन:</strong> आपके द्वारा अपलोड किए गए सभी दस्तावेजों को लाइव सीधे आपके फोन स्क्रीन पर दिखाएगा।</li>
               <li>सुरक्षा कारणों से, बैक QR केवल तभी काम करेगा जब फोन में एक्टिव जीमेल आईडी और कार्ड की ईमेल आईडी समान होगी।</li>
             </ul>
             <div class="bg-white p-1 rounded-md shadow-md flex items-center justify-center">
@@ -139,7 +139,7 @@
         </div>
       </div>
 
-      <button onclick="window.print()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-8 rounded-lg text-sm transition-all shadow-md cursor-pointer block mx-auto">Print PVC Card Layout</button>
+      <button onclick="window.print()" class="bg-blue-600 hover:bg-blue-700 text-black font-bold py-2.5 px-8 rounded-lg text-sm transition-all shadow-md cursor-pointer block mx-auto">Print PVC Card Layout</button>
     </div>
 
     <div id="step2-activation-view" class="hidden space-y-5 text-center">
@@ -147,14 +147,14 @@
       <p class="text-sm text-slate-500">सेवाओं को सक्रिय करने के लिए आपको एक बार <strong class="text-slate-800">₹50</strong> का शुल्क देना होगा।</p>
       <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-amber-800 font-medium">
         <p>UPI ID: <span class="font-mono bg-white px-2 py-0.5 rounded border border-amber-300">8700407760@okbizaxix</span></p>
-        <a id="whatsapp-link" href="#" target="_blank" class="inline-block mt-3 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-2 px-4 rounded-lg shadow-xs">💬 पेमेंट के बाद यहाँ से SD Code मांगें</a>
+        <a id="whatsapp-link" href="#" target="_blank" class="inline-block mt-3 bg-emerald-600 hover:bg-emerald-700 text-black text-xs font-bold py-2 px-4 rounded-lg shadow-xs">💬 पेमेंट के बाद यहाँ से SD Code मांगें</a>
       </div>
       <div class="space-y-3 text-left">
         <div>
           <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">6-Digit SD Code दर्ज करें</label>
           <input type="text" id="input-sdcode" class="w-full border p-2.5 rounded-lg tracking-widest text-center font-bold outline-none uppercase focus:ring-2 focus:ring-blue-500" placeholder="SDXXXXXX">
         </div>
-        <button onclick="activateSystem()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg shadow-sm transition-all cursor-pointer">कार्ड एक्टिवेट करें</button>
+        <button onclick="activateSystem()" class="w-full bg-blue-600 hover:bg-blue-700 text-black font-bold py-3 rounded-lg shadow-sm transition-all cursor-pointer">कार्ड एक्टिवेट करें</button>
       </div>
     </div>
 
@@ -179,12 +179,12 @@
         <div class="w-full max-h-64 bg-slate-200 rounded-xl overflow-hidden"><img id="preview-image" class="max-w-full block"></div>
         <div class="flex gap-2 justify-center">
           <button onclick="applyFilter('none')" class="bg-slate-200 text-xs font-semibold py-1.5 px-3 rounded-md hover:bg-slate-300">Original</button>
-          <button onclick="applyFilter('bw')" class="bg-slate-800 text-white text-xs font-semibold py-1.5 px-3 rounded-md hover:bg-slate-900">B&W (Clean)</button>
+          <button onclick="applyFilter('bw')" class="bg-slate-800 text-black text-xs font-semibold py-1.5 px-3 rounded-md hover:bg-slate-900">B&W (Clean)</button>
         </div>
         <div><input type="text" id="document-filename" class="w-full border p-2 rounded-lg" placeholder="Aadhar_Card_Front"></div>
         <div class="flex gap-2">
           <button onclick="resetScanner()" class="w-1/2 bg-slate-200 text-slate-700 font-bold py-2.5 rounded-lg hover:bg-slate-300">Retry</button>
-          <button onclick="uploadDocumentToDrive()" class="w-1/2 bg-green-600 text-white font-bold py-2.5 rounded-lg hover:bg-green-700 shadow-sm">Upload To Drive</button>
+          <button onclick="uploadDocumentToDrive()" class="w-1/2 bg-green-600 text-black font-bold py-2.5 rounded-lg hover:bg-green-700 shadow-sm">Upload To Drive</button>
         </div>
       </div>
     </div>
