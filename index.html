@@ -396,8 +396,8 @@
       let waMessage = encodeURIComponent(`नमस्ते सर, मैंने ₹50 का भुगतान कर दिया है। (Screenshot भी शेयर किया है) कृपया मेरे डिजिटल कार्ड के लिए 6-Digit SD Code प्रदान करें।\nReference ID: ${refId}\nEmail: ${email}`);
       document.getElementById('whatsapp-link').href = `https://wa.me/918700407760?text=${waMessage}`;
       
-      // 🛠️ मर्चेंट डीपलिंक फिक्स: 'CSC Sahayak Documentation' मर्चेंट नाम के साथ यूआरएल री-इंजीनियर किया गया
-      let encodedMerchantName = encodeURIComponent('CSC Sahayak Documentation');
+      // 🛠️ मर्चेंट डीपलिंक फिक्स: 'Sahayak Documentation' मर्चेंट नाम के साथ यूआरएल री-इंजीनियर किया गया
+      let encodedMerchantName = encodeURIComponent('Sahayak Documentation');
       document.getElementById('upi-pay-button').href = `upi://pay?pa=8700407760@okbizaxix&pn=${encodedMerchantName}&am=50&cu=INR&tn=Sahayak_Ref_${refId}&purpose=00`;
     }
 
