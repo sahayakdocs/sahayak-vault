@@ -116,30 +116,31 @@
         </div>
 
         <div id="pvc-back" class="pvc-card bg-slate-900 text-slate-200 rounded-xl shadow-xl mx-auto p-2.5 flex flex-col justify-between border border-slate-950 text-left">
-          <div class="border-b border-slate-800 pb-1 flex justify-between items-center">
-            <p class="text-[8px] font-bold tracking-wider text-blue-400">डिजिटल निर्देश एवं क्लाउड एक्सेस पैनल</p>
+          <div class="border-b border-slate-800 pb-1 text-center">
+            <p class="text-[8px] font-bold tracking-wider text-blue-400 uppercase">डिजिटल निर्देश एवं क्लाउड एक्सेस पैनल</p>
           </div>
           
-          <div class="flex gap-2 items-center my-auto">
-            <div class="text-[6.5px] space-y-1 text-slate-300 flex-1 leading-tight">
-              <p><strong class="text-white">1. फ्रंट QR स्कैन:</strong> सीधे पर्सनल स्कैनर कैमरा खोलेगा।</p>
-              <p><strong class="text-white">2. बैक लेफ्ट QR (Vault):</strong> अपलोडेड डाक्यूमेंट्स का लाइव फोल्डर खोलेगा।</p>
-              <p><strong class="text-white">3. बैक राइट QR (Pay ₹50):</strong> पहली बार एक्टिवेशन हेतु किसी भी ऐप से स्कैन करें। ₹50 राशि और Ref ID ऑटो-लॉक हैं।</p>
+          <div class="flex items-center justify-between gap-1.5 my-auto w-full">
+            
+            <div class="flex flex-col items-center gap-0.5 bg-slate-800/80 p-1 rounded-md border border-slate-700/60 shrink-0">
+              <div class="bg-white p-0.5 rounded-sm shadow-inner"><div id="qrcode-back"></div></div>
+              <span class="text-[4.5px] font-extrabold text-blue-400 tracking-tight">1. VAULT VIEW</span>
             </div>
             
-            <div class="flex flex-col items-center gap-0.5 bg-slate-800 p-1 rounded border border-slate-700">
-              <div class="bg-white p-0.5 rounded-sm"><div id="qrcode-back"></div></div>
-              <span class="text-[5px] font-bold text-blue-400">1. VAULT VIEW</span>
+            <div class="text-[5.5px] space-y-1 text-slate-300 flex-1 leading-tight px-0.5 border-x border-slate-800/80">
+              <p><strong class="text-white">फ्रंट QR:</strong> स्कैनर लॉन्च हेतु</p>
+              <p><strong class="text-white">लेफ्ट QR:</strong> अपलोडेड फाइल्स लाइव देखें (Drive)</p>
+              <p><strong class="text-amber-400">राइट QR (Pay ₹50):</strong> न्यू कार्ड एक्टिवेशन हेतु किसी भी ऐप से स्कैन करें। राशि व Ref ID फिक्स हैं।</p>
             </div>
 
-            <div class="flex flex-col items-center gap-0.5 bg-slate-800 p-1 rounded border border-slate-700">
-              <div class="bg-white p-0.5 rounded-sm"><div id="qrcode-payment-merchant"></div></div>
-              <span class="text-[5px] font-bold text-amber-400">2. ACTIVATE (₹50)</span>
+            <div class="flex flex-col items-center gap-0.5 bg-slate-800/80 p-1 rounded-md border border-slate-700/60 shrink-0">
+              <div class="bg-white p-0.5 rounded-sm shadow-inner"><div id="qrcode-payment-merchant"></div></div>
+              <span class="text-[4.5px] font-extrabold text-amber-400 tracking-tight">2. ACTIVATE</span>
             </div>
           </div>
           
-          <div class="border-t border-slate-800 pt-1 flex justify-between items-center text-[5px] text-slate-400">
-            <div>Mkt by: CSC Sahayak Documentation</div>
+          <div class="border-t border-slate-800 pt-0.5 flex justify-between items-center text-[5px] text-slate-400">
+            <div>CSC Sahayak Documentation</div>
             <div>Helpline: 8700407760</div>
           </div>
         </div>
@@ -153,8 +154,8 @@
       
       <div class="bg-amber-50 border border-amber-200 rounded-xl p-5 text-center space-y-3 text-sm text-amber-900">
         <p class="font-bold text-base text-amber-950">⚠️ कार्ड एक्टिवेशन अनिवार्य है</p>
-        <p class="text-xs leading-relaxed">कृपया अपने प्रिंटेड PVC कार्ड के पीछे बने <strong class="text-indigo-900">"2. ACTIVATE (₹50)"</strong> वाले क्यूआर कोड को अपने मोबाइल के किसी भी यूपीआई ऐप (GPay, PhonePe, Paytm) से स्कैन करके **₹50** का भुगतान पूरा करें।</p>
-        <p class="text-[11px] bg-white p-2 rounded border border-amber-300 font-medium text-slate-600">स्कैन करते ही **CSC Sahayak Documentation** और आपका **Ref ID** अपने आप लॉक होकर आ जाएगा।</p>
+        <p class="text-xs leading-relaxed">कृपया अपने प्रिंटेड PVC कार्ड के पीछे बने राइट साइड के बड़े क्यूआर कोड <strong class="text-indigo-900">"2. ACTIVATE"</strong> को अपने मोबाइल के किसी भी यूपीआई ऐप (GPay, PhonePe, Paytm) से स्कैन करके **₹50** का भुगतान पूरा करें।</p>
+        <p class="text-[11px] bg-white p-2 rounded border border-amber-300 font-medium text-slate-600">स्कैन करते ही **CSC Sahayak Documentation** और आपका **Ref ID** ऑटो-लॉक होकर आ जाएगा।</p>
         
         <div class="pt-2">
           <a id="whatsapp-link" href="#" target="_blank" class="inline-block bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-2.5 px-5 rounded-lg shadow-xs transition-all">
@@ -385,20 +386,29 @@
 
       let currentUrl = window.location.href.split('?')[0];
       
-      // 1. फ्रंट क्यूआर कोड जनरेटर (स्कैनर खोलने के लिए)
+      // 1. फ्रंट क्यूआर कोड (80x80) - शार्पनेस लेवल H (हाई लेवल एरर करेक्शन)
       document.getElementById('qrcode-front').innerHTML = '';
-      new QRCode(document.getElementById('qrcode-front'), { text: `${currentUrl}?ref_id=${refId}&email=${encodeURIComponent(email)}&mode=scan`, width: 80, height: 80 });
+      new QRCode(document.getElementById('qrcode-front'), { 
+        text: `${currentUrl}?ref_id=${refId}&email=${encodeURIComponent(email)}&mode=scan`, 
+        width: 80, height: 80, correctLevel: QRCode.CorrectLevel.H 
+      });
 
-      // 2. बैक लेफ्ट क्यूआर कोड (गूगल ड्राइव फोल्डर लाइव व्यू करने के लिए)
+      // 2. बैक लेफ्ट क्यूआर कोड (75x75) - शार्पनेस लेवल H
       document.getElementById('qrcode-back').innerHTML = '';
-      new QRCode(document.getElementById('qrcode-back'), { text: `${currentUrl}?ref_id=${refId}&email=${encodeURIComponent(email)}&mode=view`, width: 55, height: 55 });
+      new QRCode(document.getElementById('qrcode-back'), { 
+        text: `${currentUrl}?ref_id=${refId}&email=${encodeURIComponent(email)}&mode=view`, 
+        width: 75, height: 75, correctLevel: QRCode.CorrectLevel.H 
+      });
 
-      // 3. 🛠️ बैक राइट मर्चेंट भुगतान क्यूआर कोड जनरेटर (₹50 और Ref ID परमानेंट लॉक)
+      // 3. बैक राइट मर्चेंट भुगतान क्यूआर कोड (75x75) - शार्पनेस लेवल H
       let merchantNameEncoded = encodeURIComponent('CSC Sahayak Documentation');
       let upiPaymentString = `upi://pay?pa=8700407760@okbizaxix&pn=${merchantNameEncoded}&am=50&cu=INR&tn=Sahayak_Ref_${refId}`;
       
       document.getElementById('qrcode-payment-merchant').innerHTML = '';
-      new QRCode(document.getElementById('qrcode-payment-merchant'), { text: upiPaymentString, width: 55, height: 55 });
+      new QRCode(document.getElementById('qrcode-payment-merchant'), { 
+        text: upiPaymentString, 
+        width: 75, height: 75, correctLevel: QRCode.CorrectLevel.H 
+      });
 
       document.getElementById('step1-display-view').classList.remove('hidden');
     }
@@ -474,101 +484,4 @@
         try {
           let createFolderRes = await fetch('https://www.googleapis.com/drive/v3/files', {
             method: 'POST',
-            headers: { 'Authorization': `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
-            body: JSON.stringify(meta)
-          });
-          let folderData = await createFolderRes.json();
-          folderId = folderData.id || 'root';
-          localStorage.setItem('drive_folder_id_' + globalRefId, folderId);
-        } catch(e) {
-          folderId = 'root';
-        }
-      }
-
-      showLoading(false);
-
-      if (targetMode === 'view') {
-        alert('सुरक्षा सत्यापित! आपके अपलोडेड डॉक्यूमेंट फोल्डर को खोला जा रहा है।');
-        window.location.href = `https://drive.google.com/drive/folders/${folderId}`;
-      } else {
-        openDocumentScannerView();
-      }
-    }
-
-    function openDocumentScannerView() {
-      document.getElementById('step3-drive-view').classList.add('hidden');
-      document.getElementById('step4-scanner-view').classList.remove('hidden');
-      document.getElementById('user-display-email').innerText = globalCardEmail;
-      initCamera();
-    }
-
-    async function initCamera() {
-      document.getElementById('camera-container').classList.remove('hidden');
-      document.getElementById('crop-container').classList.add('hidden');
-      try {
-        streamInstance = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
-        document.getElementById('video-stream').srcObject = streamInstance;
-      } catch (err) { alert('कैमरा परमिशन आवश्यक है!'); }
-    }
-
-    function capturePhoto() {
-      const video = document.getElementById('video-stream');
-      const canvas = document.createElement('canvas');
-      canvas.width = video.videoWidth; canvas.height = video.videoHeight;
-      canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
-      
-      if(streamInstance) streamInstance.getTracks().forEach(track => track.stop());
-      document.getElementById('camera-container').classList.add('hidden');
-      document.getElementById('crop-container').classList.remove('hidden');
-      
-      const preview = document.getElementById('preview-image');
-      preview.src = canvas.toDataURL('image/jpeg');
-
-      if (cropperInstance) cropperInstance.destroy();
-      cropperInstance = new Cropper(preview, { viewMode: 1, autoCropArea: 1 });
-    }
-
-    function applyFilter(type) {
-      if (!cropperInstance) return;
-      cropperInstance.element.style.filter = (type === 'bw') ? 'grayscale(100%) contrast(160%) brightness(110%)' : 'none';
-    }
-
-    function resetScanner() { if (cropperInstance) cropperInstance.destroy(); initCamera(); }
-
-    async function uploadDocumentToDrive() {
-      if (!cropperInstance) return;
-      let customFileName = document.getElementById('document-filename').value.trim() || "Scanned_Doc_" + Date.now();
-      customFileName += ".jpg";
-
-      const canvas = cropperInstance.getCroppedCanvas();
-      const base64Data = canvas.toDataURL('image/jpeg').split(',')[1];
-      const folderId = localStorage.getItem('drive_folder_id_' + globalRefId) || 'root';
-
-      document.getElementById('crop-container').innerHTML = `<p class="text-center font-bold text-green-600 animate-pulse">आपकी व्यक्तिगत ड्राइव में सीधे अपलोड हो रहा है...</p>`;
-
-      const boundary = 'foo_bar_baz';
-      const delimiter = "\r\n--" + boundary + "\r\n";
-      const close_delimiter = "\r\n--" + boundary + "--";
-      const metadata = { name: customFileName, mimeType: 'image/jpeg', parents: [folderId] };
-      const multipartRequestBody = delimiter + 'Content-Type: application/json; charset=UTF-8\r\n\r\n' + JSON.stringify(metadata) + delimiter + 'Content-Type: image/jpeg\r\n' + 'Content-Transfer-Encoding: base64\r\n\r\n' + base64Data + close_delimiter;
-
-      try {
-        let uploadRes = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
-          method: 'POST',
-          headers: { 'Authorization': `Bearer ${accessToken}`, 'Content-Type': 'multipart/related; boundary=' + boundary },
-          body: multipartRequestBody
-        });
-
-        if(uploadRes.ok) {
-          let scriptLog = document.createElement('script');
-          scriptLog.src = `${API_URL}?action=logUpload&refId=${globalRefId}&email=${encodeURIComponent(globalCardEmail)}&fileName=${encodeURIComponent(customFileName)}`;
-          document.body.appendChild(scriptLog);
-          
-          alert('सफलतापूर्वक आपकी ड्राइव में सेव हो गया!'); 
-          location.reload();
-        } else { alert('अपलोड विफल!'); location.reload(); }
-      } catch (err) { alert('नेटवर्क त्रुटि!'); location.reload(); }
-    }
-  </script>
-</body>
-</html>
+            headers: { 'Authorization': `Bearer ${accessToken}`, 'Content-Type': 'application/
