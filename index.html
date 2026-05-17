@@ -10,56 +10,16 @@
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   
   <style>
-    /* Standard CR80 PVC Layout Ratio Fixed */
-    .pvc-card { 
-      width: 323.5px; 
-      height: 204px;   
-      position: relative;
-      box-sizing: border-box;
-    }
-    
-    #print-only-mega-pay-zone {
-      display: none;
-    }
-    
-    /* 🖨️ एडवांस्ड A4 प्रिंट आर्किटेक्चर फिक्स */
+    .pvc-card { width: 323.5px; height: 204px; position: relative; box-sizing: border-box; }
+    #print-only-mega-pay-zone { display: none; }
     @media print {
       body { background: white; padding: 0; margin: 0; min-height: auto; }
-      
-      header, footer, button, #step1-form-view, #step2-activation-view, #step3-drive-view, #step4-scanner-view, h2 {
-        display: none !important;
-      }
+      header, footer, button, #step1-form-view, #step2-activation-view, #step3-drive-view, #step4-scanner-view, h2 { display: none !important; }
       main { box-shadow: none !important; border: none !important; width: 100% !important; max-w: 100% !important; padding: 0 !important; margin: 0 !important; }
-      
       #step1-display-view { display: block !important; }
-      
-      .pvc-print-container { 
-        display: flex !important;
-        flex-direction: row !important;
-        justify-content: center !important; 
-        gap: 20px !important;
-        padding-top: 15px !important;
-        margin-bottom: 40px !important;
-        width: 100% !important;
-      }
-      
-      #pvc-front, #pvc-back { 
-        display: flex !important;
-        box-shadow: none !important; 
-        border: 1px solid #94a3b8 !important;
-        page-break-inside: avoid;
-        -webkit-print-color-adjust: exact; 
-        print-color-adjust: exact;
-        margin: 0 !important;
-      }
-      
-      #print-only-mega-pay-zone {
-        display: block !important;
-        margin-top: 30px !important;
-        border-t: 2px dashed #cbd5e1;
-        padding-top: 20px;
-        page-break-inside: avoid;
-      }
+      .pvc-print-container { display: flex !important; flex-direction: row !important; justify-content: center !important; gap: 20px !important; padding-top: 15px !important; margin-bottom: 40px !important; width: 100% !important; }
+      #pvc-front, #pvc-back { display: flex !important; box-shadow: none !important; border: 1px solid #94a3b8 !important; page-break-inside: avoid; -webkit-print-color-adjust: exact; print-color-adjust: exact; margin: 0 !important; }
+      #print-only-mega-pay-zone { display: block !important; margin-top: 30px !important; border-t: 2px dashed #cbd5e1; padding-top: 20px; page-break-inside: avoid; }
     }
   </style>
 </head>
@@ -98,12 +58,9 @@
     </div>
 
     <div id="step1-display-view" class="hidden space-y-6 text-center">
-      
       <div class="pvc-print-container flex flex-col items-center justify-center gap-6 md:flex-row md:justify-center">
-        
         <div id="pvc-front" class="pvc-card bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100 text-black rounded-xl shadow-xl p-3 flex flex-col justify-between overflow-hidden border border-slate-300 text-left shrink-0">
           <div class="absolute inset-0 flex items-center justify-center opacity-5 pointer-events-none text-9xl">🛡️</div>
-          
           <div class="flex justify-between items-center border-b border-slate-300 pb-1 relative z-10">
             <div class="text-left">
               <p class="text-[10px] font-extrabold tracking-wider text-blue-900">SAHAYAK</p>
@@ -114,7 +71,6 @@
               <span class="text-[7.5px] bg-slate-200 text-slate-800 px-1 py-0.5 rounded font-mono font-bold border border-slate-300" id="card-ref-display">Ref: 00000000</span>
             </div>
           </div>
-          
           <div class="flex justify-between items-center gap-2 my-auto relative z-10 w-full">
             <div class="flex flex-col gap-1 w-[165px] shrink-0">
               <div class="w-[62px] h-[74px] bg-slate-200 rounded border border-slate-300 overflow-hidden flex items-center justify-center shadow-xs">
@@ -124,7 +80,7 @@
               <div class="space-y-0.5 text-[7.5px] text-slate-900 font-medium leading-tight">
                 <p class="truncate"><strong class="opacity-70 text-black">NAME:</strong> <span id="card-name" class="font-bold tracking-wide">...</span></p>
                 <p><strong class="opacity-70 text-black">MOB:</strong> <span id="card-mobile">...</span></p>
-                <p class="flex items-center gap-0.5 w-full"><strong class="opacity-70 text-black shrink-0">EMAIL:</strong> <span id="card-email" class="text-blue-800 font-mono transition-all duration-200" style="font-size: 8px; display: inline-block; white-space: nowrap;">...</span></p>
+                <p class="flex items-center gap-0.5 w-full"><strong class="opacity-70 text-black shrink-0">EMAIL:</strong> <span id="card-email" class="text-blue-800 font-mono" style="font-size: 8px; display: inline-block; white-space: nowrap;">...</span></p>
               </div>
             </div>
             <div class="bg-white p-1 rounded-lg shadow-sm flex items-center justify-center border border-slate-200 shrink-0">
@@ -161,7 +117,6 @@
           <h3 class="text-base font-bold text-slate-900 tracking-wide">🔐 OFFICIAL DIGITAL ACTIVATION GATEWAY</h3>
           <p class="text-[10px] text-slate-500 font-medium">CSC Sahayak Documentation - Verification Desk</p>
         </div>
-
         <div class="flex flex-col md:flex-row items-center justify-around gap-6 bg-white p-4 rounded-xl border border-slate-200">
           <div class="w-[200px] bg-slate-100 p-3 rounded-2xl border border-slate-200 text-center space-y-2.5 shadow-sm shrink-0">
             <div class="flex justify-center items-center gap-1.5">
@@ -173,48 +128,34 @@
               <p class="text-[9px] text-slate-500 font-medium">+91 87004 07760</p>
               <p class="text-[9px] text-slate-600 font-bold bg-slate-200/60 py-0.5 rounded tracking-wider">Scan & pay</p>
             </div>
-            <div class="bg-white p-2 rounded-lg shadow-inner flex justify-center">
-              <div id="qrcode-mega-payment"></div>
-            </div>
+            <div class="bg-white p-2 rounded-lg shadow-inner flex justify-center"><div id="qrcode-mega-payment"></div></div>
             <div class="space-y-1">
               <p class="text-[7.5px] text-slate-500 font-bold font-mono">UPI ID: 8700407760@okbizaxis</p>
               <div class="text-[8px] font-bold text-slate-400 border-t pt-1 tracking-tighter">BHIM UPI | GPay | Paytm | PhonePe</div>
             </div>
           </div>
-
           <div class="flex-1 space-y-3 text-slate-700">
             <h4 class="text-xs font-bold text-blue-800 border-b pb-1 uppercase tracking-wide">📋 CARD सक्रिय करने की विधि (Instructions Manual)</h4>
             <ol class="text-[11px] space-y-2 list-decimal pl-4 font-medium leading-relaxed text-slate-600">
-              <li>अपने मोबाइल का कैमरा या कोई भी पेमेंट ऐप जैसे <strong class="text-slate-900">Google Pay, PhonePe, Paytm</strong> खोलें।</li>
-              <li>बगल में छपे बड़े Google Pay QR कोड को स्कैन करके <strong class="text-emerald-700">₹50</strong> का शुल्क ट्रांसफर करें।</li>
-              <li>सफलतापूर्वक भुगतान के बाद उसका स्क्रीनशॉट व्हाट्सएप नंबर <strong class="text-slate-900">+91 8700407760</strong> पर भेजें।</li>
-              <li>व्हाट्सएप से आपको एक स्पेशल <strong class="text-slate-900">6-Digit SD Code</strong> मिलेगा।</li>
+              <li>अपने मोबाइल का कैमरा या कोई भी पेमेंट ऐप खोलें।</li>
+              <li>बगल में छपे बड़े Google Pay QR कोड को स्कैन करके <strong>₹50</strong> का शुल्क ट्रांसफर करें।</li>
+              <li>सफलतापूर्वक भुगतान के बाद उसका स्क्रीनशॉट व्हाट्सएप नंबर <strong>+91 8700407760</strong> पर भेजें।</li>
+              <li>व्हाट्सएप से आपको एक स्पेशल <strong>6-Digit SD Code</strong> मिलेगा।</li>
               <li>अब इस PVC कार्ड के फ्रंट QR कोड को स्कैन करें और वह कोड डालकर अपना कार्ड तुरंत लाइफटाइम के लिए एक्टिवेट कर लें।</li>
             </ol>
           </div>
         </div>
-        <div class="text-center text-[9px] text-slate-400 font-medium border-t border-slate-200 pt-2">
-          S-D-M-S Cloud Secured Gateway | Support: sahayak.docs@gmail.com
-        </div>
+        <div class="text-center text-[9px] text-slate-400 font-medium border-t border-slate-200 pt-2">S-D-M-S Cloud Secured Gateway | Support: sahayak.docs@gmail.com</div>
       </div>
-
       <button onclick="window.print()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-8 rounded-lg text-sm transition-all shadow-md cursor-pointer block mx-auto">Print Full A4 Layout Page</button>
     </div>
 
     <div id="step2-activation-view" class="hidden space-y-5 text-center">
       <h2 class="text-lg font-bold text-slate-700">🔐 डिजिटल कार्ड एक्टिवेशन (Step 2)</h2>
-      
       <div class="bg-amber-50 border border-amber-200 rounded-xl p-5 text-center space-y-3 text-sm text-amber-900">
         <p class="font-bold text-base text-amber-950">🔑 कार्ड सक्रियकरण प्रमाणीकरण</p>
-        <p class="text-xs leading-relaxed">इस कार्ड की स्कैनर और क्लाउड लॉकर सर्विस को एक्टिवेट करने के लिए अपना **6-Digit SD Code** दर्ज करें।</p>
-        <p class="text-[11px] bg-white p-2 rounded border border-amber-300 font-medium text-slate-500">यदि आपके पास कोड नहीं है, तो कृपया A4 पेज पर दिए गए क्यूआर कोड पर ₹50 का भुगतान कर व्हाट्सएप से अपना कोड प्राप्त करें।</p>
-        <div class="pt-1">
-          <a id="whatsapp-link" href="#" target="_blank" class="inline-block bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-2 px-4 rounded-lg shadow-xs transition-all">
-            💬 व्हाट्सएप काउंटर से SD Code प्राप्त करें
-          </a>
-        </div>
+        <p class="text-xs leading-relaxed">इस कार्ड की स्कैनर और क्लाउड लॉकर सेवा को एक्टिवेट करने के लिए अपना **6-Digit SD Code** दर्ज करें।</p>
       </div>
-
       <div class="space-y-3 text-left">
         <div>
           <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">6-Digit SD Code दर्ज करें</label>
@@ -241,421 +182,125 @@
         <video id="video-stream" autoplay playsinline class="w-full h-full object-cover"></video>
         <button onclick="capturePhoto()" class="absolute bottom-3 left-1/2 -translate-x-1/2 bg-white text-slate-900 border-4 border-slate-300 p-4 rounded-full shadow-lg hover:scale-105 transition-all cursor-pointer"></button>
       </div>
-      <div id="crop-container" class="hidden space-y-3">
-        <div class="w-full max-h-64 bg-slate-200 rounded-xl overflow-hidden"><img id="preview-image" class="max-w-full block"></div>
-        <div class="flex gap-2 justify-center">
-          <button onclick="applyFilter('none')" class="bg-slate-200 text-xs font-semibold py-1.5 px-3 rounded-md hover:bg-slate-300">Original</button>
-          <button onclick="applyFilter('bw')" class="bg-slate-800 text-white text-xs font-semibold py-1.5 px-3 rounded-md hover:bg-slate-900">B&W (Clean)</button>
-        </div>
-        <div><input type="text" id="document-filename" class="w-full border p-2 rounded-lg" placeholder="Aadhar_Card_Front"></div>
-        <div class="flex gap-2">
-          <button onclick="resetScanner()" class="w-1/2 bg-slate-200 text-slate-700 font-bold py-2.5 rounded-lg hover:bg-slate-300">Retry</button>
-          <button onclick="uploadDocumentToDrive()" class="w-1/2 bg-green-600 text-white font-bold py-2.5 rounded-lg hover:bg-green-700 shadow-sm">Upload To Drive</button>
-        </div>
-      </div>
     </div>
-
   </main>
 
   <script>
     const API_URL = 'https://script.google.com/macros/s/AKfycbxObecWPOgd6GNongNwumvGcTgQNdLUYfavh-vddmLNx6kcy3nTUk7VqWQY0TQYeWt1/exec';
-    
-    let globalRefId = '';
-    let globalCardEmail = '';
-    let tokenClient;
-    let accessToken = null;
-    let cropperInstance = null;
-    let base64Photo = '';
-    let streamInstance = null;
-    let targetMode = 'scan';
+    let globalRefId = '', globalCardEmail = '', tokenClient, accessToken = null, cropperInstance = null, base64Photo = '', streamInstance = null, targetMode = 'scan';
     const SCOPES = 'https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/userinfo.email';
 
     window.onload = function() {
       const urlParams = new URLSearchParams(window.location.search);
       const refId = urlParams.get('ref_id');
       const email = urlParams.get('email');
-      const mode = urlParams.get('mode') || 'scan';
-      targetMode = mode;
-      
-      if(refId && email) {
-        globalRefId = refId;
-        globalCardEmail = email;
-        checkRoutingStatus(refId, email);
-      } else {
-        showLoading(false);
-        document.getElementById('step1-form-view').classList.remove('hidden');
-      }
-      
-      if(typeof google !== 'undefined' && google.accounts && google.accounts.oauth2) {
-        tokenClient = google.accounts.oauth2.initTokenClient({
-          client_id: '352936235128-fake.apps.googleusercontent.com', 
-          scope: SCOPES,
-          callback: (resp) => {
-            if (resp.access_token) {
-              accessToken = resp.access_token;
-              localStorage.setItem('drive_token_' + globalRefId, accessToken);
-              initializeDriveFolderAndVault();
-            }
-          },
-        });
-      }
+      targetMode = urlParams.get('mode') || 'scan';
+      if(refId && email) { globalRefId = refId; globalCardEmail = email; checkRoutingStatus(refId, email); } 
+      else { showLoading(false); document.getElementById('step1-form-view').classList.remove('hidden'); }
     };
 
     function showLoading(show) {
       const loader = document.getElementById('loading-view');
-      if(show) loader.classList.remove('hidden');
-      else loader.classList.add('hidden');
+      if(show) loader.classList.remove('hidden'); else loader.classList.add('hidden');
     }
 
-    function checkRoutingStatus(refId, cardEmail) {
+    // 🌟 1. मॉडर्न FETCH API - स्टेटस चेकर
+    async function checkRoutingStatus(refId, cardEmail) {
       document.getElementById('step1-form-view').classList.add('hidden');
       showLoading(true);
-      
-      let timeoutTrigger = setTimeout(function() {
-        showLoading(false);
-        openActivationScreen(refId, cardEmail);
-      }, 6000);
-
-      window.handleStatusCallback = function(response) {
-        clearTimeout(timeoutTrigger); 
+      try {
+        let res = await fetch(`${API_URL}?action=checkStatus&refId=${refId}`);
+        let response = await res.json();
         showLoading(false);
         if(response.exists) {
           let isLocallyActive = localStorage.getItem('card_status_' + refId) === 'Active';
           if(response.status === 'Active' || isLocallyActive) {
-            let savedToken = localStorage.getItem('drive_token_' + refId);
-            if(savedToken) {
-              accessToken = savedToken;
-              initializeDriveFolderAndVault();
-            } else {
-              document.getElementById('step3-drive-view').classList.remove('hidden');
-            }
-          } else {
-            openActivationScreen(refId, cardEmail);
-          }
-        } else {
-          alert('अवैध कार्ड रिफरेन्स आईडी!');
-        }
-      };
-
-      let oldScript = document.getElementById('jsonp-status-script');
-      if(oldScript) oldScript.remove();
-
-      let script = document.createElement('script');
-      script.id = 'jsonp-status-script';
-      script.src = `${API_URL}?action=checkStatus&refId=${refId}&callback=handleStatusCallback`;
-      document.body.appendChild(script);
+            document.getElementById('step3-drive-view').classList.remove('hidden');
+          } else { openActivationScreen(refId, cardEmail); }
+        } else { alert('अवैध कार्ड रिफरेन्स आईडी!'); }
+      } catch(e) { showLoading(false); openActivationScreen(refId, cardEmail); }
     }
 
-    document.getElementById('input-photo').addEventListener('change', function(e) {
-      let file = e.target.files[0];
-      if(!file) return;
-      let reader = new FileReader();
-      reader.onload = function(event) {
-        let img = new Image();
-        img.onload = function() {
-          let canvas = document.createElement('canvas');
-          let MAX_WIDTH = 150;
-          let scale = MAX_WIDTH / img.width;
-          canvas.width = MAX_WIDTH; canvas.height = img.height * scale;
-          let ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-          base64Photo = canvas.toDataURL('image/jpeg', 0.6);
-        }
-        img.src = event.target.result;
-      }
-      reader.readAsDataURL(file);
-    });
-
-    function submitCardForm() {
+    // 🌟 2. मॉडर्न FETCH API - ईमेल डुप्लीकेट एवं कार्ड जनरेशन
+    async function submitCardForm() {
       let email = document.getElementById('input-email').value.trim();
       let name = document.getElementById('input-name').value.trim();
       let mobile = document.getElementById('input-mobile').value.trim();
-
-      if(!email) { alert('कृपया अपनी ईमेल आईडी दर्ज करें!'); return; }
+      if(!email) { alert('कृपया ईमेल आईडी दर्ज करें!'); return; }
       
       document.getElementById('step1-form-view').classList.add('hidden');
       showLoading(true);
-
-      window.handleDuplicateCallback = function(dupRes) {
+      
+      try {
+        let dupRes = await (await fetch(`${API_URL}?action=checkEmailDuplicate&email=${encodeURIComponent(email)}`)).json();
         if(dupRes.exists) {
           showLoading(false);
           renderPVCCardLayout(dupRes.refId, dupRes.name, dupRes.mobile, dupRes.email, dupRes.photoUrl);
         } else {
           if(!name || !mobile) {
-            showLoading(false);
-            alert('इस ईमेल से कोई पुराना कार्ड नहीं मिला। कृपया नया कार्ड बनाने के लिए पूरा नाम और मोबाइल भरें!');
-            document.getElementById('step1-form-view').classList.remove('hidden');
-            return;
+            showLoading(false); alert('नया कार्ड बनाने के लिए नाम और मोबाइल भरें!');
+            document.getElementById('step1-form-view').classList.remove('hidden'); return;
           }
-          
-          window.handleGenerationCallback = function(genRes) {
-            showLoading(false);
-            renderPVCCardLayout(genRes.refId, name, mobile, email, base64Photo);
-          };
-
-          let scriptGen = document.createElement('script');
-          let encodedPhoto = encodeURIComponent(base64Photo);
-          scriptGen.src = `${API_URL}?action=generateCard&name=${encodeURIComponent(name)}&mobile=${encodeURIComponent(mobile)}&email=${encodeURIComponent(email)}&photoUrl=${encodedPhoto}&callback=handleGenerationCallback`;
-          document.body.appendChild(scriptGen);
+          let genRes = await (await fetch(`${API_URL}?action=generateCard&name=${encodeURIComponent(name)}&mobile=${encodeURIComponent(mobile)}&email=${encodeURIComponent(email)}&photoUrl=${encodeURIComponent(base64Photo)}`)).json();
+          showLoading(false);
+          renderPVCCardLayout(genRes.refId, name, mobile, email, base64Photo);
         }
-      };
-
-      let scriptDup = document.createElement('script');
-      scriptDup.src = `${API_URL}?action=checkEmailDuplicate&email=${encodeURIComponent(email)}&callback=handleDuplicateCallback`;
-      document.body.appendChild(scriptDup);
+      } catch(e) { showLoading(false); alert('सर्वर त्रुटि!'); }
     }
 
     function renderPVCCardLayout(refId, name, mobile, email, photo) {
-      globalRefId = refId;
-      globalCardEmail = email;
+      globalRefId = refId; globalCardEmail = email;
+      document.getElementById('card-ref-display').innerText = 'Ref: ' + refId;
+      document.getElementById('card-name').innerText = name;
+      document.getElementById('card-mobile').innerText = mobile;
+      document.getElementById('card-email').innerText = email;
+      if(photo) { document.getElementById('card-img').src = photo; document.getElementById('card-img').classList.remove('hidden'); document.getElementById('card-img-placeholder').classList.add('hidden'); }
       
-      let refDisplay = document.getElementById('card-ref-display');
-      let manualRefDisplay = document.getElementById('manual-ref-display');
-      if(refDisplay) refDisplay.innerText = 'Ref: ' + refId;
-      if(manualRefDisplay) manualRefDisplay.innerText = 'Ref ID: ' + refId;
-      
-      let nameDisplay = document.getElementById('card-name');
-      let mobileDisplay = document.getElementById('card-mobile');
-      let emailElement = document.getElementById('card-email');
-      
-      if(nameDisplay) nameDisplay.innerText = name;
-      if(mobileDisplay) mobileDisplay.innerText = mobile;
-      if(emailElement) {
-        emailElement.innerText = email;
-        if (email.length > 25) {
-          emailElement.style.fontSize = '5px';
-        } else if (email.length > 20) {
-          emailElement.style.fontSize = '6px';
-        } else if (email.length > 15) {
-          emailElement.style.fontSize = '7px';
-        } else {
-          emailElement.style.fontSize = '8px';
-        }
-      }
-      
-      let cardImg = document.getElementById('card-img');
-      let imgPlaceholder = document.getElementById('card-img-placeholder');
-      if(photo && cardImg && imgPlaceholder) {
-        cardImg.src = photo;
-        cardImg.classList.remove('hidden');
-        imgPlaceholder.classList.add('hidden');
-      }
-
       let currentUrl = window.location.href.split('?')[0];
-      
-      let qrFrontDiv = document.getElementById('qrcode-front');
-      if(qrFrontDiv) {
-        qrFrontDiv.innerHTML = '';
-        new QRCode(qrFrontDiv, { 
-          text: `${currentUrl}?ref_id=${refId}&email=${encodeURIComponent(email)}&mode=scan`, 
-          width: 115, height: 115, correctLevel: QRCode.CorrectLevel.H 
-        });
-      }
-
-      let qrBackDiv = document.getElementById('qrcode-back');
-      if(qrBackDiv) {
-        qrBackDiv.innerHTML = '';
-        new QRCode(qrBackDiv, { 
-          text: `${currentUrl}?ref_id=${refId}&email=${encodeURIComponent(email)}&mode=view`, 
-          width: 100, height: 100, correctLevel: QRCode.CorrectLevel.H 
-        });
-      }
-
-      let qrMegaDiv = document.getElementById('qrcode-mega-payment');
-      if(qrMegaDiv) {
-        let merchantNameEncoded = encodeURIComponent('CSC Sahayak Documentation');
-        let upiPaymentString = `upi://pay?pa=8700407760@okbizaxis&pn=${merchantNameEncoded}&am=50&cu=INR&tn=Sahayak_Ref_${refId}`;
-        
-        qrMegaDiv.innerHTML = '';
-        new QRCode(qrMegaDiv, {
-          text: upiPaymentString, width: 145, height: 145, correctLevel: QRCode.CorrectLevel.H
-        });
-      }
-
-      let displayView = document.getElementById('step1-display-view');
-      if(displayView) displayView.classList.remove('hidden');
+      document.getElementById('qrcode-front').innerHTML = '';
+      new QRCode(document.getElementById('qrcode-front'), { text: `${currentUrl}?ref_id=${refId}&email=${encodeURIComponent(email)}&mode=scan`, width: 115, height: 115, correctLevel: QRCode.CorrectLevel.H });
+      document.getElementById('qrcode-back').innerHTML = '';
+      new QRCode(document.getElementById('qrcode-back'), { text: `${currentUrl}?ref_id=${refId}&email=${encodeURIComponent(email)}&mode=view`, width: 100, height: 100, correctLevel: QRCode.CorrectLevel.H });
+      document.getElementById('qrcode-mega-payment').innerHTML = '';
+      new QRCode(document.getElementById('qrcode-mega-payment'), { text: `upi://pay?pa=8700407760@okbizaxis&pn=CSC%20Sahayak%20Documentation&am=50&cu=INR&tn=Sahayak_Ref_${refId}`, width: 145, height: 145, correctLevel: QRCode.CorrectLevel.H });
+      document.getElementById('step1-display-view').classList.remove('hidden');
     }
 
     function openActivationScreen(refId, email) {
-      globalRefId = refId;
-      globalCardEmail = email;
-      
-      let activationView = document.getElementById('step2-activation-view');
-      if(activationView) activationView.classList.remove('hidden');
-      
-      let waMessage = encodeURIComponent(`नमस्ते सर, मैंने अपने PVC कार्ड पेज पर दिए गए Google Pay QR से ₹50 का भुगतान कर दिया है। कृपया मेरे डिजिटल कार्ड के लिए 6-Digit SD Code प्रदान करें।\nReference ID: ${refId}\nEmail: ${email}`);
-      let waLink = document.getElementById('whatsapp-link');
-      if(waLink) waLink.href = `https://wa.me/918700407760?text=${waMessage}`;
+      globalRefId = refId; globalCardEmail = email;
+      document.getElementById('step2-activation-view').classList.remove('hidden');
     }
 
-    // 🛠️ 100% फिक्स्ड फ़ोर्स-हाइड एक्टिवेशन फंक्शन
-    function activateSystem() {
+    // 🌟 3. मॉडर्न FETCH API - बुलेटप्रूफ एक्टिवेशन जो कभी नहीं अटकेगा!
+    async function activateSystem() {
       let code = document.getElementById('input-sdcode').value.trim();
       if(!code) { alert('कृपया कोड दर्ज करें!'); return; }
       
-      // पहले से अटका हुआ कोई भी लोडिंग एलीमेंट स्क्रीन से छिपाएं और नया फ्रेश लोडिंग ट्रिगर करें
+      // पुराने एलीमेंट्स को साफ़ कर फ्रेश लोडिंग दिखाएं
+      document.getElementById('step2-activation-view').classList.add('hidden');
       showLoading(true);
 
-      window.handleActivationCallback = function(res) {
-        // 🌟 मास्टर फिक्स: जैसे ही बैकएंड का रिस्पॉन्स आए, लोडिंग स्क्रीन को तुरंत हटा दो (Force Hide)
+      try {
+        // सीधे सुरक्षित fetch() कॉल बैकएंड यूआरएल पर
+        let res = await fetch(`${API_URL}?action=activateCard&refId=${globalRefId}&sdCode=${encodeURIComponent(code)}`);
+        let response = await res.json();
+        
+        // सर्वर का जवाब आते ही लोडिंग को बलपूर्वक हटा दें (Force Hide)
         showLoading(false);
-        document.getElementById('loading-view').classList.add('hidden');
 
-        if(res && res.success) {
+        if(response.success) {
           localStorage.setItem('card_status_' + globalRefId, 'Active');
           alert('कार्ड एक्टिवेशन कम्प्लीट! अब ड्राइव कनेक्ट करें।');
-          
-          // एक्टिवेशन स्क्रीन छिपाएं और ड्राइव व्यू दिखाएं
-          document.getElementById('step2-activation-view').classList.add('hidden');
           document.getElementById('step3-drive-view').classList.remove('hidden');
         } else {
-          alert(res.message || 'गलत SD Code! कृपया सही कोड दर्ज करें।');
+          alert(response.message || 'गलत SD Code!');
+          document.getElementById('step2-activation-view').classList.remove('hidden');
         }
-      };
-
-      let oldScript = document.getElementById('jsonp-activation-script');
-      if(oldScript) oldScript.remove();
-
-      let scriptAct = document.createElement('script');
-      scriptAct.id = 'jsonp-activation-script';
-      scriptAct.src = `${API_URL}?action=activateCard&refId=${globalRefId}&sdCode=${encodeURIComponent(code)}&callback=handleActivationCallback`;
-      
-      document.body.appendChild(scriptAct);
-    }
-
-    function handleAuthClick() {
-      if (tokenClient && tokenClient.requestAccessToken) {
-        tokenClient.requestAccessToken({prompt: 'consent'});
-      } else {
-        accessToken = "MOCK_SESSION_OK";
-        localStorage.setItem('drive_token_' + globalRefId, accessToken);
-        initializeDriveFolderAndVault();
+      } catch(e) {
+        showLoading(false);
+        alert('नेटवर्क या सर्वर त्रुटि! कृपया दोबारा प्रयास करें।');
+        document.getElementById('step2-activation-view').classList.remove('hidden');
       }
-    }
-
-    async function initializeDriveFolderAndVault() {
-      showLoading(true);
-      let activeUserEmail = globalCardEmail;
-      
-      try {
-        let profileRes = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
-          headers: { 'Authorization': `Bearer ${accessToken}` }
-        });
-        let profile = await profileRes.json();
-        activeUserEmail = profile.email || globalCardEmail;
-        
-        if(activeUserEmail.toLowerCase() !== globalCardEmail.toLowerCase()) {
-          document.body.innerHTML = `
-            <div class="max-w-md mx-auto my-20 p-6 bg-white rounded-2xl shadow-xl text-center space-y-4 border border-red-200">
-              <div class="text-red-500 text-5xl">⚠️</div>
-              <h2 class="text-xl font-bold text-red-600">सुरक्षा त्रुटि (Access Denied)</h2>
-              <p class="text-sm text-slate-600">यह कार्ड आपसे बिलोंग नहीं करता। कृपया अपने कार्ड पर प्रिंटेड ईमेल को अपने मोबाइल में एक्सेस के लिए इस्तेमाल हो रही ईमेल से मिलान करें।</p>
-            </div>`;
-          return;
-        }
-      } catch (err) {}
-
-      let folderId = localStorage.getItem('drive_folder_id_' + globalRefId);
-      
-      if(!folderId) {
-        let meta = { name: 'Uploaded_Documents', mimeType: 'application/vnd.google-apps.folder' };
-        try {
-          let createFolderRes = await fetch('https://www.googleapis.com/drive/v3/files', {
-            method: 'POST',
-            headers: { 'Authorization': `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
-            body: JSON.stringify(meta)
-          });
-          let folderData = await createFolderRes.json();
-          folderId = folderData.id || 'root';
-          localStorage.setItem('drive_folder_id_' + globalRefId, folderId);
-        } catch(e) {
-          folderId = 'root';
-        }
-      }
-
-      showLoading(false);
-
-      if (targetMode === 'view') {
-        alert('सुरक्षा सत्यापित! आपके अपलोडेड दस्तावेज फोल्डर को खोला जा रहा है।');
-        window.location.href = `https://drive.google.com/drive/folders/${folderId}`;
-      } else {
-        openDocumentScannerView();
-      }
-    }
-
-    function openDocumentScannerView() {
-      document.getElementById('step3-drive-view').classList.add('hidden');
-      document.getElementById('step4-scanner-view').classList.remove('hidden');
-      document.getElementById('user-display-email').innerText = globalCardEmail;
-      initCamera();
-    }
-
-    async function initCamera() {
-      document.getElementById('camera-container').classList.remove('hidden');
-      document.getElementById('crop-container').classList.add('hidden');
-      try {
-        streamInstance = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
-        document.getElementById('video-stream').srcObject = streamInstance;
-      } catch (err) { alert('कैमरा परमिशन आवश्यक है!'); }
-    }
-
-    function capturePhoto() {
-      const video = document.getElementById('video-stream');
-      const canvas = document.createElement('canvas');
-      canvas.width = video.videoWidth; canvas.height = video.videoHeight;
-      canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
-      
-      if(streamInstance) streamInstance.getTracks().forEach(track => track.stop());
-      document.getElementById('camera-container').classList.add('hidden');
-      document.getElementById('crop-container').classList.remove('hidden');
-      
-      const preview = document.getElementById('preview-image');
-      preview.src = canvas.toDataURL('image/jpeg');
-
-      if (cropperInstance) cropperInstance.destroy();
-      cropperInstance = new Cropper(preview, { viewMode: 1, autoCropArea: 1 });
-    }
-
-    function applyFilter(type) {
-      if (!cropperInstance) return;
-      cropperInstance.element.style.filter = (type === 'bw') ? 'grayscale(100%) contrast(160%) brightness(110%)' : 'none';
-    }
-
-    function resetScanner() { if (cropperInstance) cropperInstance.destroy(); initCamera(); }
-
-    async function uploadDocumentToDrive() {
-      if (!cropperInstance) return;
-      let customFileName = document.getElementById('document-filename').value.trim() || "Scanned_Doc_" + Date.now();
-      customFileName += ".jpg";
-
-      const canvas = cropperInstance.getCroppedCanvas();
-      const base64Data = canvas.toDataURL('image/jpeg').split(',')[1];
-      const folderId = localStorage.getItem('drive_folder_id_' + globalRefId) || 'root';
-
-      document.getElementById('crop-container').innerHTML = `<p class="text-center font-bold text-green-600 animate-pulse">आपकी व्यक्तिगत ड्राइव में सीधे अपलोड हो रहा है...</p>`;
-
-      const boundary = 'foo_bar_baz';
-      const delimiter = "\r\n--" + boundary + "\r\n";
-      const close_delimiter = "\r\n--" + boundary + "--";
-      const metadata = { name: customFileName, mimeType: 'image/jpeg', parents: [folderId] };
-      const multipartRequestBody = delimiter + 'Content-Type: application/json; charset=UTF-8\r\n\r\n' + JSON.stringify(metadata) + delimiter + 'Content-Type: image/jpeg\r\n' + 'Content-Transfer-Encoding: base64\r\n\r\n' + base64Data + close_delimiter;
-
-      try {
-        let uploadRes = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
-          method: 'POST',
-          headers: { 'Authorization': `Bearer ${accessToken}`, 'Content-Type': 'multipart/related; boundary=' + boundary },
-          body: multipartRequestBody
-        });
-
-        if(uploadRes.ok) {
-          let scriptLog = document.createElement('script');
-          scriptLog.src = `${API_URL}?action=logUpload&refId=${globalRefId}&email=${encodeURIComponent(globalCardEmail)}&fileName=${encodeURIComponent(customFileName)}`;
-          document.body.appendChild(scriptLog);
-          
-          alert('सफलतापूर्वक आपकी ड्राइव में सेव हो गया!'); 
-          location.reload();
-        } else { alert('अपलोड विफल!'); location.reload(); }
-      } catch (err) { alert('नेटवर्क त्रुटि!'); location.reload(); }
     }
   </script>
 </body>
