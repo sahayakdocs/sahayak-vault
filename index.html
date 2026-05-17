@@ -193,7 +193,7 @@
           <div class="flex-1 space-y-3 text-slate-700">
             <h4 class="text-xs font-bold text-blue-800 border-b pb-1 uppercase tracking-wide">📋 कार्ड सक्रिय करने की विधि (Instructions Manual)</h4>
             <ol class="text-[11px] space-y-2 list-decimal pl-4 font-medium leading-relaxed text-slate-600">
-              <li>अपने मोबाइल का कैमरा या कोई भी पेमेंट ऐप जैसे <strong class="text-slate-900">Google Pay, PhonePe, Paytm</strong> खोलें।</li>
+              <li>अपने मोबाइल का कामना या कोई भी पेमेंट ऐप जैसे <strong class="text-slate-900">Google Pay, PhonePe, Paytm</strong> खोलें।</li>
               <li>बगल में छपे बड़े Google Pay QR कोड को स्कैन करके <strong class="text-emerald-700">₹50</strong> का शुल्क ट्रांसफर करें।</li>
               <li>सफलतापूर्वक भुगतान के बाद उसका स्क्रीनशॉट व्हाट्सएप नंबर <strong class="text-slate-900">+91 8700407760</strong> पर भेजें।</li>
               <li>व्हाट्सएप से आपको एक स्पेशल <strong class="text-slate-900">6-Digit SD Code</strong> मिलेगा।</li>
@@ -418,18 +418,15 @@
       document.body.appendChild(scriptDup);
     }
 
-    // 🛠️ फिक्स्ड रेंडर फंक्शन: यह नए एचटीएमएल के आईडी एलिमेंट्स को बिना क्रैश किए एकदम सही डेटा पास करेगा
     function renderPVCCardLayout(refId, name, mobile, email, photo) {
       globalRefId = refId;
       globalCardEmail = email;
       
-      // स्क्रीन पर रिफरेन्स आईडी सेट करना
       let refDisplay = document.getElementById('card-ref-display');
       let manualRefDisplay = document.getElementById('manual-ref-display');
       if(refDisplay) refDisplay.innerText = 'Ref: ' + refId;
       if(manualRefDisplay) manualRefDisplay.innerText = 'Ref ID: ' + refId;
       
-      // नाम, मोबाइल और ईमेल रेंडर करना
       let nameDisplay = document.getElementById('card-name');
       let mobileDisplay = document.getElementById('card-mobile');
       let emailElement = document.getElementById('card-email');
@@ -438,7 +435,6 @@
       if(mobileDisplay) mobileDisplay.innerText = mobile;
       if(emailElement) {
         emailElement.innerText = email;
-        // ईमेल ऑटो-रिसाइज लॉजिक
         if (email.length > 25) {
           emailElement.style.fontSize = '5px';
         } else if (email.length > 20) {
@@ -450,7 +446,6 @@
         }
       }
       
-      // फोटो रेंडरिंग लॉजिक
       let cardImg = document.getElementById('card-img');
       let imgPlaceholder = document.getElementById('card-img-placeholder');
       if(photo && cardImg && imgPlaceholder) {
@@ -493,15 +488,21 @@
         });
       }
 
-      // कार्ड डिस्प्ले व्यू को लाइव करना
       let displayView = document.getElementById('step1-display-view');
       if(displayView) displayView.classList.remove('hidden');
     }
 
+    // 🛠️ फिक्स्ड एक्टिवेशन स्क्रीन: यहाँ भी 'globalRefId' को लॉक कर दिया गया है ताकि QR स्कैन वाले यूजर्स सीधे कोड सबमिट कर सकें
     function openActivationScreen(refId, email) {
-      document.getElementById('step2-activation-view').classList.remove('hidden');
+      globalRefId = refId;
+      globalCardEmail = email;
+      
+      let activationView = document.getElementById('step2-activation-view');
+      if(activationView) activationView.classList.remove('hidden');
+      
       let waMessage = encodeURIComponent(`नमस्ते सर, मैंने अपने PVC कार्ड पेज पर दिए गए Google Pay QR से ₹50 का भुगतान कर दिया है। कृपया मेरे डिजिटल कार्ड के लिए 6-Digit SD Code प्रदान करें।\nReference ID: ${refId}\nEmail: ${email}`);
-      document.getElementById('whatsapp-link').href = `https://wa.me/918700407760?text=${waMessage}`;
+      let waLink = document.getElementById('whatsapp-link');
+      if(waLink) waLink.href = `https://wa.me/918700407760?text=${waMessage}`;
     }
 
     function activateSystem() {
@@ -525,6 +526,8 @@
 
       let scriptAct = document.createElement('script');
       scriptAct.id = 'jsonp-activation-script';
+      
+      // 🛠️ मज़बूत फिक्स: अब 'globalRefId' बिल्कुल सही तरीके से बैकएंड यूआरएल में फायर होगी
       scriptAct.src = `${API_URL}?action=activateCard&refId=${globalRefId}&sdCode=${encodeURIComponent(code)}&callback=handleActivationCallback`;
       
       document.body.appendChild(scriptAct);
