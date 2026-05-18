@@ -14,7 +14,7 @@
     #print-only-mega-pay-zone { display: none; }
     @media print {
       body { background: white; padding: 0; margin: 0; min-height: auto; }
-      header, footer, button, #step1-form-view, #step2-activation-view, #step3-drive-view, #step4-scanner-view, h2 { display: none !important; }
+      header, footer, button, #step1-form-view, #error-activation-view, #step4-scanner-view, h2 { display: none !important; }
       main { box-shadow: none !important; border: none !important; width: 100% !important; max-w: 100% !important; padding: 0 !important; margin: 0 !important; }
       #step1-display-view { display: block !important; }
       .pvc-print-container { display: flex !important; flex-direction: row !important; justify-content: center !important; gap: 20px !important; padding-top: 15px !important; margin-bottom: 40px !important; width: 100% !important; }
@@ -33,7 +33,7 @@
   <main class="w-full max-w-xl bg-white rounded-2xl shadow-md p-6 border border-slate-200/60 dynamic-content">
     
     <div id="loading-view" class="hidden text-center py-10">
-      <p class="text-blue-600 font-bold animate-pulse">सुरक्षा जांच एवं डेटा सिंक्रोनाइजेशन जारी है, कृपया प्रतीक्षा करें...</p>
+      <p class="text-blue-600 font-bold animate-pulse" id="loading-text">सुरक्षा जांच एवं डेटा सिंक्रोनाइजेशन जारी है, कृपया प्रतीक्षा करें...</p>
     </div>
 
     <div id="step1-form-view" class="space-y-4">
@@ -137,11 +137,10 @@
           <div class="flex-1 space-y-3 text-slate-700">
             <h4 class="text-xs font-bold text-blue-800 border-b pb-1 uppercase tracking-wide">📋 CARD सक्रिय करने की विधि (Instructions Manual)</h4>
             <ol class="text-[11px] space-y-2 list-decimal pl-4 font-medium leading-relaxed text-slate-600">
-              <li>अपने mobile का कैमरा या कोई भी पेमेंट ऐप खोलें।</li>
+              <li>अपने मोबाइल का कैमरा या कोई भी पेमेंट ऐप खोलें।</li>
               <li>बगल में छपे बड़े Google Pay QR कोड को स्कैन करके <strong>₹50</strong> का शुल्क ट्रांसफर करें।</li>
               <li>सफलतापूर्वक भुगतान के बाद उसका स्क्रीनशॉट व्हाट्सएप नंबर <strong>+91 8700407760</strong> पर भेजें।</li>
-              <li>व्हाट्सएप से आपको एक स्पेशल <strong>6-Digit SD Code</strong> मिलेगा।</li>
-              <li>अब इस PVC कार्ड के फ्रंट QR कोड को स्कैन करें और वह कोड डालकर अपना कार्ड तुरंत लाइफटाइम के लिए एक्टिवेट कर लें।</li>
+              <li>व्हाट्सएप पर वेरिफिकेशन दर्ज होते ही फ्रंट QR स्कैन करने पर आपका स्कैनर पैनल सीधे अनलॉक हो जाएगा।</li>
             </ol>
           </div>
         </div>
@@ -150,53 +149,46 @@
       <button onclick="window.print()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-8 rounded-lg text-sm transition-all shadow-md cursor-pointer block mx-auto">Print Full A4 Layout Page</button>
     </div>
 
-    <div id="step2-activation-view" class="hidden space-y-5 text-center">
-      <h2 class="text-lg font-bold text-slate-700">🔐 डिजिटल कार्ड एक्टिवेशन (Step 2)</h2>
-      <div class="bg-amber-50 border border-amber-200 rounded-xl p-5 text-center space-y-3 text-sm text-amber-900">
-        <p class="font-bold text-base text-amber-950">🔑 कार्ड सक्रियकरण प्रमाणीकरण</p>
-        <p class="text-xs leading-relaxed">इस कार्ड की क्लाउड लॉकर सेवा को एक्टिवेट करने के लिए व्हाट्सएप से प्राप्त **6-Digit SD Code** दर्ज करें।</p>
-        <div class="pt-1">
-          <a id="whatsapp-link" href="#" target="_blank" class="inline-block bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-2.5 px-5 rounded-lg shadow-md transition-all">
-            💬 व्हाट्सएप काउंटर से SD Code लें / अपडेट कराएं
+    <div id="error-activation-view" class="hidden space-y-5 text-center">
+      <div class="bg-red-50 border border-red-200 rounded-xl p-6 text-center space-y-4">
+        <div class="w-12 h-12 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto text-2xl font-bold">❌</div>
+        <h2 class="text-lg font-bold text-red-700">कार्ड एक्टिवेट नहीं है या सेवा निलंबित है!</h2>
+        <p class="text-sm text-red-900 leading-relaxed">एडमिन द्वारा आपकी भुगतान पुष्टि पेंडिंग है या आपका SD Code हटा दिया गया है। कृपया आगे बढ़ने के लिए तुरंत व्हाट्सएप पर संपर्क करें।</p>
+        <div class="pt-2">
+          <a id="whatsapp-link" href="#" target="_blank" class="inline-block bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-3 px-6 rounded-lg shadow-md transition-all">
+            💬 WhatsApp पर लिखें: "please mere SD Code को update करे"
           </a>
         </div>
       </div>
-      <div class="space-y-3 text-left">
-        <div>
-          <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">6-Digit SD Code दर्ज करें</label>
-          <input type="text" id="input-sdcode" class="w-full border p-2.5 rounded-lg tracking-widest text-center font-bold确定 uppercase focus:ring-2 focus:ring-blue-500" placeholder="SDXXXXXX">
-        </div>
-        <button onclick="activateSystem()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg shadow-sm transition-all cursor-pointer">कार्ड एक्टिवेट करें</button>
-      </div>
-    </div>
-
-    <div id="step3-drive-view" class="hidden space-y-4 text-center">
-      <h2 class="text-lg font-bold text-slate-700">📁 Google Drive कनेक्ट करें</h2>
-      <p class="text-sm text-slate-500">सुरक्षा सत्यापन के लिए अपनी ईमेल आईडी प्रमाणित करें। आपके दस्तावेज पूरी तरह निजी रहेंगे।</p>
-      <button onclick="handleAuthClick()" class="w-full bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 font-semibold py-3 px-4 rounded-lg inline-flex items-center justify-center gap-2 shadow-xs transition-all cursor-pointer">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/1/12/Google_Drive_icon_%282020%29.svg" class="w-5 h-5">Verify & Connect Google Drive
-      </button>
     </div>
 
     <div id="step4-scanner-view" class="hidden space-y-4">
       <div class="flex justify-between items-center border-b pb-2">
-        <h2 class="text-sm font-bold text-blue-700">📷 Sahayak Cloud Vault Scanner</h2>
+        <h2 class="text-sm font-bold text-blue-700 tracking-wide">📷 Sahayak Cloud Vault Scanner</h2>
         <span class="text-xs bg-slate-100 px-2 py-1 rounded font-medium text-slate-600" id="user-display-email">...</span>
       </div>
+      
       <div id="camera-container" class="relative w-full aspect-video bg-black rounded-xl overflow-hidden flex items-center justify-center shadow-inner">
         <video id="video-stream" autoplay playsinline class="w-full h-full object-cover"></video>
-        <button onclick="capturePhoto()" class="absolute bottom-3 left-1/2 -translate-x-1/2 bg-white text-slate-900 border-4 border-slate-300 p-4 rounded-full shadow-lg hover:scale-105 transition-all cursor-pointer"></button>
+        <button onclick="capturePhoto()" class="absolute bottom-4 left-1/2 -translate-x-1/2 bg-white text-slate-900 border-4 border-slate-300 p-4 rounded-full shadow-lg hover:scale-105 transition-all cursor-pointer"></button>
       </div>
-      <div id="crop-container" class="hidden space-y-3">
+      
+      <div id="crop-container" class="hidden space-y-4">
         <div class="w-full max-h-64 bg-slate-200 rounded-xl overflow-hidden"><img id="preview-image" class="max-w-full block"></div>
+        
         <div class="flex gap-2 justify-center">
           <button onclick="applyFilter('none')" class="bg-slate-200 text-xs font-semibold py-1.5 px-3 rounded-md hover:bg-slate-300">Original</button>
-          <button onclick="applyFilter('bw')" class="bg-slate-800 text-white text-xs font-semibold py-1.5 px-3 rounded-md hover:bg-slate-900">B&W (Clean)</button>
+          <button onclick="applyFilter('bw')" class="bg-slate-800 text-white text-xs font-semibold py-1.5 px-3 rounded-md hover:bg-slate-900">B&W (Clean Document)</button>
         </div>
-        <div><input type="text" id="document-filename" class="w-full border p-2 rounded-lg" placeholder="Aadhar_Card_Front"></div>
-        <div class="flex gap-2">
-          <button onclick="resetScanner()" class="w-1/2 bg-slate-200 text-slate-700 font-bold py-2.5 rounded-lg hover:bg-slate-300">Retry</button>
-          <button onclick="uploadDocumentToDrive()" class="w-1/2 bg-green-600 text-white font-bold py-2.5 rounded-lg hover:bg-green-700 shadow-sm">Upload To Drive</button>
+        
+        <div class="space-y-2">
+          <label class="block text-xs font-bold text-slate-500 uppercase">दस्तावेज़ का नाम दर्ज करें (Document Name)</label>
+          <input type="text" id="document-filename" class="w-full border p-3 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-medium" placeholder="Aadhar_Card_Front_New">
+        </div>
+        
+        <div class="flex gap-3">
+          <button onclick="resetScanner()" class="w-1/2 bg-slate-200 text-slate-700 font-bold py-3 rounded-lg hover:bg-slate-300 transition-all">Retry Camera</button>
+          <button onclick="uploadDocumentToDrive()" class="w-1/2 bg-green-600 text-white font-bold py-3 rounded-lg hover:bg-green-700 shadow-md transition-all">Save to Drive Folder</button>
         </div>
       </div>
     </div>
@@ -217,12 +209,20 @@
       const refId = urlParams.get('ref_id');
       const email = urlParams.get('email');
       targetMode = urlParams.get('mode') || 'scan';
-      if(refId && email) { globalRefId = refId; globalCardEmail = email; checkRoutingStatus(refId, email); } 
-      else { showLoading(false); document.getElementById('step1-form-view').classList.remove('hidden'); }
+      
+      if(refId && email) { 
+        globalRefId = refId; globalCardEmail = email; 
+        directSheetVerification(refId, email); 
+      } else { 
+        showLoading(false); 
+        document.getElementById('step1-form-view').classList.remove('hidden'); 
+      }
     };
 
-    function showLoading(show) {
+    function showLoading(show, text = "") {
       const loader = document.getElementById('loading-view');
+      const lText = document.getElementById('loading-text');
+      if(text) lText.innerText = text;
       if(show) loader.classList.remove('hidden'); else loader.classList.add('hidden');
     }
 
@@ -234,8 +234,7 @@
         let img = new Image();
         img.onload = function() {
           let canvas = document.createElement('canvas');
-          let MAX_WIDTH = 120;
-          let scale = MAX_WIDTH / img.width;
+          let MAX_WIDTH = 120; let scale = MAX_WIDTH / img.width;
           canvas.width = MAX_WIDTH; canvas.height = img.height * scale;
           let ctx = canvas.getContext('2d');
           ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
@@ -246,30 +245,37 @@
       reader.readAsDataURL(file);
     });
 
-    function checkRoutingStatus(refId, cardEmail) {
+    // 🌟 डायरेक्ट शीट चेक लॉजिक (फ्रंट क्यूआर स्कैन होने के बाद चलने वाला मास्टर फंक्शन)
+    function directSheetVerification(refId, cardEmail) {
       document.getElementById('step1-form-view').classList.add('hidden');
-      showLoading(true);
+      showLoading(true, "सुरक्षा जांच एवं लाइव पेमेंट वेरिफिकेशन जारी है...");
 
-      // व्हाट्सएप इन-ऐप ब्राउज़र हैंग बाईपास टाइमर (4 सेकंड)
-      let fallbackTrigger = setTimeout(function() {
-        showLoading(false); openActivationScreen(refId, cardEmail);
-      }, 4000);
-
-      window.handleStatusCallback = function(response) {
-        clearTimeout(fallbackTrigger);
-        showLoading(false);
-        if(response.exists) {
-          let isLocallyActive = localStorage.getItem('card_status_' + refId) === 'Active';
-          if(response.status === 'Active' || isLocallyActive) {
-            document.getElementById('step2-activation-view').classList.add('hidden');
-            document.getElementById('step3-drive-view').classList.remove('hidden');
-          } else { openActivationScreen(refId, cardEmail); }
-        } else { openActivationScreen(refId, cardEmail); }
+      window.handleActivationCallback = function(response) {
+        if(response && response.success) {
+          // कॉलम H भरा हुआ है -> सीधे ड्राइव ऑथेंटिकेशन और फोल्डर मैनेजमेंट शुरू करें
+          showLoading(true, "वेरिफिकेशन सफल! क्लाउड लॉकर एक्सेस सिंक हो रहा है...");
+          bypassOrRequestDriveAccess();
+        } else {
+          // कॉलम H खाली है या एडमिन ने कोड डिलीट कर दिया है -> तुरंत एरर स्क्रीन दिखाओ
+          showLoading(false);
+          openErrorScreen(refId, cardEmail);
+        }
       };
 
-      let script = document.createElement('script');
-      script.src = `${API_URL}?action=checkStatus&refId=${refId}&callback=handleStatusCallback`;
-      document.body.appendChild(script);
+      let oldScript = document.getElementById('jsonp-activation-script');
+      if(oldScript) oldScript.remove();
+
+      let scriptAct = document.createElement('script');
+      scriptAct.id = 'jsonp-activation-script';
+      scriptAct.src = `${API_URL}?action=activateCard&refId=${refId}&callback=handleActivationCallback`;
+      document.body.appendChild(scriptAct);
+    }
+
+    function openErrorScreen(refId, email) {
+      document.getElementById('step4-scanner-view').classList.add('hidden');
+      document.getElementById('error-activation-view').classList.remove('hidden');
+      let waMessage = encodeURIComponent(`please mere SD Code को update करे\nRef ID: ${refId}\nEmail: ${email}`);
+      document.getElementById('whatsapp-link').href = `https://wa.me/918700407760?text=${waMessage}`;
     }
 
     function submitCardForm() {
@@ -279,7 +285,7 @@
       if(!email) { alert('कृपया ईमेल दर्ज करें!'); return; }
       
       document.getElementById('step1-form-view').classList.add('hidden');
-      showLoading(true);
+      showLoading(true, "डेटाबेस की जांच की जा रही है...");
 
       window.handleDuplicateCallback = function(dupRes) {
         if(dupRes.exists) {
@@ -326,49 +332,108 @@
       document.getElementById('step1-display-view').classList.remove('hidden');
     }
 
-    function openActivationScreen(refId, email) {
-      globalRefId = refId; globalCardEmail = email;
-      document.getElementById('step2-activation-view').classList.remove('hidden');
-      
-      // 💬 व्हाट्सएप बटन डायनेमिक लिंक फिक्स (मैसेज डायरेक्ट लिंक)
-      let waMessage = encodeURIComponent(`नमस्ते सर, मैंने ₹50 का भुगतान कर दिया है। कृपया मेरे Ref ID: ${refId} के लिए SD Code को Google Sheet में मैन्युअल अपडेट/एक्टिवेट कर दीजिए।\nEmail: ${email}`);
-      document.getElementById('whatsapp-link').href = `https://wa.me/918700407760?text=${waMessage}`;
+    // 📁 ड्राइव इंटीग्रेशन, चेकर और डायरेक्ट फोल्डर क्रिएशन लॉजिक
+    function bypassOrRequestDriveAccess() {
+      if (tokenClient && tokenClient.requestAccessToken) {
+        tokenClient.requestAccessToken({prompt: 'none'});
+      } else {
+        accessToken = "MOCK_SESSION_OK";
+        initializeUploadedDocumentsVault();
+      }
     }
 
-    // 🌟 शीट आधारित मैन्युअल कोड मैचिंग और इंस्टेंट स्क्रीन जंपिंग लॉजिक
-    function activateSystem() {
-      let code = document.getElementById('input-sdcode').value.trim();
-      if(!code) { alert('कृपया कोड दर्ज करें!'); return; }
+    async function initializeUploadedDocumentsVault() {
+      let folderId = localStorage.getItem('drive_folder_id_' + globalRefId);
       
-      showLoading(true);
+      // 📂 अगर फोल्डर पहले से नहीं बना है, तो यूजर की ड्राइव में 'Uploaded_Documents' बनाएं
+      if(!folderId) {
+        let meta = { name: 'Uploaded_Documents', mimeType: 'application/vnd.google-apps.folder' };
+        try {
+          let createFolderRes = await fetch('https://www.googleapis.com/drive/v3/files', { 
+            method: 'POST', 
+            headers: { 'Authorization': `Bearer ${accessToken}`, 'Content-Type': 'application/json' }, 
+            body: JSON.stringify(meta) 
+          });
+          let folderData = await createFolderRes.json();
+          folderId = folderData.id || 'root';
+          localStorage.setItem('drive_folder_id_' + globalRefId, folderId);
+        } catch(e) { folderId = 'root'; }
+      }
 
-      window.handleActivationCallback = function(response) {
-        showLoading(false);
-        document.getElementById('loading-view').classList.add('hidden');
+      showLoading(false);
+      if (targetMode === 'view') {
+        window.location.href = `https://drive.google.com/drive/folders/${folderId}`;
+      } else {
+        openDocumentScannerDirectly();
+      }
+    }
 
-        if(response && response.success) {
-          localStorage.setItem('card_status_' + globalRefId, 'Active');
-          alert('कार्ड एक्टिवेशन कम्प्लीट! अब ड्राइव कनेक्ट करें।');
-          document.getElementById('step2-activation-view').classList.add('hidden');
-          document.getElementById('step3-drive-view').classList.remove('hidden');
-        } else {
-          // अगर आपने अभी तक शीट में कोड नहीं डाला है (यानी कॉलम H खाली है)
-          if(response.mode === "whatsapp_required") {
-            alert('❌ कृपया व्हाट्सएप (+91 8700407760) पर संपर्क करें कि "please mere SD Code को update करे"। आपके कोड को शीट में दर्ज करते ही यह खुल जाएगा!');
-          } else {
-            alert('❌ गलत SD Code! कृपया व्हाट्सएप से प्राप्त सही कोड ही दर्ज करें।');
-          }
-          document.getElementById('step2-activation-view').classList.remove('hidden');
-        }
-      };
+    function openDocumentScannerDirectly() {
+      document.getElementById('error-activation-view').classList.add('hidden');
+      document.getElementById('step4-scanner-view').classList.remove('hidden');
+      document.getElementById('user-display-email').innerText = globalCardEmail;
+      initCamera();
+    }
 
-      let oldScript = document.getElementById('jsonp-activation-script');
-      if(oldScript) oldScript.remove();
+    async function initCamera() {
+      try {
+        streamInstance = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+        document.getElementById('video-stream').srcObject = streamInstance;
+      } catch (err) { alert('कैमरा चालू करने के लिए परमिशन की आवश्यकता है!'); }
+    }
 
-      let scriptAct = document.createElement('script');
-      scriptAct.id = 'jsonp-activation-script';
-      scriptAct.src = `${API_URL}?action=activateCard&refId=${globalRefId}&sdCode=${encodeURIComponent(code)}&callback=handleActivationCallback`;
-      document.body.appendChild(scriptAct);
+    function capturePhoto() {
+      const video = document.getElementById('video-stream');
+      const canvas = document.createElement('canvas');
+      canvas.width = video.videoWidth; canvas.height = video.videoHeight;
+      canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+      if(streamInstance) streamInstance.getTracks().forEach(track => track.stop());
+      document.getElementById('camera-container').classList.add('hidden');
+      document.getElementById('crop-container').classList.remove('hidden');
+      
+      const preview = document.getElementById('preview-image');
+      preview.src = canvas.toDataURL('image/jpeg');
+      if (cropperInstance) cropperInstance.destroy();
+      cropperInstance = new Cropper(preview, { viewMode: 1, autoCropArea: 1 });
+    }
+
+    function applyFilter(type) {
+      if (!cropperInstance) return;
+      cropperInstance.element.style.filter = (type === 'bw') ? 'grayscale(100%) contrast(160%) brightness(110%)' : 'none';
+    }
+
+    function resetScanner() { 
+      if (cropperInstance) cropperInstance.destroy(); 
+      document.getElementById('crop-container').classList.add('hidden');
+      document.getElementById('camera-container').classList.remove('hidden');
+      initCamera(); 
+    }
+
+    async function uploadDocumentToDrive() {
+      if (!cropperInstance) return;
+      let customFileName = document.getElementById('document-filename').value.trim() || "Scanned_Doc_" + Date.now();
+      customFileName += ".jpg";
+      const canvas = cropperInstance.getCroppedCanvas();
+      const base64Data = canvas.toDataURL('image/jpeg').split(',')[1];
+      const folderId = localStorage.getItem('drive_folder_id_' + globalRefId) || 'root';
+
+      document.getElementById('crop-container').innerHTML = `<p class="text-center font-bold text-green-600 animate-pulse py-6">📄 फ़ाइल को सुरक्षित फोल्डर में सेव किया जा रहा है, कृपया प्रतीक्षा करें...</p>`;
+      
+      const boundary = 'foo_bar_baz', delimiter = "\r\n--" + boundary + "\r\n", close_delimiter = "\r\n--" + boundary + "--";
+      const metadata = { name: customFileName, mimeType: 'image/jpeg', parents: [folderId] };
+      const multipartRequestBody = delimiter + 'Content-Type: application/json; charset=UTF-8\r\n\r\n' + JSON.stringify(metadata) + delimiter + 'Content-Type: image/jpeg\r\n' + 'Content-Transfer-Encoding: base64\r\n\r\n' + base64Data + close_delimiter;
+
+      try {
+        let uploadRes = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', { 
+          method: 'POST', 
+          headers: { 'Authorization': `Bearer ${accessToken}`, 'Content-Type': 'multipart/related; boundary=' + boundary }, 
+          body: multipartRequestBody 
+        });
+        if(uploadRes.ok) {
+          alert('सफलतापूर्वक दस्तावेज आपके Uploaded_Documents फोल्डर में सेव हो गया है!'); 
+          location.reload();
+        } else { alert('अपलोड विफल हुआ!'); location.reload(); }
+      } catch (err) { alert('नेटवर्क एरर!'); location.reload(); }
     }
   </script>
 </body>
