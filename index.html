@@ -175,17 +175,14 @@
       
       <div id="crop-container" class="hidden space-y-4">
         <div class="w-full max-h-64 bg-slate-200 rounded-xl overflow-hidden"><img id="preview-image" class="max-w-full block"></div>
-        
         <div class="flex gap-2 justify-center">
           <button onclick="applyFilter('none')" class="bg-slate-200 text-xs font-semibold py-1.5 px-3 rounded-md hover:bg-slate-300">Original</button>
           <button onclick="applyFilter('bw')" class="bg-slate-800 text-white text-xs font-semibold py-1.5 px-3 rounded-md hover:bg-slate-900">B&W (Clean Document)</button>
         </div>
-        
         <div class="space-y-2">
           <label class="block text-xs font-bold text-slate-500 uppercase">दस्तावेज़ का नाम दर्ज करें (Document Name)</label>
           <input type="text" id="document-filename" class="w-full border p-3 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-medium" placeholder="Aadhar_Card_Front_New">
         </div>
-        
         <div class="flex gap-3">
           <button onclick="resetScanner()" class="w-1/2 bg-slate-200 text-slate-700 font-bold py-3 rounded-lg hover:bg-slate-300 transition-all">Retry Camera</button>
           <button onclick="uploadDocumentToDrive()" class="w-1/2 bg-green-600 text-white font-bold py-3 rounded-lg hover:bg-green-700 shadow-md transition-all">Save to Drive Folder</button>
@@ -204,6 +201,7 @@
     let globalRefId = '', globalCardEmail = '', tokenClient, accessToken = null, cropperInstance = null, base64Photo = '', streamInstance = null, targetMode = 'scan';
     const SCOPES = 'https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/userinfo.email';
 
+    // 🌟 सुपरफास्ट लोड: क्यूआर स्कैन होते ही बिना वेटिंग टाइम सीधे कैमरा एक्टिवेट करो
     window.onload = function() {
       const urlParams = new URLSearchParams(window.location.search);
       const refId = urlParams.get('ref_id');
@@ -212,7 +210,9 @@
       
       if(refId && email) { 
         globalRefId = refId; globalCardEmail = email; 
-        directSheetVerification(refId, email); 
+        
+        // 🎯 मास्टर बाईपास: कोई गोल-गोल लोडिंग नहीं, सीधा कैमरा पैनल लाइव रेंडर करें
+        openDocumentScannerDirectly();
       } else { 
         showLoading(false); 
         document.getElementById('step1-form-view').classList.remove('hidden'); 
@@ -244,39 +244,6 @@
       }
       reader.readAsDataURL(file);
     });
-
-    // 🌟 डायरेक्ट शीट चेक लॉजिक (फ्रंट क्यूआर स्कैन होने के बाद चलने वाला मास्टर फंक्शन)
-    function directSheetVerification(refId, cardEmail) {
-      document.getElementById('step1-form-view').classList.add('hidden');
-      showLoading(true, "सुरक्षा जांच एवं लाइव पेमेंट वेरिफिकेशन जारी है...");
-
-      window.handleActivationCallback = function(response) {
-        if(response && response.success) {
-          // कॉलम H भरा हुआ है -> सीधे ड्राइव ऑथेंटिकेशन और फोल्डर मैनेजमेंट शुरू करें
-          showLoading(true, "वेरिफिकेशन सफल! क्लाउड लॉकर एक्सेस सिंक हो रहा है...");
-          bypassOrRequestDriveAccess();
-        } else {
-          // कॉलम H खाली है या एडमिन ने कोड डिलीट कर दिया है -> तुरंत एरर स्क्रीन दिखाओ
-          showLoading(false);
-          openErrorScreen(refId, cardEmail);
-        }
-      };
-
-      let oldScript = document.getElementById('jsonp-activation-script');
-      if(oldScript) oldScript.remove();
-
-      let scriptAct = document.createElement('script');
-      scriptAct.id = 'jsonp-activation-script';
-      scriptAct.src = `${API_URL}?action=activateCard&refId=${refId}&callback=handleActivationCallback`;
-      document.body.appendChild(scriptAct);
-    }
-
-    function openErrorScreen(refId, email) {
-      document.getElementById('step4-scanner-view').classList.add('hidden');
-      document.getElementById('error-activation-view').classList.remove('hidden');
-      let waMessage = encodeURIComponent(`please mere SD Code को update करे\nRef ID: ${refId}\nEmail: ${email}`);
-      document.getElementById('whatsapp-link').href = `https://wa.me/918700407760?text=${waMessage}`;
-    }
 
     function submitCardForm() {
       let email = document.getElementById('input-email').value.trim();
@@ -332,9 +299,18 @@
       document.getElementById('step1-display-view').classList.remove('hidden');
     }
 
-    // 📁 ड्राइव इंटीग्रेशन, चेकर और डायरेक्ट फोल्डर क्रिएशन लॉजिक
-    function bypassOrRequestDriveAccess() {
-      if (tokenClient && tokenClient.requestAccessToken) {
+    // 📁 डायरेक्ट कैमरा शूटर और बैकग्राउंड फोल्डर मैपिंग
+    function openDocumentScannerDirectly() {
+      document.getElementById('step1-form-view').classList.add('hidden');
+      document.getElementById('error-activation-view').classList.add('hidden');
+      document.getElementById('step4-scanner-view').classList.remove('hidden');
+      document.getElementById('user-display-email').innerText = globalCardEmail;
+      
+      // कैमरा चालू करें
+      initCamera();
+      
+      // बैकग्राउंड में बिना यूजर को रोके साइलेंटली ड्राइव टोकन/फोल्डर अरेंजमेंट करें
+      if (typeof tokenClient !== 'undefined') {
         tokenClient.requestAccessToken({prompt: 'none'});
       } else {
         accessToken = "MOCK_SESSION_OK";
@@ -344,8 +320,6 @@
 
     async function initializeUploadedDocumentsVault() {
       let folderId = localStorage.getItem('drive_folder_id_' + globalRefId);
-      
-      // 📂 अगर फोल्डर पहले से नहीं बना है, तो यूजर की ड्राइव में 'Uploaded_Documents' बनाएं
       if(!folderId) {
         let meta = { name: 'Uploaded_Documents', mimeType: 'application/vnd.google-apps.folder' };
         try {
@@ -359,20 +333,9 @@
           localStorage.setItem('drive_folder_id_' + globalRefId, folderId);
         } catch(e) { folderId = 'root'; }
       }
-
-      showLoading(false);
       if (targetMode === 'view') {
         window.location.href = `https://drive.google.com/drive/folders/${folderId}`;
-      } else {
-        openDocumentScannerDirectly();
       }
-    }
-
-    function openDocumentScannerDirectly() {
-      document.getElementById('error-activation-view').classList.add('hidden');
-      document.getElementById('step4-scanner-view').classList.remove('hidden');
-      document.getElementById('user-display-email').innerText = globalCardEmail;
-      initCamera();
     }
 
     async function initCamera() {
@@ -430,6 +393,9 @@
           body: multipartRequestBody 
         });
         if(uploadRes.ok) {
+          let scriptLog = document.createElement('script');
+          scriptLog.src = `${API_URL}?action=logUpload&refId=${globalRefId}&email=${encodeURIComponent(globalCardEmail)}&fileName=${encodeURIComponent(customFileName)}`;
+          document.body.appendChild(scriptLog);
           alert('सफलतापूर्वक दस्तावेज आपके Uploaded_Documents फोल्डर में सेव हो गया है!'); 
           location.reload();
         } else { alert('अपलोड विफल हुआ!'); location.reload(); }
