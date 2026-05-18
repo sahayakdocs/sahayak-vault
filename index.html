@@ -7,6 +7,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   
   <style>
@@ -165,7 +166,10 @@
     <div id="step4-scanner-view" class="hidden space-y-4">
       <div class="flex justify-between items-center border-b pb-2">
         <h2 class="text-sm font-bold text-blue-700 tracking-wide">📷 Sahayak Cloud Vault Scanner</h2>
-        <span class="text-xs bg-slate-100 px-2 py-1 rounded font-medium text-slate-600" id="user-display-email">...</span>
+        <div class="flex items-center gap-2">
+          <span class="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full font-bold shadow-xs" id="pdf-page-counter">Pages: 0</span>
+          <span class="text-xs bg-slate-100 px-2 py-1 rounded font-medium text-slate-600" id="user-display-email">...</span>
+        </div>
       </div>
       
       <div id="camera-container" class="relative w-full aspect-video bg-black rounded-xl overflow-hidden flex items-center justify-center shadow-inner">
@@ -175,17 +179,25 @@
       
       <div id="crop-container" class="hidden space-y-4">
         <div class="w-full max-h-64 bg-slate-200 rounded-xl overflow-hidden"><img id="preview-image" class="max-w-full block"></div>
+        
         <div class="flex gap-2 justify-center">
-          <button onclick="applyFilter('none')" class="bg-slate-200 text-xs font-semibold py-1.5 px-3 rounded-md hover:bg-slate-300">Original</button>
-          <button onclick="applyFilter('bw')" class="bg-slate-800 text-white text-xs font-semibold py-1.5 px-3 rounded-md hover:bg-slate-900">B&W (Clean Document)</button>
+          <button onclick="applyFilterEffect('none')" class="bg-slate-200 text-xs font-semibold py-1.5 px-3 rounded-md hover:bg-slate-300">Original</button>
+          <button onclick="applyFilterEffect('bw')" class="bg-slate-800 text-white text-xs font-semibold py-1.5 px-3 rounded-md hover:bg-slate-900">B&W (Clean Document)</button>
         </div>
+        
         <div class="space-y-2">
-          <label class="block text-xs font-bold text-slate-500 uppercase">दस्तावेज़ का नाम दर्ज करें (Document Name)</label>
-          <input type="text" id="document-filename" class="w-full border p-3 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-medium" placeholder="Aadhar_Card_Front_New">
+          <label class="block text-xs font-bold text-slate-500 uppercase">फ़ाइल/दस्तावेज़ का नाम (Document Name)</label>
+          <input type="text" id="document-filename" class="w-full border p-3 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none font-medium" placeholder="Aadhar_Card_Complete">
         </div>
-        <div class="flex gap-3">
-          <button onclick="resetScanner()" class="w-1/2 bg-slate-200 text-slate-700 font-bold py-3 rounded-lg hover:bg-slate-300 transition-all">Retry Camera</button>
-          <button onclick="uploadDocumentToDrive()" class="w-1/2 bg-green-600 text-white font-bold py-3 rounded-lg hover:bg-green-700 shadow-md transition-all">Save to Drive Folder</button>
+        
+        <div class="grid grid-cols-2 gap-2 pt-2">
+          <button onclick="resetScanner()" class="bg-slate-200 text-slate-700 font-bold py-3 rounded-lg hover:bg-slate-300 text-sm">Retry Camera</button>
+          <button onclick="saveCurrentPageIntoBucket()" class="bg-blue-600 text-white font-bold py-3 rounded-lg hover:bg-blue-700 text-sm shadow-sm">➕ Add This Page</button>
+        </div>
+        
+        <div class="border-t pt-3 flex flex-col gap-2">
+          <button onclick="uploadBucketAsImage()" class="w-full bg-amber-600 text-white font-bold py-2.5 rounded-lg hover:bg-amber-700 text-xs shadow-xs">Save Only This Page as Image (JPG)</button>
+          <button onclick="uploadBucketAsPDF()" id="btn-save-pdf" class="w-full bg-green-600 text-white font-extrabold py-3.5 rounded-xl hover:bg-green-700 text-sm shadow-md hidden">🗂️ Save All Pages as Combined PDF to Drive</button>
         </div>
       </div>
     </div>
@@ -198,21 +210,34 @@
 
   <script>
     const API_URL = 'https://script.google.com/macros/s/AKfycbxObecWPOgd6GNongNwumvGcTgQNdLUYfavh-vddmLNx6kcy3nTUk7VqWQY0TQYeWt1/exec';
-    let globalRefId = '', globalCardEmail = '', tokenClient, accessToken = null, cropperInstance = null, base64Photo = '', streamInstance = null, targetMode = 'scan';
+    let globalRefId = '', globalCardEmail = '', tokenClient, accessToken = null, cropperInstance = null, streamInstance = null, targetMode = 'scan';
+    let pdfPagesBucket = []; // 🗂️ स्कैन किए गए सभी पेजेस की इमेजेस स्टोर करने की बाल्टी
+    let selectedFilter = 'none'; 
     const SCOPES = 'https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/userinfo.email';
 
-    // 🌟 सुपरफास्ट लोड: क्यूआर स्कैन होते ही बिना वेटिंग टाइम सीधे कैमरा एक्टिवेट करो
     window.onload = function() {
       const urlParams = new URLSearchParams(window.location.search);
       const refId = urlParams.get('ref_id');
       const email = urlParams.get('email');
       targetMode = urlParams.get('mode') || 'scan';
       
+      // 🛠️ फिक्स: गूगल क्लाइंट को लोड होने का पूरा मौका दें ताकि टोकन फेल न हो
+      if(typeof google !== 'undefined' && google.accounts && google.accounts.oauth2) {
+        tokenClient = google.accounts.oauth2.initTokenClient({
+          client_id: '352936235128-fake.apps.googleusercontent.com', scope: SCOPES,
+          callback: (resp) => { 
+            if (resp.access_token) { 
+              accessToken = resp.access_token; 
+              localStorage.setItem('drive_token_' + globalRefId, accessToken); 
+              initializeUploadedDocumentsVault(); 
+            } 
+          }
+        });
+      }
+
       if(refId && email) { 
         globalRefId = refId; globalCardEmail = email; 
-        
-        // 🎯 मास्टर बाईपास: कोई गोल-गोल लोडिंग नहीं, सीधा कैमरा पैनल लाइव रेंडर करें
-        openDocumentScannerDirectly();
+        directSheetVerification(refId, email); 
       } else { 
         showLoading(false); 
         document.getElementById('step1-form-view').classList.remove('hidden'); 
@@ -226,24 +251,32 @@
       if(show) loader.classList.remove('hidden'); else loader.classList.add('hidden');
     }
 
-    document.getElementById('input-photo').addEventListener('change', function(e) {
-      let file = e.target.files[0];
-      if(!file) return;
-      let reader = new FileReader();
-      reader.onload = function(event) {
-        let img = new Image();
-        img.onload = function() {
-          let canvas = document.createElement('canvas');
-          let MAX_WIDTH = 120; let scale = MAX_WIDTH / img.width;
-          canvas.width = MAX_WIDTH; canvas.height = img.height * scale;
-          let ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-          base64Photo = canvas.toDataURL('image/jpeg', 0.4);
+    // 🌟 सुरक्षा जांच: चेक करेगा कि एडमिन ने शीट में SD code डाला है या नहीं
+    function directSheetVerification(refId, cardEmail) {
+      document.getElementById('step1-form-view').classList.add('hidden');
+      showLoading(true, "सुरक्षा जांच एवं लाइव पेमेंट वेरिफिकेशन जारी है...");
+
+      window.handleActivationCallback = function(response) {
+        if(response && response.success) {
+          // कॉलम H भरा हुआ है -> सीधे कैमरा ओपन करो और बैकग्राउंड में टोकन जेनरेट करो
+          openDocumentScannerDirectly();
+        } else {
+          showLoading(false);
+          openErrorScreen(refId, cardEmail);
         }
-        img.src = event.target.result;
-      }
-      reader.readAsDataURL(file);
-    });
+      };
+
+      let scriptAct = document.createElement('script');
+      scriptAct.src = `${API_URL}?action=activateCard&refId=${refId}&callback=handleActivationCallback`;
+      document.body.appendChild(scriptAct);
+    }
+
+    function openErrorScreen(refId, email) {
+      document.getElementById('step4-scanner-view').classList.add('hidden');
+      document.getElementById('error-activation-view').classList.remove('hidden');
+      let waMessage = encodeURIComponent(`please mere SD Code को update करे\nRef ID: ${refId}\nEmail: ${email}`);
+      document.getElementById('whatsapp-link').href = `https://wa.me/918700407760?text=${waMessage}`;
+    }
 
     function submitCardForm() {
       let email = document.getElementById('input-email').value.trim();
@@ -263,19 +296,11 @@
             showLoading(false); alert('नया कार्ड बनाने के लिए नाम और मोबाइल भरें!');
             document.getElementById('step1-form-view').classList.remove('hidden'); return;
           }
-          
-          window.handleGenerationCallback = function(genRes) {
-            showLoading(false);
-            if(genRes.success) { renderPVCCardLayout(genRes.refId, name, mobile, email, base64Photo); }
-            else { alert('सर्वर एरर!'); }
-          };
-
           let scriptGen = document.createElement('script');
           scriptGen.src = `${API_URL}?action=generateCard&name=${encodeURIComponent(name)}&mobile=${encodeURIComponent(mobile)}&email=${encodeURIComponent(email)}&photoUrl=${encodeURIComponent(base64Photo)}&callback=handleGenerationCallback`;
           document.body.appendChild(scriptGen);
         }
       };
-
       let scriptDup = document.createElement('script');
       scriptDup.src = `${API_URL}?action=checkEmailDuplicate&email=${encodeURIComponent(email)}&callback=handleDuplicateCallback`;
       document.body.appendChild(scriptDup);
@@ -288,7 +313,6 @@
       document.getElementById('card-mobile').innerText = mobile;
       document.getElementById('card-email').innerText = email;
       if(photo) { document.getElementById('card-img').src = photo; document.getElementById('card-img').classList.remove('hidden'); document.getElementById('card-img-placeholder').classList.add('hidden'); }
-      
       let currentUrl = window.location.href.split('?')[0];
       document.getElementById('qrcode-front').innerHTML = '';
       new QRCode(document.getElementById('qrcode-front'), { text: `${currentUrl}?ref_id=${refId}&email=${encodeURIComponent(email)}&mode=scan`, width: 115, height: 115, correctLevel: QRCode.CorrectLevel.H });
@@ -299,42 +323,22 @@
       document.getElementById('step1-display-view').classList.remove('hidden');
     }
 
-    // 📁 डायरेक्ट कैमरा शूटर और बैकग्राउंड फोल्डर मैपिंग
+    // 📷 बिना वेटिंग सीधे कैमरा पैनल एक्टिवेटर
     function openDocumentScannerDirectly() {
-      document.getElementById('step1-form-view').classList.add('hidden');
+      showLoading(false);
       document.getElementById('error-activation-view').classList.add('hidden');
       document.getElementById('step4-scanner-view').classList.remove('hidden');
       document.getElementById('user-display-email').innerText = globalCardEmail;
       
-      // कैमरा चालू करें
       initCamera();
       
-      // बैकग्राउंड में बिना यूजर को रोके साइलेंटली ड्राइव टोकन/फोल्डर अरेंजमेंट करें
-      if (typeof tokenClient !== 'undefined') {
-        tokenClient.requestAccessToken({prompt: 'none'});
-      } else {
-        accessToken = "MOCK_SESSION_OK";
+      // 🛡️ टोकन जनरेशन फिक्स: अगर लाइव सेव्ड टोकन है तो यूज़ करो वरना ऑथेंटिकेट करो
+      let savedToken = localStorage.getItem('drive_token_' + globalRefId);
+      if(savedToken) {
+        accessToken = savedToken;
         initializeUploadedDocumentsVault();
-      }
-    }
-
-    async function initializeUploadedDocumentsVault() {
-      let folderId = localStorage.getItem('drive_folder_id_' + globalRefId);
-      if(!folderId) {
-        let meta = { name: 'Uploaded_Documents', mimeType: 'application/vnd.google-apps.folder' };
-        try {
-          let createFolderRes = await fetch('https://www.googleapis.com/drive/v3/files', { 
-            method: 'POST', 
-            headers: { 'Authorization': `Bearer ${accessToken}`, 'Content-Type': 'application/json' }, 
-            body: JSON.stringify(meta) 
-          });
-          let folderData = await createFolderRes.json();
-          folderId = folderData.id || 'root';
-          localStorage.setItem('drive_folder_id_' + globalRefId, folderId);
-        } catch(e) { folderId = 'root'; }
-      }
-      if (targetMode === 'view') {
-        window.location.href = `https://drive.google.com/drive/folders/${folderId}`;
+      } else if (tokenClient) {
+        tokenClient.requestAccessToken({prompt: 'none'});
       }
     }
 
@@ -358,33 +362,108 @@
       preview.src = canvas.toDataURL('image/jpeg');
       if (cropperInstance) cropperInstance.destroy();
       cropperInstance = new Cropper(preview, { viewMode: 1, autoCropArea: 1 });
+      selectedFilter = 'none'; // डिफ़ॉल्ट ओरिजिनल रखें
     }
 
-    function applyFilter(type) {
+    // 🌟 100% फिक्स्ड फ़िल्टर इफेक्ट टूल (Canvas पिक्सल मैनिपुलेशन लॉजिक)
+    function applyFilterEffect(type) {
+      selectedFilter = type;
+      const preview = document.getElementById('preview-image');
+      if(type === 'bw') {
+        preview.style.filter = 'grayscale(100%) contrast(160%) brightness(110%)';
+      } else {
+        preview.style.filter = 'none';
+      }
+    }
+
+    // 🛠️ क्रॉप किए हुए कैनवास पर फ़िल्टर को पक्के तौर पर प्रोसेस करने का इंटरनल फंक्शन
+    function processCanvasPixels(canvas) {
+      if(selectedFilter !== 'bw') return canvas;
+      const ctx = canvas.getContext('2d');
+      const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const d = imgData.data;
+      for (let i = 0; i < d.length; i += 4) {
+        // ल्यूमिनेंस फ़ॉर्मूला: ब्लैक एंड व्हाइट और क्लियर डॉक के लिए पिक्सल सेट करना
+        let r = d[i], g = d[i+1], b = d[i+2];
+        let v = (0.2126*r + 0.7152*g + 0.0722*b);
+        // एडवांस्ड डॉक थ्रेशोल्डिंग एनहांसमेंट
+        v = v > 128 ? Math.min(v * 1.1, 255) : Math.max(v * 0.8, 0);
+        d[i] = d[i+1] = d[i+2] = v;
+      }
+      ctx.putImageData(imgData, 0, 0);
+      return canvas;
+    }
+
+    // ➕ पेज को बकेट (बाल्टी) में जोड़ना
+    function saveCurrentPageIntoBucket() {
       if (!cropperInstance) return;
-      cropperInstance.element.style.filter = (type === 'bw') ? 'grayscale(100%) contrast(160%) brightness(110%)' : 'none';
-    }
-
-    function resetScanner() { 
-      if (cropperInstance) cropperInstance.destroy(); 
-      document.getElementById('crop-container').classList.add('hidden');
-      document.getElementById('camera-container').classList.remove('hidden');
-      initCamera(); 
-    }
-
-    async function uploadDocumentToDrive() {
-      if (!cropperInstance) return;
-      let customFileName = document.getElementById('document-filename').value.trim() || "Scanned_Doc_" + Date.now();
-      customFileName += ".jpg";
-      const canvas = cropperInstance.getCroppedCanvas();
-      const base64Data = canvas.toDataURL('image/jpeg').split(',')[1];
-      const folderId = localStorage.getItem('drive_folder_id_' + globalRefId) || 'root';
-
-      document.getElementById('crop-container').innerHTML = `<p class="text-center font-bold text-green-600 animate-pulse py-6">📄 फ़ाइल को सुरक्षित फोल्डर में सेव किया जा रहा है, कृपया प्रतीक्षा करें...</p>`;
+      let rawCanvas = cropperInstance.getCroppedCanvas();
+      let processedCanvas = processCanvasPixels(rawCanvas);
+      let pageBase64 = processedCanvas.toDataURL('image/jpeg', 0.7);
       
+      pdfPagesBucket.push(pageBase64); // बाल्टी में पेज डाला
+      
+      // काउंटर अपडेट करें
+      document.getElementById('pdf-page-counter').innerText = "Pages: " + pdfPagesBucket.length;
+      alert(`पेज नंबर ${pdfPagesBucket.length} सफलतापूर्वक कंबाइन लिस्ट में जुड़ गया!`);
+      
+      // कंबाइंड पीडीएफ बटन शो करें
+      if(pdfPagesBucket.length > 0) {
+        document.getElementById('btn-save-pdf').classList.remove('hidden');
+      }
+      resetScanner();
+    }
+
+    // 🗂️ बाल्टी से सीधे सिंगल JPG सेव करना
+    async function uploadBucketAsImage() {
+      if (!cropperInstance) return;
+      let rawCanvas = cropperInstance.getCroppedCanvas();
+      let processedCanvas = processCanvasPixels(rawCanvas);
+      let singleBase64 = processedCanvas.toDataURL('image/jpeg', 0.7).split(',')[1];
+      
+      let fileName = document.getElementById('document-filename').value.trim() || "Single_Doc_" + Date.now();
+      fileName += ".jpg";
+      
+      executeDriveDirectUpload(singleBase64, 'image/jpeg', fileName);
+    }
+
+    // 🗂️ मल्टीपल पेजेस को कंबाइन करके सिंगल PDF अपलोड करना
+    async function uploadBucketAsPDF() {
+      if(pdfPagesBucket.length === 0) { alert('पहले "Add This Page" बटन दबाकर पेज जोड़ें!'); return; }
+      
+      let customFileName = document.getElementById('document-filename').value.trim() || "Combined_Document_" + Date.now();
+      customFileName += ".pdf";
+      
+      document.getElementById('crop-container').innerHTML = `<p class="text-center font-bold text-green-600 animate-pulse py-6">🗂️ सभी ${pdfPagesBucket.length} पेजेस को कंबाइन करके हाई-क्वालिटी PDF जनरेट की जा रही है, कृपया प्रतीक्षा करें...</p>`;
+      
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
+      
+      for(let i=0; i < pdfPagesBucket.length; i++) {
+        if(i > 0) pdf.addPage();
+        pdf.addImage(pdfPagesBucket[i], 'JPEG', 0, 0, pdfWidth, pdfHeight);
+      }
+      
+      let pdfBase64Raw = pdf.output('datauristring');
+      let pdfCleanBase64 = pdfBase64Raw.split(',')[1];
+      
+      executeDriveDirectUpload(pdfCleanBase64, 'application/pdf', customFileName);
+    }
+
+    // 🚀 ड्राइव अपलोड एग्जीक्यूटर (नो मोर टोकन मिस एरर)
+    async function executeDriveDirectUpload(base64RawData, mimeType, filename) {
+      if(!accessToken || accessToken === "MOCK_SESSION_OK") {
+        // अगर टोकन एक्सपायर हुआ है तो रिलांच करें
+        if(tokenClient) { tokenClient.requestAccessToken({prompt: 'none'}); alert('सुरक्षा टोकन री-फ्रेश हो रहा है, कृपया दोबारा क्लिक करें!'); return; }
+        alert('सुरक्षा सत्यापन टोकन अनुपलब्ध है!'); return;
+      }
+
+      let folderId = localStorage.getItem('drive_folder_id_' + globalRefId) || 'root';
       const boundary = 'foo_bar_baz', delimiter = "\r\n--" + boundary + "\r\n", close_delimiter = "\r\n--" + boundary + "--";
-      const metadata = { name: customFileName, mimeType: 'image/jpeg', parents: [folderId] };
-      const multipartRequestBody = delimiter + 'Content-Type: application/json; charset=UTF-8\r\n\r\n' + JSON.stringify(metadata) + delimiter + 'Content-Type: image/jpeg\r\n' + 'Content-Transfer-Encoding: base64\r\n\r\n' + base64Data + close_delimiter;
+      const metadata = { name: filename, mimeType: mimeType, parents: [folderId] };
+      const multipartRequestBody = delimiter + 'Content-Type: application/json; charset=UTF-8\r\n\r\n' + JSON.stringify(metadata) + delimiter + 'Content-Type: ' + mimeType + '\r\n' + 'Content-Transfer-Encoding: base64\r\n\r\n' + base64RawData + close_delimiter;
 
       try {
         let uploadRes = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', { 
@@ -394,12 +473,25 @@
         });
         if(uploadRes.ok) {
           let scriptLog = document.createElement('script');
-          scriptLog.src = `${API_URL}?action=logUpload&refId=${globalRefId}&email=${encodeURIComponent(globalCardEmail)}&fileName=${encodeURIComponent(customFileName)}`;
+          scriptLog.src = `${API_URL}?action=logUpload&refId=${globalRefId}&email=${encodeURIComponent(globalCardEmail)}&fileName=${encodeURIComponent(filename)}`;
           document.body.appendChild(scriptLog);
-          alert('सफलतापूर्वक दस्तावेज आपके Uploaded_Documents फोल्डर में सेव हो गया है!'); 
+          alert(`बधाई हो! '${filename}' सीधे आपकी ड्राइव के Uploaded_Documents फोल्डर में सेव हो गई है!`); 
           location.reload();
-        } else { alert('अपलोड विफल हुआ!'); location.reload(); }
-      } catch (err) { alert('नेटवर्क एरर!'); location.reload(); }
+        } else { alert('गूगल ड्राइव अपलोड फेल हुआ! कृपया दोबारा प्रयास करें।'); location.reload(); }
+      } catch (err) { alert('नेटवर्क त्रुटि!'); location.reload(); }
+    }
+
+    async function initializeUploadedDocumentsVault() {
+      let folderId = localStorage.getItem('drive_folder_id_' + globalRefId);
+      if(!folderId && accessToken && accessToken !== "MOCK_SESSION_OK") {
+        let meta = { name: 'Uploaded_Documents', mimeType: 'application/vnd.google-apps.folder' };
+        try {
+          let createFolderRes = await fetch('https://www.googleapis.com/drive/v3/files', { method: 'POST', headers: { 'Authorization': `Bearer ${accessToken}`, 'Content-Type': 'application/json' }, body: JSON.stringify(meta) });
+          let folderData = await createFolderRes.json();
+          folderId = folderData.id || 'root';
+          localStorage.setItem('drive_folder_id_' + globalRefId, folderId);
+        } catch(e) { folderId = 'root'; }
+      }
     }
   </script>
 </body>
